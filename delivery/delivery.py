@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/delivery'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/delivery_db'
 #'mysql+mysqlconnector://root@localhost:3306/book'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
  
@@ -143,6 +143,10 @@ def create_delivery():
     pickup_location = request.json.get('pickup_location', None)
     destination = request.json.get('destination', None)
 
+    #Delivery_ID=
+    #current_timestamp=
+    #last_updated_timestamp=
+
     delivery=Delivery(driver_ID= driver_ID, customer_ID=customer_ID, delivery_date=delivery_date, timeslot=timeslot, pickup_location=pickup_location, destination=destination, status='NEW') 
 
     try:
@@ -243,5 +247,3 @@ def delete_delivery(delivery_ID):
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
-  
-  
