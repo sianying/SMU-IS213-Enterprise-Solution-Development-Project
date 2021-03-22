@@ -16,14 +16,14 @@ SET time_zone = "+08:00";
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Database: `delivery`
 --
 
-CREATE DATABASE IF NOT EXISTS `delivery` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-USE `delivery`;
+CREATE DATABASE IF NOT EXISTS `delivery_db` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `delivery_db`;
 
 -- --------------------------------------------------------
 
@@ -35,8 +35,8 @@ USE `delivery`;
 DROP TABLE IF EXISTS `delivery`;
 CREATE TABLE IF NOT EXISTS `delivery` (
   `delivery_ID` int NOT NULL AUTO_INCREMENT,
-  `driver_ID` int(2) NOT NULL,
-  `customer_ID` int(8) NOT NULL,
+  `driver_ID` int NOT NULL,
+  `customer_ID` int NOT NULL,
   `delivery_date` date NOT NULL,
   `timeslot` varchar(20) NOT NULL,
   `pickup_location` varchar(60) NOT NULL,
@@ -51,22 +51,15 @@ CREATE TABLE IF NOT EXISTS `delivery` (
 -- Dumping data for table `order`
 --
 
-INSERT INTO `delivery` (`delivery_id`, `driver_ID`, `customer_ID`, `delivery_date`, `timeslot`, `pickup_location`, `destination`, `status`, `created`, `last_updated`) VALUES
-(1, 23, 12345678 , '2020-06-12', '2_to_4', 'Lentor Ave Blk 25', 'Yishun Street 22 Blk 299', 'NEW', '2019-06-12 02:14:55', '2020-06-12 02:14:55');
+INSERT INTO `delivery` (`delivery_ID`, `driver_ID`, `customer_ID`, `delivery_date`, `timeslot`, `pickup_location`, `destination`, `status`, `created`, `last_updated`) VALUES
+(1, 23, 12345678 , '2020-06-12', '2_to_4', 'Lentor Ave Blk 25', 'Yishun Street 22 Blk 299', 'NEW', '2019-06-10 02:14:55', '2020-06-12 02:14:55'),
+(2, 17, 23456789, '2020-06-17', '12_to_2', 'Bishan St 25 Blk 125', 'Tampines Street 17 Blk 300', 'NEW', '2019-06-15 03:14:55', '2020-06-17 02:14:55');
 
+
+COMMIT;
 
 
 select * from delivery;
-
-
-
-
-
-
-
-
-
-
 
 -- --------------------------------------------------------
 
