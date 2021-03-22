@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+import datetime
 
 app = Flask(__name__)
 
@@ -143,11 +144,13 @@ def create_delivery():
     pickup_location = request.json.get('pickup_location', None)
     destination = request.json.get('destination', None)
 
-    #Delivery_ID=
-    #current_timestamp=
-    #last_updated_timestamp=
+    delivery = Delivery.query.order_by(Delivery.delivery_ID.desc()).first()
+    delivery_ID= delivery.delivery_ID + 1
 
-    delivery=Delivery(driver_ID= driver_ID, customer_ID=customer_ID, delivery_date=delivery_date, timeslot=timeslot, pickup_location=pickup_location, destination=destination, status='NEW') 
+    created=datetime.datetime.now()
+    last_updated=created
+
+    delivery=Delivery(delivery_ID=delivery_ID, driver_ID= driver_ID, customer_ID=customer_ID, delivery_date=delivery_date, timeslot=timeslot, pickup_location=pickup_location, destination=destination, status='NEW', created=created, last_updated=last_updated) 
 
     try:
         db.session.add(delivery)
