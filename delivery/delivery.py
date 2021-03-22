@@ -13,16 +13,17 @@ class Delivery(db.Model):
     __tablename__ = 'delivery'
 
     delivery_ID = db.Column(db.INT(), primary_key=True)
-    driver_ID = db.Column(db.INT(2), nullable=False)
-    customer_ID = db.Column(db.INT(8), nullable=False)
+    driver_ID = db.Column(db.INT(), nullable=False)
+    customer_ID = db.Column(db.INT(), nullable=False)
     delivery_date = db.Column(db.DATE, nullable=False)
     timeslot = db.Column(db.VARCHAR(20), nullable=False)
     pickup_location = db.Column(db.VARCHAR(60), nullable=False)
     destination = db.Column(db.VARCHAR(60), nullable=False)
     #wa idk how to include for the timestamps and default values help
     status = db.Column(db.VARCHAR(10), nullable=False, default='New')
-    created = db.Column(db.timestamp, nullable=False, default=datetime.datetime.utcnow)
-    last_updated = db.Column(db.timestamp, nullable=False, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+    created = db.Column(db.TIMESTAMP, nullable=False, default=db.func.now())
+    last_updated = db.Column(db.TIMESTAMP, nullable=False, server_default=db.func.now(), onupdate=db.func.now())
+    #default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow
     
     def __init__(self, delivery_ID, driver_ID, customer_ID, delivery_date, timeslot, pickup_location, destination, status, created, last_updated):
         self.delivery_ID = delivery_ID
@@ -132,7 +133,7 @@ def find_by_customer_ID(customer_ID):
 
 
 # 5. CREATE NEW DELIVERY  
-@app.route("/delivery>", methods=['POST'])
+@app.route("/delivery", methods=['POST'])
 def create_delivery():
     #diagram might need to change, necessary to find an available driver first and add it into the request
     driver_ID=request.json.get('driver_ID', None)
@@ -242,4 +243,5 @@ def delete_delivery(delivery_ID):
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
- 
+  
+  
