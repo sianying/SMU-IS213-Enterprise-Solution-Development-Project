@@ -1,4 +1,3 @@
-
 -- phpMyAdmin SQL Dump
 -- version 4.7.4
 -- https://www.phpmyadmin.net/
@@ -22,6 +21,7 @@ SET time_zone = "+08:00";
 --
 -- Database: `delivery`
 --
+
 CREATE DATABASE IF NOT EXISTS `delivery` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 USE `delivery`;
 
@@ -34,7 +34,7 @@ USE `delivery`;
 
 DROP TABLE IF EXISTS `delivery`;
 CREATE TABLE IF NOT EXISTS `delivery` (
-  `job_ID` int NOT NULL AUTO_INCREMENT,
+  `delivery_ID` int NOT NULL AUTO_INCREMENT,
   `driver_ID` int(2) NOT NULL,
   `customer_ID` int(8) NOT NULL,
   `delivery_date` date NOT NULL,
@@ -44,19 +44,19 @@ CREATE TABLE IF NOT EXISTS `delivery` (
   `status` varchar(10) NOT NULL DEFAULT 'NEW',
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `last_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`job_ID`)
+  PRIMARY KEY (`delivery_ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `order`
 --
 
-INSERT INTO `delivery` (`job_id`, `driver_ID`, `customer_ID`, `delivery_date`, `timeslot`, `pickup_location`, `destination`, `status`, `created`, `last_updated`) VALUES
+INSERT INTO `delivery` (`delivery_id`, `driver_ID`, `customer_ID`, `delivery_date`, `timeslot`, `pickup_location`, `destination`, `status`, `created`, `last_updated`) VALUES
 (1, 23, 12345678 , '2020-06-12', '2_to_4', 'Lentor Ave Blk 25', 'Yishun Street 22 Blk 299', 'NEW', '2019-06-12 02:14:55', '2020-06-12 02:14:55');
 
 
 
-
+select * from delivery;
 
 
 
