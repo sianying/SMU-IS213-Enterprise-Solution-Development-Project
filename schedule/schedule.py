@@ -16,7 +16,7 @@ class Schedule(db.Model):
     __tablename__ = 'schedule'
 
     SID = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    driver_id = db.Column(db.String, nullable=False)
+    driver_id = db.Column(db.Integer, nullable=False)
     delivery_date = db.Column(db.DateTime, nullable=False)
     t_8_to_10 = db.Column(db.Boolean, nullable=False)
     t_10_to_12 = db.Column(db.Boolean, nullable=False)
