@@ -1,4 +1,5 @@
 import os
+import math
 from flask import Flask, jsonify, request
 import json
 import requests
@@ -15,8 +16,27 @@ CORS(app)
 #checkout with payment
 @app.route('/create-checkout-session', methods=['POST'])
 def create_checkout_session():
-    data = json.loads(request.data)
+    post_data = json.loads(request.data)
+    delivery_item = post_data['deliveryItem']
+    description = post_data['description']
+    size = post_data['size']
+    weight = post_data['weight']
+    # print(post_data)
+    # delivery_item = data["price_data"]["product_data"]["name"]
+    # size = post_data["size"]
     # return data
+    #price processing
+    pricing = {"Small": 3, "Medium": 6, "Large": 9} 
+    for key in pricing:
+        if size == key:
+            unit_amount = int(pricing[size] * float(weight)*100)
+    data = {
+        "price_data": {"currency": "sgd", 
+                    "product_data": {"name": delivery_item}, 
+                    "unit_amount": unit_amount},
+        "quantity": 1
+    }
+
     try:
         checkout_session = stripe.checkout.Session.create(
             payment_method_types=['card'],
