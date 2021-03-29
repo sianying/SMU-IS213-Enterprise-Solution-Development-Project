@@ -27,31 +27,36 @@
 
         <form>
             <div class="form-group">
-                <label for="productName">Product Name</label>
-                <input type="text" class="form-control" id="productName" placeholder="Enter Product Name" value="T-shirt">
+                <label for="deliveryItem">Delivery Item</label>
+                <input type="text" class="form-control" id="deliveryItem" placeholder="Enter Delivery Item" value="">
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <input type="text" class="form-control" id="description" placeholder="Delivery Item Description" value="">
             </div>
             <div class="form-group ">
-                <label for="currency">Currency</label>
-                <select id="currency" class="form-control">
-                    <option selected>SGD</option>
-                    <option>USD</option>
+                <label for="size">Size</label>
+                <select id="size" class="form-control">
+                    <option selected>Small</option>
+                    <option>Medium</option>
+                    <option>Large</option>
                 </select>
             </div>
-            <div class="form-group ">
+            <!-- <div class="form-group ">
                 <label for="quantity">Quantity</label>
                 <select id="quantity" class="form-control">
                     <option selected>1</option>
-                    <!-- <option>2</option>
-                    <option>3</option> -->
+                    <option>2</option>
+                    <option>3</option>
                 </select>
-            </div>
+            </div> -->
             <div class="form-group">
-                <label for="unitAmount">Product Amount</label>
+                <label for="weight">Product weight</label>
                 <div class="input-group mb-3">
+                    <input type="number" class="form-control" id="weight" placeholder="Please input the product weight" value="">
                     <div class="input-group-prepend">
-                        <span class="input-group-text" id="dollar">$</span>
+                        <span class="input-group-text" id="kg">kg</span>
                     </div>
-                    <input type="number" class="form-control" id="unitAmount" placeholder="Amount" value="0.50">
                 </div>
             </div> 
             <!-- <button type="submit" class="btn btn-primary">Checkout</button> -->
@@ -67,10 +72,11 @@
 
     var checkoutButton = document.getElementById("checkout-button");
     checkoutButton.addEventListener("click", function () {
-        var productName = $("#productName").val();
-        var currency = $("#currency").val().toLowerCase();
-        var unitAmount = ($("#unitAmount").val() * 100).toString();
-        var quantity = $("#quantity").val();
+        var deliveryItem = $("#deliveryItem").val();
+        var description = $("#description").val();
+        var size = $("#size").val();
+        var weight = $("#weight").val();
+        // var quantity = $("#quantity").val();
 
         fetch("http://localhost:4242/create-checkout-session", {
             method: "POST",
@@ -78,10 +84,18 @@
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                "price_data": {"currency": currency, 
-                            "product_data": {"name": productName}, 
-                            "unit_amount": unitAmount},
-                "quantity": quantity
+                // "price_data": {"currency": "sgd", "product_data": {"name": deliveryItem}, "unit_amount": 100},
+                // "quantity": 1,
+                // "metadata": {
+                //     "description": description,
+                //     "size": size,
+                //     "weight": weight
+                // },
+        
+                "deliveryItem": deliveryItem,
+                "description": description,
+                "size": size,
+                "weight": weight
             }),
         })
         .then(function (response) {
