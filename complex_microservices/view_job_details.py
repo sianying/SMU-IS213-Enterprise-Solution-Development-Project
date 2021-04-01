@@ -1,5 +1,4 @@
-#driver views job details, call google maps api
-#need to pip install geocode and geopy?
+#driver views job details, call google distance matrix api
 
 # 1. driver wants to view job details, clicks on a particular job on the UI
 # 2. HTTP GET request to delivery microservice and retrieve existing delivery details from db
@@ -17,65 +16,52 @@ import requests
 import google
 from invokes import invoke_http
 
-
-#import googlemaps, geocode, geopy
-#from geopy.geocoders import Nominatim
-
-
 app = Flask(__name__)
 CORS(app)
 
 # Main function that calls other functions
 @app.route("/job_details/<int:delivery_ID>", methods=['GET'])
 def view_job_details(delivery_ID):
-    if request.is_json:
-        try:
-            delivery = request.get_json()
-            print("\nReceived an order in JSON:", delivery)
+    try:
+        # do the actual work
+        # 1. get info already stored in database
+        intermediate_result = get_existing_info(delivery_ID)
 
-            # do the actual work
-            # 1. get info already stored in database
-            intermediate_result = get_existing_info(delivery)
+        #print(intermediate_result)
 
-            # 2. get additional info by calling the google maps api
-            final_result=get_more_info(intermediate_result)
+        # 2. get additional info by calling the google distance api
+        final_result=get_more_info(intermediate_result)
 
-            return jsonify(final_result), final_result["code"]
+        return jsonify(final_result), final_result["code"]
 
-        except Exception as e:
-            # Unexpected error in code
+    except Exception as e:
+        # Unexpected error in code
 
-            return jsonify({
-                "code": 500,
-                "message": "delivery_complete.py internal error"
-            }), 500
-
-    # if reached here, not a JSON request.
-    return jsonify({
-        "code": 400,
-        "message": "Invalid JSON input: " + str(request.get_data())
-    }), 400
+        return jsonify({
+            "code": 500,
+            "message": "view_job_details.py internal error"
+        }), 500
 
 
 
-def get_existing_info(delivery):
+def get_existing_info(delivery_ID):
     # 2. Invoke the delivery microservice
     print('\n-----Invoking delivery microservice-----')
-    delivery_result = invoke_http("http:localhost:5000/delivery/" + str(delivery.delivery_ID), method='GET', json=delivery)
+    delivery_result = invoke_http("http://localhost:5000/delivery/" + str(delivery_ID), method='GET')
     print('delivery_result:', delivery_result)
 
     # 3. Check the delivery result; if a failure, send it to the error microservice.
     code = delivery_result["code"]
     if code not in range(200, 300):
         print('\n\n-----Invoking error microservice as delivery fails-----')
-        invoke_http("http:localhost:5007/error", method="POST", json=delivery_result)
+        invoke_http("http://localhost:5007/error", method="POST", json=delivery_result)
         # - reply from the invocation is not used; 
         # continue even if this invocation fails
         print("Delivery status ({:d}) sent to the error microservice:".format(
             code), delivery_result)
 
         return {
-            "code": 500,
+            "code": 501,
             "data": {"delivery_result": delivery_result},
             "message": "Delivery update failure, sent for error handling."
         }
@@ -94,37 +80,42 @@ def get_more_info(delivery):
     api_key = 'AIzaSyCOb2n2zlVPQd7Jd6eGY0HoMO9Md4VLtqU'   
     url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&"
 
-    #get from db
-    origins=delivery.pickup_location
-    destination=delivery.destination
+    #get from json returned in the 1st function
+    origins=delivery['data']['delivery_result']['data']['pickup_location']
+    #print(origins)
+    destination=delivery['data']['delivery_result']['data']['destination']
+    #print(destination)
 
     response = requests.get(url + "origins=" + origins + "&destinations=" + destination + "&key=" + api_key)
     response_json=response.json()
 
+    print("until here ok!")
+
+    print(response_json)
+
     if response_json['status']!='OK':
         print('\n\n-----Invoking error microservice as api call fails-----')
-        invoke_http("http:localhost:5007/error", method="POST", json=response)
+        invoke_http("http://localhost:5007/error", method="POST", json=response)
         # - reply from the invocation is not used; 
         # continue even if this invocation fails
-        print("Details of API Call ({:d}) sent to the error microservice:".format(
-            response_json['status']), response_json)
+        print("Details of API Call ({:d}) sent to the error microservice:".format(response_json['status']), response_json)
 
         return {
-            "code": 500,
+            "code": 400,
             "data": {"api_call_result1": response_json},
             "message": "API Call failure, sent for error handling."
         }
 
-    distance_in_km= round(response_json['rows']['elements']['distance']['value']/1000, 1)
-    duration_in_min= response_json['rows']['elements']['duration']['text']
+    distance_in_km= round(response_json['rows'][0]['elements'][0]['distance']['value']/1000, 1)
+    duration_in_min= response_json['rows'][0]['elements'][0]['duration']['text']
 
-    response_json['distance_in_km']=distance_in_km
-    response_json['duration_in_min']=duration_in_min
+    delivery['distance_in_km']=distance_in_km
+    delivery['duration_in_min']=duration_in_min
 
     return {
         "code": 201,
         "data": {
-            "api_call_result": response_json,
+            "api_call_result": delivery,
         }
     }
 
