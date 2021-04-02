@@ -21,7 +21,6 @@ CORS(app)
 
 error_URL = "http:localhost:5007/error"
 
-
 # Main function that calls other functions
 @app.route("/complete_delivery/<int:delivery_ID>", methods=['POST'])
 def complete_delivery(delivery_ID):
@@ -33,6 +32,8 @@ def complete_delivery(delivery_ID):
             print("\nThe following delivery is complete:", delivery)
 
             #invokes update_delivery_status function
+            #delivery = {'status': 'completed!'}
+            #delivery_ID = 1
             result = update_delivery_status(delivery, delivery_ID)
             return jsonify(result), 200
 
@@ -40,7 +41,7 @@ def complete_delivery(delivery_ID):
         except Exception as e:
             return jsonify({
                 "code": 500,
-                "message": "delivery_complete.py internal error"
+                "message": "oh no ,delivery_complete.py internal error"
             }), 500
 
     # if reached here, not a JSON request.
@@ -49,27 +50,27 @@ def complete_delivery(delivery_ID):
         "message": "Invalid JSON input: " + str(request.get_data())
     }), 400
 
-
 # Update and return new delivery status (delivery MS)
 def update_delivery_status(delivery, delivery_ID):
 
     # 2. Invoke the delivery microservice
     print('\n-----Invoking delivery microservice-----')
-    delivery_result = invoke_http("http://localhost:5000/delivery/" + str(delivery_ID), method='PUT', json=delivery['sTATUS'])
+    delivery_result = invoke_http("http://localhost:5000/delivery/" + str(delivery_ID), method='PUT', json=delivery)
     print('delivery_result:', delivery_result)
+    #{'code': 500, 'message': 'Invalid JSON output from service: http://localhost:5000/delivery/1. Expecting value: line 1 column 1 (char 0)'}
 
     # 3. Check the delivery result; if a failure, send it to the error microservice.
     code = delivery_result["code"]
+    message = json.dumps(delivery_result)
 
     #if code result is not good 
     if code not in range(200, 300):
 
-        # 4. invoking error MS (change to AMQP)
-        print('\n\n-----Invoking error microservice as delivery fails-----')
-        invoke_http(error_URL, method="POST", json=delivery_result)
-        # - reply from the invocation is not used; 
-        # continue even if this invocation fails
-        print("Delivery status ({:d}) sent to the error microservice:".format(
+        print('\n\n-----Publishing the (delivery error) message with routing_key=delivery.error-----')
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="delivery.error", 
+            body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
+
+        print("\nDelivery status ({:d}) published to the RabbitMQ Exchange:".format(
             code), delivery_result)
 
         # 5. Return error 
@@ -84,8 +85,7 @@ def update_delivery_status(delivery, delivery_ID):
     amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="customer.completed.order", body=message)
     amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="driver.completed.order", body=message)
     
-    #if notification got error 
-
+    #if notification got error: assume no error 
 
     # 6. Return updated delivery, notification status 
     return {
