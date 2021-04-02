@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS `driver` (
 -- Dumping data for table `driver
 
 INSERT INTO `driver` (`DID`, `DName`, `DEmail`, `DMobile`, `DTeleID`, `vehicle_no`) VALUES
-(23, 'Tom Smith ', 'tomsmith@hotmail.com', 98765432, 'TS', 'SJD1234A'),
+(23, 'Tom Smith', 'tomsmith@hotmail.com', 98765432, 'TS', 'SJD1234A'),
 (17, 'SSL Monster', 'sslmonster@hotmail.com', 12345678, 'SSLM', 'SJW1234F'),
 (54, 'Hong Seng', 'hs@hotmail.com', 10293847, 'nobluetooth', 'SBS1234A'),
 (66, 'Yew Teng', 'yt@hotmail.com', 10000000, 'bestman', 'SBS5678A');

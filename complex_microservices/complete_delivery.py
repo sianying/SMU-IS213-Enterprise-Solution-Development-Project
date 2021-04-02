@@ -56,7 +56,10 @@ def update_delivery_status(delivery, delivery_ID):
     # 2. Invoke the delivery microservice
     print('\n-----Invoking delivery microservice-----')
     delivery_result = invoke_http("http://localhost:5000/delivery/" + str(delivery_ID), method='PUT', json=delivery)
+    driver_result = invoke_http("http://localhost:5001/driver/" + str(delivery_result['data']['driver_ID']), method='GET')
+    delivery_driver = driver_result['data']['DName']
     print('delivery_result:', delivery_result)
+    # print(delivery_driver)
     #{'code': 500, 'message': 'Invalid JSON output from service: http://localhost:5000/delivery/1. Expecting value: line 1 column 1 (char 0)'}
 
     # 3. Check the delivery result; if a failure, send it to the error microservice.
@@ -67,8 +70,7 @@ def update_delivery_status(delivery, delivery_ID):
     if code not in range(200, 300):
 
         print('\n\n-----Publishing the (delivery error) message with routing_key=delivery.error-----')
-        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="delivery.error", 
-            body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="delivery.error", body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
 
         print("\nDelivery status ({:d}) published to the RabbitMQ Exchange:".format(
             code), delivery_result)
@@ -80,10 +82,16 @@ def update_delivery_status(delivery, delivery_ID):
             "message": "Delivery update failure, sent for error handling."
         }
 
-        #6. Invoke Notification AMQP
-    message = "Delivery Completed!"
-    amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="customer.completed.order", body=message)
-    amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="driver.completed.order", body=message)
+    #6. Invoke Customer Notification AMQP
+    customer_msg = "Delivery Completed! \n\n" + "Delivery Order ID: " + str(delivery_result['data']['delivery_ID']) + " was delivered by " + str(delivery_driver) + " to " + str(delivery_result['data']['receiver_name']) + " on " + str(delivery_result['data']['last_updated'])
+
+    messages = json.dumps({
+            "customer_message": customer_msg          
+        })
+
+    print('\n\n-----Publishing the (customer) message with routing_key=customer.order-----')
+    amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="customer.order", body=messages)
+    amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="driver.order", body=messages)
     
     #if notification got error: assume no error 
 
@@ -99,7 +107,7 @@ def update_delivery_status(delivery, delivery_ID):
 # Execute this program if it is run as a main script (not by 'import')
 if __name__ == "__main__":
     print("This is flask " + os.path.basename(__file__) +
-          " for placing an order...")
+        " for placing an order...")
     app.run(host="0.0.0.0", port=5100, debug=True)
     # Notes for the parameters:
     # - debug=True will reload the program automatically if a change is detected;

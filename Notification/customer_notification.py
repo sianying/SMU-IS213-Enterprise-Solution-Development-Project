@@ -33,7 +33,7 @@ def processOrderLog(order):
 
 def send_telemessage(message):
     print("sending telegram message")
-    telegram_send.send(messages=["hello"])
+    telegram_send.send(messages=[message['customer_message']])
 
 
 if __name__ == "__main__":  # execute this program only if it is run as a script (not by 'import')
