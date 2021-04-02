@@ -43,23 +43,23 @@ def customer_view_details(customer_ID):
 
         final_result=[]
         for delivery in list_of_deliveries:
-            print("")
-            print ("initial delivery")
-            print(delivery)
+            # print("")
+            # print ("initial delivery")
+            # print(delivery)
             delivery['customer_name']= result1[0]
             delivery['customer_mobile']= result1[1]
             delivery['customer_email']= result1[2]
             delivery['customer_teleid']= result1[3]
 
-            print("")
-            print("final delivery")
-            print(delivery)
+            # print("")
+            # print("final delivery")
+            # print(delivery)
             add_driver_details(delivery)
 
             final_result.append(delivery)
 
-        print("")
-        print(final_result)
+        # print("")
+        # print(final_result)
 
         return {
             "code": 202,
@@ -142,7 +142,6 @@ def retrieve_all_deliveries(customer_ID):
 
 def add_driver_details(delivery):
     driver_ID=delivery['driver_ID']
-    print("Reached 3rd function!")
 
      # 2. Invoke the driver microservice
     print('\n-----Invoking driver microservice-----')
@@ -165,7 +164,6 @@ def add_driver_details(delivery):
             "message": "Failed to retrieve driver's details, sent for error handling."
         }
 
-    print("Didn't fail!")
     #adding driver details to be added in the end
     delivery['driver_name']=driver_result['data']['DName']
     delivery['driver_mobile']=driver_result['data']['DMobile']
