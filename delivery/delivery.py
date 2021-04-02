@@ -96,41 +96,46 @@ def find_by_delivery_ID(delivery_ID):
 #3. GET DELIVERY BY DRIVER_ID (DRIVER)
 @app.route("/delivery/driver/<int:driver_ID>")
 def find_by_driver_ID(driver_ID):
-    delivery = Delivery.query.filter_by(driver_ID=driver_ID).first()
-    if delivery:
-        delivery = delivery.json()
+    deliverylist = Delivery.query.filter_by(driver_ID=driver_ID).all()
+    if len(deliverylist):
         return jsonify(
             {
                 "code": 200,
-                #filter columns accord to what driver shud see
-                "data": delivery['pickup_location'],
-                "data1": delivery['timeslot']
+                "data": {
+                    "deliveries": [delivery.json() for delivery in deliverylist]
+                }
             }
         )
+    
     return jsonify(
         {
             "code": 404,
-            "message": "Delivery not found."
+            "message": "There are no deliveries."
         }
     ), 404
+
+    
 
 #for customers to see their deliveries
 #4. GET DELIVERY BY CUSTOMER_ID (CUSTOMER)
 @app.route("/delivery/customer/<int:customer_ID>")
 def find_by_customer_ID(customer_ID):
-    delivery = Delivery.query.filter_by(customer_ID=customer_ID).first()
-    if delivery:
+    deliverylist = Delivery.query.filter_by(customer_ID=customer_ID).all()
+    print(deliverylist)
+    if len(deliverylist):
         return jsonify(
             {
                 "code": 200,
-                #filter columns accord to what customer shud see
-                "data": delivery.json()
+                "data": {
+                    "deliveries": [delivery.json() for delivery in deliverylist]
+                }
             }
         )
+    
     return jsonify(
         {
             "code": 404,
-            "message": "Delivery not found."
+            "message": "There are no deliveries."
         }
     ), 404
 
