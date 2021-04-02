@@ -32,7 +32,7 @@ USE `customer`;
 
 DROP TABLE IF EXISTS `customer`;
 CREATE TABLE IF NOT EXISTS `customer` (
-  `CID` int(7) NOT NULL,
+  `CID` int NOT NULL,
   `CName` varchar(64) NOT NULL,
   `CEmail` varchar(128) NOT NULL,
   `CMobile` int(8) NOT NULL,
@@ -44,9 +44,9 @@ CREATE TABLE IF NOT EXISTS `customer` (
 -- Dumping data for table `customer
 
 INSERT INTO `customer` (`CID`, `CName`, `CEmail`, `CMobile`, `CTeleID`) VALUES
-('0000000', 'Jing Wei ', 'jingwei@hotmail.com', '91231234', NULL),
-('0000001', 'Sian Ying', 'sygoh@hotmail.com', '81234567', 'sysy'),
-('0000002', 'Li Yin', 'lly@hotmail.com', '91234567', 'lly');
+(12345678, 'Jing Wei ', 'jingwei@hotmail.com', '91231234', NULL),
+(23456789, 'Sian Ying', 'sygoh@hotmail.com', '81234567', 'sysy'),
+(11112222, 'Li Yin', 'lly@hotmail.com', '91234567', 'lly');
 -- ('Understanding People', '9781349471231', '99.40', 25),
 -- ('Happy in Workplace', '9781434474234', '94.00', 1),
 -- ('PHP Soup', '9781442374221', '20.50', 2),
