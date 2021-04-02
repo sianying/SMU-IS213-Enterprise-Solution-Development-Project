@@ -183,8 +183,7 @@ def timeslot_query(delivery_date, timeslot):
                     "message": "Invalid timeslot provided"
                 }
             ), 400
-    
-    return 'noob'
+
 
 # 5. get schedule by timeslots, input must be a list!  example-> timeslots=[8_to_10,10_to_12]
 # @app.route('/schedule?timeslots=<string:timeslots>', methods=['GET'])
