@@ -8,15 +8,17 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
-import os
+import os, sys
 import requests
-
 from invokes import invoke_http
+
+import amqp_setup
+import pika
+import json
 
 app = Flask(__name__)
 CORS(app)
 
-delivery_URL = "http://localhost:5000/delivery/<int:delivery_ID>"
 error_URL = "http:localhost:5007/error"
 
 
@@ -58,9 +60,11 @@ def update_delivery_status(delivery, delivery_ID):
 
     # 3. Check the delivery result; if a failure, send it to the error microservice.
     code = delivery_result["code"]
+
+    #if code result is not good 
     if code not in range(200, 300):
 
-        # 4. invoking error MS 
+        # 4. invoking error MS (change to AMQP)
         print('\n\n-----Invoking error microservice as delivery fails-----')
         invoke_http(error_URL, method="POST", json=delivery_result)
         # - reply from the invocation is not used; 
