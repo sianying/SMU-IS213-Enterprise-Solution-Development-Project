@@ -98,11 +98,13 @@ def find_by_delivery_ID(delivery_ID):
 def find_by_driver_ID(driver_ID):
     delivery = Delivery.query.filter_by(driver_ID=driver_ID).first()
     if delivery:
+        delivery = delivery.json()
         return jsonify(
             {
                 "code": 200,
                 #filter columns accord to what driver shud see
-                "data": delivery.json()
+                "data": delivery['pickup_location'],
+                "data1": delivery['timeslot']
             }
         )
     return jsonify(
