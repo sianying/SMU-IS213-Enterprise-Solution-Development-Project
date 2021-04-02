@@ -32,7 +32,7 @@ USE `driver`;
 
 DROP TABLE IF EXISTS `driver`;
 CREATE TABLE IF NOT EXISTS `driver` (
-  `DID` int(7) NOT NULL,
+  `DID` int(2) NOT NULL,
   `DName` varchar(64) NOT NULL,
   `DEmail` varchar(128) NOT NULL,
   `DMobile` int(8) NOT NULL,
@@ -45,9 +45,10 @@ CREATE TABLE IF NOT EXISTS `driver` (
 -- Dumping data for table `driver
 
 INSERT INTO `driver` (`DID`, `DName`, `DEmail`, `DMobile`, `DTeleID`, `vehicle_no`) VALUES
-('0000000', 'Tom Smith ', 'tomsmith@hotmail.com', '98765432', 'TS', 'SJD1234A'),
-('0000001', 'SSL Monster', 'sslmonster@hotmail.com', '12345678', 'SSLM', 'SJW1234F'),
-('0000002', 'Hong Seng', 'hs@hotmail.com', '10293847', 'nobluetooth', 'SBS1234A');
+(23, 'Tom Smith ', 'tomsmith@hotmail.com', 98765432, 'TS', 'SJD1234A'),
+(17, 'SSL Monster', 'sslmonster@hotmail.com', 12345678, 'SSLM', 'SJW1234F'),
+(54, 'Hong Seng', 'hs@hotmail.com', 10293847, 'nobluetooth', 'SBS1234A'),
+(66, 'Yew Teng', 'yt@hotmail.com', 10000000, 'bestman', 'SBS5678A');
 -- ('Understanding People', '9781349471231', '99.40', 25),
 -- ('Happy in Workplace', '9781434474234', '94.00', 1),
 -- ('PHP Soup', '9781442374221', '20.50', 2),
