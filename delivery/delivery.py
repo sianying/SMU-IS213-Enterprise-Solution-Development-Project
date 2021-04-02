@@ -176,7 +176,10 @@ def create_delivery():
 @app.route("/delivery/<int:delivery_ID>", methods=['PUT'])
 def update_delivery(delivery_ID):
     try:
+        #based on given delivery ID, gets the first delivery that appears
         delivery = Delivery.query.filter_by(delivery_ID=delivery_ID).first()
+
+        #return msg if delivery not found 
         if not delivery:
             return jsonify(
                 {
@@ -188,11 +191,9 @@ def update_delivery(delivery_ID):
                 }
             ), 404
 
-        # update status and timestamp
+        # Updates status and Timestamp (based on line of code above)
         data = request.get_json()
         if data['status']:
-            #i feel like need update timestamp also, but idk whether it's automatic
-            #they didnt update timestamp in the simple order microservice
             delivery.status = data['status']
             db.session.commit()
             return jsonify(
