@@ -33,6 +33,11 @@ channel.queue_declare(queue=queue_name, durable=True)
 
 channel.queue_bind(exchange=exchangename, queue=queue_name, routing_key='driver.#') 
 
+queue_name = 'Error'
+channel.queue_declare(queue=queue_name, durable=True)
+
+channel.queue_bind(exchange=exchangename, queue=queue_name, routing_key='*.error') 
+
 
 """
 This function in this module sets up a connection and a channel to a local AMQP broker,
