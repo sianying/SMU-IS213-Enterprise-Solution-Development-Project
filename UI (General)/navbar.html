@@ -1,5 +1,3 @@
-<!-- new -->
-
 <!doctype html>
 <html lang="en">
   <head>
@@ -10,14 +8,71 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-    <!-- External CSS styling -->
-    <link rel="stylesheet" href="../css/navbar_c.css">
-
-    <title>Customer Homepage</title>
-
+    <title>navbar</title>
   </head>
+  <body>
+    
+    <!--Import Rubik font-->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Rubik&display=swap');
+        /* to import rubik 
+        element{
+            font-family: 'Rubik', sans-serif;
+        }
+        */
 
-<body>
+      @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+      /* to import roboto
+
+      element{
+          font-family: 'Roboto', sans-serif;
+      }
+      */
+
+      @import url('https://fonts.googleapis.com/css2?family=Patua+One&display=swap');
+      /* to import patua one
+
+      element{
+          font-family: 'Patua One', cursive;
+      } 
+      */
+
+      .nav-item{
+         margin-right:10%;
+      }
+
+      .navbar{
+        background-color:#EEE2CC;
+      }
+
+    .btn {
+    transition-duration: 0.4s;
+    }
+
+    .btn:hover {
+    background-color: #9E8A81;
+    color: white;
+    border: 1px solid #9E8A81;
+    }
+
+    .btn{background-color: #1C00ff00; 
+        width: 8em; 
+        height: 40px;
+        box-sizing: border-box; 
+        border-radius: 20px; 
+        color: #9E8A81;
+        font-family: 'Roboto', sans-serif; 
+        margin-left:18%; 
+        position:sticky; 
+        border: 1px solid #9E8A81; 
+        padding-left:3%; 
+        padding-right:3%
+    }
+    
+    body{
+        background-color: #f7f0e6;
+    }
+    </style>
 
     <!--Bootstrap JS-->
 
@@ -28,7 +83,7 @@
            
     <nav class="navbar navbar-expand-lg navbar-light" style="background-color:#EEE2CC; padding: 5px;">
         <div class = 'container-fluid' style="padding: 0;">
-        <a class="navbar-brand" href="#"><img src="../images/logo.jpg" width="80" height="40" style='margin-left:15%; margin-top:0px;margin-bottom:0px;'></a>
+        <a class="navbar-brand" href="#"><img src="images/logo.jpg" width="80" height="40" style='margin-left:15%; margin-top:0px;margin-bottom:0px;'></a>
             <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
                 <ul class="navbar-nav" style="margin-left: 13%; ">
                 
@@ -47,13 +102,15 @@
                 <li class = "nav-item">
                     <a class = 'nav-link text-nowrap' href='profile-page'>Profile Page</a>
                 </li>
-
                 <button class='btn btn-outline-primary' >Log In</button>
             
-                </ul>
-            </div> 
+                
+            </div>
+         </ul>  
         </div>
-    </nav>
+    
+        </nav>
 
-</body>
+</div>
+  </body>
 </html>
