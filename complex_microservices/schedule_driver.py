@@ -12,7 +12,7 @@ import datetime
 import requests
 from invokes import invoke_http
 
-#import amqp_setup
+import amqp_setup
 import pika
 import json
 
@@ -78,12 +78,17 @@ def get_available_drivers(delivery_date, timeslot):
     # 3. Check the delivery result; if a failure, send it to the error microservice.
     code = schedule_result["code"]
     if code not in range(200, 300):
-        print('\n\n-----Invoking error microservice as delivery fails-----')
-        invoke_http("http://localhost:5007/error", method="POST", json=schedule_result)
+        # print('\n\n-----Invoking error microservice as delivery fails-----')
+        # invoke_http("http://localhost:5007/error", method="POST", json=schedule_result)
+
+        print('\n\n-----Publishing the (schedule error) message with routing_key=scheduler.schedule.error-----')
+        message=json.dumps(schedule_result)
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="scheduler.schedule.error", 
+            body=message, properties=pika.BasicProperties(delivery_mode = 2))
+
         # - reply from the invocation is not used; 
         # continue even if this invocation fails
-        print("Delivery status ({:d}) sent to the error microservice:".format(
-            code), schedule_result)
+        print("Delivery status ({:d}) published to the RabbitMQ Exchange:".format(code), schedule_result)
 
         return {
             "code": 502,
