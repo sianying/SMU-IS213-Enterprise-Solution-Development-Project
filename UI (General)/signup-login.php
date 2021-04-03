@@ -256,7 +256,7 @@
                             <form method="post" action="#put into some registering processing page" >
                                 <h2 class="form-header">Sign Up</h2>
                                 <input type="text" name="fullname" id = 'fullnameSU' placeholder="Enter Full Name"><i class="fa fa-user"></i></input>
-                                <input type="text" name="username" id = 'usernameSU' placeholder="Username"><i class="far fa-address-card"></i></input>
+                                <input type="text" name="handle" id = 'handleSU' placeholder="Enter Telegram Handle"><i class="far fa-address-card"></i></input>
                                 <input type="text" name="email" id = 'emailSU' placeholder="Email"><i class="fa fa-envelope-o"></i></input>
                                 <input type="password" name="password" id='passwordSU' placeholder="Password"><i class="fa fa-lock"></i></input>
                                 <button type="submit" class="form-btn " style="margin-left: 10%;" onclick = "signUpValidate()" >Sign Up</button>
