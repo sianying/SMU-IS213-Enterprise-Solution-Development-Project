@@ -53,6 +53,9 @@
         
       body{
         font-family: 'Roboto', sans-serif;
+        background-image: url('images/bg-img.JPG');
+        background-position: center;
+        background-attachment: fixed;
       }
         
         button:hover {
@@ -281,13 +284,13 @@
                 <!-- <div class='col-sm-4' style='left: 60%; font-family: Patua One;font-style: normal; font-weight: normal; font-size: 60px; line-height: 73px; text-align: center; color:#CEA68C;'>
                     "Greatness meets Speed"
                 </div> -->
-                <div class="col-sm-4" style='position: absolute; top: 25%; left:60%; width: 200px;  font-family: Patua One;font-style: normal; font-weight: normal; font-size: 60px; line-height: 73px; text-align: center; color:#CEA68C;'>
+                <!-- <div class="col-sm-4" style='position: absolute; top: 25%; left:60%; width: 200px;  font-family: Patua One;font-style: normal; font-weight: normal; font-size: 60px; line-height: 73px; text-align: center; color:#CEA68C;'>
                 <div>"Greatness meets Speed"</div>
                 </div>
                 <div class='col-sm-2'>
                     <img src="images/lines.jpg" style=' position:absolute; width: 177px; height: 300px; left: 83%; top: 39.5%; z-index:-1;'>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
     <script>
