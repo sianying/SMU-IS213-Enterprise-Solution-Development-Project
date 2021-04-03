@@ -32,7 +32,7 @@ USE `customer`;
 
 DROP TABLE IF EXISTS `customer`;
 CREATE TABLE IF NOT EXISTS `customer` (
-  `CID` int NOT NULL,
+  `CID` int NOT NULL AUTO_INCREMENT,
   `CName` varchar(64) NOT NULL,
   `CEmail` varchar(128) NOT NULL,
   `CMobile` int(8) NOT NULL,
