@@ -66,7 +66,7 @@
         .wrapper {
             background: rgba(0, 0, 0, 0.6);
             position: relative;
-            width: 750px;
+            width: 600px;
             height: 250px;
             margin: 0 auto;
             margin-top: 70px;
@@ -91,10 +91,7 @@
             color: #fafafa;
             letter-spacing: 1px;
             text-align: center;
-        }
-        
-        .bh {
-            font-size: 30px;
+            font-size: 27.5px;
             font-weight: 500;
         }
         
@@ -106,16 +103,18 @@
         
         
         .background .left button {
-            left: 150px;
+            left: 15%;
+            margin-top:20px;
         }
         
         .background .right button {
             left: 550px;
+            margin-top:
         }
         
         .form-container {
             position: absolute;
-            width: 375px;
+            width: 305px;
             height: 400px;
             background-color:#EEE2CC;
             top: -28%;
@@ -162,7 +161,6 @@
             color: #9E8A81;
             -webkit-transition: .4s all;
             transition: .4s all;
-            margin-left:20%;
             
         }
 
@@ -181,7 +179,7 @@
         
         .form-container input {
             margin-top: 20px;
-            width: 80%;
+            width: 70%;
             height: 30px;
             border: 0;
             background-color:#FCF9F2;
@@ -223,6 +221,12 @@
             background-size: cover; 
         
         }
+
+        .g-recaptcha {
+            transform:scale(0.77);
+            transform-origin:0 0;
+        }
+
         
     </style>
 </head>
@@ -230,59 +234,60 @@
 <body>
 
     <div class="container" id = 'background'>
-    
-        <div class="col-sm-12" style = 'float: left; margin-top: 9%'>
-            <div class="wrapper" style = 'background-color: #9E8A81; border-radius:0px 10px 10px 0px;' >
-            
-            
-                <div class="background">
-                
-                    <div class="left" style = 'text-align: center'>
-                        <h2 class="bh" style = 'margin-top: 20%' ></b>Don't have an account?</b></h2>
-                        <button class="back-btn signup-but" style='margin-bottom:3%;'>Sign Up</button>
-                    </div>
-
-                    <div class="right">
-                        <h2 class="bh" style = 'margin-top: 20%; '>Already Registered?</h2>
-                        <button class="back-btn login-but" style='margin-bottom:3%; left:70%'>Log In</button>
-                    </div>
-                </div>
-                <div class="form-container">
-                    <div class="sign-up">
-                        <form method="post" action="#put into some registering processing page" >
-                            <h2 class="form-header">Sign Up</h2>
-                            <input type="text" name="fullname" id = 'fullnameSU' placeholder="Enter Full Name"><i class="fa fa-user"></i></input>
-                            <input type="text" name="username" id = 'usernameSU' placeholder="Username"><i class="far fa-address-card"></i></input>
-                            <input type="text" name="email" id = 'emailSU' placeholder="Email"><i class="fa fa-envelope-o"></i></input>
-                            <input type="password" name="password" id='passwordSU' placeholder="Password"><i class="fa fa-lock"></i></input>
-                            <button type="submit" class="form-btn " style="margin-left: 20%;" onclick = "signUpValidate()" >Sign Up</button>
-                            <div id = "errorSU"></div>
-                        </form>
-                    </div>
-                    <div class="my-5">
-                        <div class="login hide ">
-                            <form method="post"  action="../Main/process_login.php" >
-                            <h2 class="form-header">Log In</h2>  
-                            <input type="text" name="email" id = 'emailLI' placeholder="Email"><i class="fa fa-envelope-o"></i></input>
-                            
-                            <input type="password" name="password" id = 'passwordLI' placeholder="Password"><i class="fa fa-lock"></i></input>
-                        
-                            <div class="g-recaptcha" style="margin-top: 10%;" data-sitekey="6Lf2x-IZAAAAALMzDGQ3989jbM0-iRozvWHqGvb9"></div>
-                            <br/>
-                            <div id = 'errorLI'></div>
-                            <button type = 'submit' class="form-btn text-center" style="margin-left: 20%;" onclick='logInValidate()'>Log In</button>
-                            </form>
+        <div class='row'>
+            <div class="col-sm-6" style = 'float: left; margin-top: 4.5%'>
+                <div class="wrapper" style = 'background-color: #9E8A81; border-radius:0px 10px 10px 0px;' >
+                    <div class="background">
+                        <div class="left" style = 'text-align: center'>
+                            <h2 class="bh" style = 'margin-top: 20%' ></b>Don't have an account?</b></h2>
+                            <button class="back-btn signup-but" style='margin-bottom:3%;'>Sign Up</button>
                         </div>
 
+                        <div class="right">
+                            <h2 class="bh" style = 'margin-top: 20%; '>Already Registered?</h2>
+                            <button class="back-btn login-but" style='margin-bottom:3%; left:67%'>Log In</button>
+                        </div>
                     </div>
-                
+                    <div class="form-container">
+                        <div class="sign-up">
+                            <form method="post" action="#put into some registering processing page" >
+                                <h2 class="form-header">Sign Up</h2>
+                                <input type="text" name="fullname" id = 'fullnameSU' placeholder="Enter Full Name"><i class="fa fa-user"></i></input>
+                                <input type="text" name="username" id = 'usernameSU' placeholder="Username"><i class="far fa-address-card"></i></input>
+                                <input type="text" name="email" id = 'emailSU' placeholder="Email"><i class="fa fa-envelope-o"></i></input>
+                                <input type="password" name="password" id='passwordSU' placeholder="Password"><i class="fa fa-lock"></i></input>
+                                <button type="submit" class="form-btn " style="margin-left: 10%;" onclick = "signUpValidate()" >Sign Up</button>
+                                <div id = "errorSU"></div>
+                            </form>
+                        </div>
+                        <div class="my-5">
+                            <div class="login hide ">
+                                <form method="post"  action="../Main/process_login.php" >
+                                <h2 class="form-header">Log In</h2>  
+                                <input type="text" name="email" id = 'emailLI' placeholder="Email"><i class="fa fa-envelope-o"></i></input>
+                                
+                                <input type="password" name="password" id = 'passwordLI' placeholder="Password"><i class="fa fa-lock"></i></input>
+                            
+                                <div class="g-recaptcha" style="margin-top: 10%;" data-sitekey="6Lf2x-IZAAAAALMzDGQ3989jbM0-iRozvWHqGvb9"></div>
+                                <br/>
+                                <div id = 'errorLI'></div>
+                                <button type = 'submit' class="form-btn text-center" style="margin-left: 20%;" onclick='logInValidate()'>Log In</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+                <!-- <div class='col-sm-4' style='left: 60%; font-family: Patua One;font-style: normal; font-weight: normal; font-size: 60px; line-height: 73px; text-align: center; color:#CEA68C;'>
+                    "Greatness meets Speed"
+                </div> -->
+                <div class="col-sm-4" style='position: absolute; top: 25%; left:60%; width: 200px;  font-family: Patua One;font-style: normal; font-weight: normal; font-size: 60px; line-height: 73px; text-align: center; color:#CEA68C;'>
+                <div>"Greatness meets Speed"</div>
+                </div>
+                <div class='col-sm-2'>
+                    <img src="images/lines.jpg" style=' position:absolute; width: 177px; height: 300px; left: 83%; top: 39.5%; z-index:-1;'>
                 </div>
             </div>
-            <div class='container' style='position: absolute; width: 388px; height: 146px; left: 60%; top: 30%; font-family: Patua One;font-style: normal; font-weight: normal; font-size: 75px; line-height: 73px; text-align: center; color:#CEA68C;'>
-                "Greatness meets Speed"
-            </div>
-
-            <img src="images/lines.jpg" style='position: absolute; width: 177px; height: 366px; left: 88.5%; top: 51%;'>
         </div>
     </div>
     <script>
@@ -347,7 +352,7 @@
                 $('.sign-up').fadeOut('slow').css('display', 'none');
 
                 $('.form-container').animate({
-                    left: '400px'
+                    left: '300px'
                 }, 'slow');
             });
         });
