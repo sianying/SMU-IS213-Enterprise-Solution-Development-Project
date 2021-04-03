@@ -26,6 +26,10 @@
       @import url('https://fonts.googleapis.com/css2?family=Patua+One&display=swap');
     </style>
 
+    <style>
+
+    </style>
+
     <title>Landing Page</title>
   </head>
   <body>
@@ -67,26 +71,45 @@
     </div> -->
 
     <div class = 'container-fluid'>
-        <div class="jumbotron  col-sm-5 text-nowrap">
+      <div class = 'container-fluid'>
+        <div class="dropdown" style="position:absolute; float:right; top: 4%; left:78%;">
+            <button class="dropbtn" style="background-color: #1C00ff00; width: 100px; height: 40px; border: 1px solid #FFFFFF; border-radius: 20px;color: white;font-family: 'Roboto', sans-serif;" >Log In</button>
+            <div class="dropdown-content" style="border-radius: 10px;">
+              <a href="#">Driver</a>
+              <a href="#">Customer</a>
+            </div>
+          </div>
+
+        <div class="dropdown" style="position: absolute; float:right; top: 4%; left:87%;">
+            <button class="dropbtn" style="background-color: white; width: 100px; height: 40px;border: 1px solid #FFFFFF;box-sizing: border-box; border-radius: 20px;color: black;font-family: 'Roboto', sans-serif;" >Sign Up</button>
+            <div class="dropdown-content" style="border-radius: 10px;">
+              <a href="#">Driver</a>
+              <a href="#">Customer</a>
+            </div>
+          </div>
+    </div>
+    <div class = 'container-fluid' style="padding-top: 10%;">
+        <div class="jumbotron  col-sm-4 text-nowrap">
         <h1 style="font-size:45px; font-family: 'Patua One', cursive; margin-bottom: 0; color: black;">Always on the move.</h1>
         <form action="#searchbar-results" method="POST">
             <div class="input-group search" style="margin: 0; padding: 0; margin-top: 5px; font-family: 'Rubik', sans-serif;">
-            <input type="text" class="form-control searchTerm" id="inlineFormInputGroup" placeholder="Enter your delivery ID" name ='searchterm' style='
+            <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="Enter your delivery ID" name ='searchterm' style='
             border:1px solid white;
             border-right: none;
-            padding: 5px;
+            padding-left: 20px;
             height: 40px;
             border-radius: 20px 0px 0px 20px;
             outline: none;
-            background-color: #1C00ff00;'
+            background-color: #1C00ff00;
+            color:white'
             >
                 <div class="input-group-prepend">
-                <button class="btn" type="submit" value="Submit" style="    width: 125px;
+                <button class="btn" type="submit" value="Submit" style="    width: 100px;
                 height: 40px;
                 border: 1px solid white;
                 background: #F7F0E6;
                 text-align: center;
-                color: black;
+                color: gray;
                 border-radius: 0 20px 20px 0;
                 cursor: pointer;
                 font-size: 20px;" id = 'searchButton'>Search</button>
