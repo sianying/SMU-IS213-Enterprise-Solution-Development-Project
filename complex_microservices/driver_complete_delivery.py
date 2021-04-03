@@ -55,17 +55,13 @@ def update_delivery_status(delivery, delivery_ID):
 
     # 2. Invoke the delivery microservice
     print('\n-----Invoking delivery microservice-----')
-<<<<<<< HEAD
+
     delivery_result = invoke_http("http://localhost:5000/delivery/" + str(delivery_ID), method='PUT', json=delivery)
     driver_result = invoke_http("http://localhost:5001/driver/" + str(delivery_result['data']['driver_ID']), method='GET')
     delivery_driver = driver_result['data']['DName']
     print('delivery_result:', delivery_result)
     # print(delivery_driver)
-    #{'code': 500, 'message': 'Invalid JSON output from service: http://localhost:5000/delivery/1. Expecting value: line 1 column 1 (char 0)'}
-=======
-    delivery_result = invoke_http("http://localhost:5000/delivery/1", method='PUT', json=delivery)
-    print('delivery_result:', delivery_result)
->>>>>>> 9bfff91921d669f9753e4854333c6ac311582b84
+
 
     # 3. Check the delivery result; if a failure, send it to the error microservice.
     code = delivery_result["code"]
@@ -88,15 +84,15 @@ def update_delivery_status(delivery, delivery_ID):
         }
 
     #6. Invoke Customer Notification AMQP
-    customer_msg = "Delivery Completed! \n\n" + "Delivery Order ID: " + str(delivery_result['data']['delivery_ID']) + " was delivered by " + str(delivery_driver) + " to " + str(delivery_result['data']['receiver_name']) + " on " + str(delivery_result['data']['last_updated'])
+    customer_and_driver_msg = "Delivery Completed! \n\n" + "Delivery Order ID: " + str(delivery_result['data']['delivery_ID']) + " was delivered by " + str(delivery_driver) + " to " + str(delivery_result['data']['receiver_name']) + " on " + str(delivery_result['data']['last_updated'])
 
     messages = json.dumps({
-            "customer_message": customer_msg          
+            "customer_message": customer_and_driver_msg          
         })
 
     print('\n\n-----Publishing the (customer) message with routing_key=customer.order-----')
-    amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="customer.order", body=messages)
-    amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="driver.order", body=messages)
+    amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="customer.CompleteDelivery", body=messages)
+    amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="driver.CompleteDelivery", body=messages)
     
     #if notification got error: assume no error 
 
