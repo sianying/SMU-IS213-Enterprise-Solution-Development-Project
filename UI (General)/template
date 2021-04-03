@@ -14,16 +14,33 @@
     <!--Import Rubik font-->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Rubik&display=swap');
+        /* to import rubik 
+        element{
+            font-family: 'Rubik', sans-serif;
+        }
+        */
     </style>
 
     <!--Import Roboto font-->
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+      /* to import roboto
+
+      element{
+          font-family: 'Roboto', sans-serif;
+      }
+      */
     </style>
 
     <!--Import Patua One font-->
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Patua+One&display=swap');
+      /* to import patua one
+
+      element{
+          font-family: 'Patua One', cursive;
+      } 
+      */
     </style>
 
     <title>Hello, world!</title>
