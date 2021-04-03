@@ -26,7 +26,112 @@
         </div>
 
         <form>
-            <div class="form-group">
+
+            <div class="container">
+                <!-- Delivery Item -->
+                <div class="row">
+                    <div class="col-md">
+                        <div class="form-group">
+                            <label for="deliveryItem">Delivery Item</label>
+                            <input type="text" class="form-control" id="deliveryItem" placeholder="Enter Delivery Item" value="">
+                        </div>
+                    </div>
+                </div>
+                <!-- Description -->
+                <div class="row">
+                    <div class="col-md">
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <input type="text" class="form-control" id="description" placeholder="Delivery Item Description" value="">
+                        </div>
+                    </div> 
+                </div>
+                <!-- Size -->
+                <div class="row">
+                    <div class="col-md">
+                        <div class="form-group ">
+                            <label for="size">Size</label>
+                            <select id="size" class="form-control">
+                                <option selected>Small</option>
+                                <option>Medium</option>
+                                <option>Large</option>
+                            </select>
+                        </div>
+                    </div>
+                <!-- Product Weight -->
+                    <div class="col-md">
+                        <div class="form-group">
+                            <label for="weight">Product weight</label>
+                            <div class="input-group mb-3">
+                                <input type="number" class="form-control" id="weight" placeholder="Please input the product weight" value="">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="kg">kg</span>
+                                </div>
+                            </div>
+                        </div> 
+                    </div>
+
+                </div>
+        
+                <!-- Origin Address -->
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label for="origin">Origin Address</label>
+                            <div class="input-group mb-3">
+                                <!-- <div class="input-group-prepend">
+                                    <span class="input-group-text" id="origin">Address Line</span>
+                                </div> -->
+                                <input type="text" class="form-control" id="origin" placeholder="" value="">
+                            </div>
+                        </div> 
+                    </div> 
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="origin">asdf</label>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="origin">Postal code</span>
+                                </div>
+                                <input type="number" class="form-control" id="originPostalCode" placeholder="" value="">
+                            </div>
+                        </div> 
+                    </div> 
+                </div>
+                <!-- Destination Address -->
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label for="destination">Destination Address</label>
+                            <div class="input-group mb-3">
+                                <!-- <div class="input-group-prepend">
+                                    <span class="input-group-text" id="destination">Address Line</span>
+                                </div> -->
+                                <input type="text" class="form-control" id="destination" placeholder="" value="">
+                            </div>
+                        </div> 
+                    </div> 
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="destination">asdf</label>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="destination">Postal code</span>
+                                </div>
+                                <input type="number" class="form-control" id="destinationPostalCode" placeholder="" value="">
+                            </div>
+                        </div> 
+                    </div> 
+                </div>
+                <br>
+                <button type="button" class="btn btn-primary mb-3" id="checkout-button">Checkout</button>
+            </form>
+                
+            </div>
+
+
+
+            <!-- <div class="form-group">
                 <label for="deliveryItem">Delivery Item</label>
                 <input type="text" class="form-control" id="deliveryItem" placeholder="Enter Delivery Item" value="">
             </div>
@@ -42,14 +147,7 @@
                     <option>Large</option>
                 </select>
             </div>
-            <!-- <div class="form-group ">
-                <label for="quantity">Quantity</label>
-                <select id="quantity" class="form-control">
-                    <option selected>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                </select>
-            </div> -->
+
             <div class="form-group">
                 <label for="weight">Product weight</label>
                 <div class="input-group mb-3">
@@ -59,24 +157,50 @@
                     </div>
                 </div>
             </div> 
-            <!-- <button type="submit" class="btn btn-primary">Checkout</button> -->
-        </form>
-        <button type="button" class="btn btn-primary" id="checkout-button">Checkout</button>
 
+            <div class="form-group">
+                <label for="weight">Origin Address</label>
+                <div class="input-group mb-3">
+                    <input type="number" class="form-control" id="weight" placeholder="Please input the product weight" value="">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="kg">kg</span>
+                    </div>
+                </div>
+            </div>  -->
+            <!-- <button type="submit" class="btn btn-primary">Checkout</button> -->
+        
+        <!-- <button type="button" class="btn btn-primary" id="checkout-button">Checkout</button>
+        </form> -->
     </div>
 
 
 <script>
+    $("#checkout-button").click(function() {
+        var description = $("#description").val();
+        var origin = $("#origin").val();
+        var originPostalCode = $("#originPostalCode").val();
+        var destination = $("#destination").val();
+        var destinationPostalCode = $("#destinationPostalCode").val();
+        json = JSON.stringify({
+            "description": description,
+            "origin": origin,
+            "originPostalCode": originPostalCode,
+            "destination": destination,
+            "destinationPostalCode": destinationPostalCode,
+        });
+        console.log(json);
+        sessionStorage.setItem("delivery_data", json);
+    });
+
 
     var stripe = Stripe('pk_test_51IX1pfEh2v7rRS8AqOB3PG6BLj1qQh8g4V0oI5GLProGPMmJRG60qzCXGH0297oQKyRIblMPKhFPlQEshp993pBN00CvpCrI7z');
-
-    var checkoutButton = document.getElementById("checkout-button");
-    checkoutButton.addEventListener("click", function () {
+    
+    $("#checkout-button").click(function() {
+    // var checkoutButton = document.getElementById("checkout-button");
+    // checkoutButton.addEventListener("click", function () {
         var deliveryItem = $("#deliveryItem").val();
-        var description = $("#description").val();
         var size = $("#size").val();
         var weight = $("#weight").val();
-        // var quantity = $("#quantity").val();
 
         fetch("http://localhost:4242/create-checkout-session", {
             method: "POST",
