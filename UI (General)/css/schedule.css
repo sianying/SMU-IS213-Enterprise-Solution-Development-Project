@@ -1,0 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik&display=swap');
+element{
+    font-family: 'Rubik', sans-serif;
+}
+
+body{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    background-color: #F7F0E6;
+}
+
+li,a,button {
+    font-family: "Rubik", sans-serif;
+    font-size : 16px;
+    font-weight: 400;
+    color: #999999;
+    text-decoration: none;
+}
+
+header{
+    display:flex;
+    justify-content: space-between;
+    align-items:center;
+    padding: 5px 5%;
+    background-color: #EEE2CC;
+}
+
+.logo{
+    cursor: pointer;
+}
+
+.nav__links{
+    list-style: none;
+}
+
+.nav__links li {
+    display: inline-block;
+    padding: 0px 50px;
+    margin-top: 10px;
+
+}
+
+.nav__links li a{
+    transition: all 0.3s ease 0s;
+}
+
+.nav__links li a:hover{
+    color: #CEA68C
+}
+
+.btn {
+    border: 2px solid #9E8A81;
+    background-color: #EEE2CC;
+    color: #9E8A81;
+    font-size: 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    width: 100px;
+    height: 40px;
+    box-sizing: border-box;
+    transition-duration: 0.4s;
+}
+
+.btn:hover {
+    background-color: #9E8A81;
+    color: white;
+    border: 1px solid #9E8A81;
+}
+
+#scheduleheader{
+    font-size: 50px; 
+    font-family: 'Patua One', cursive;
+    color: #c19c84;
+}
+
+#delivery{
+    font-size: 20px; 
+    font-family: 'Rubik', sans-serif;
+    color: #808080;
+}
