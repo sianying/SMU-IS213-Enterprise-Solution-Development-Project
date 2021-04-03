@@ -55,11 +55,11 @@ def schedule_driver(delivery_date, timeslot):
     if query_result['code'] not in range (200,300):
         return query_result
 
-    print("next")
-    print(query_result)
+    #print("next")
+    #print(query_result)
     selected_driver= choose_best(query_result)
 
-    print(selected_driver)
+    #print(selected_driver)
     return {
         "code": 200,
         "data": selected_driver        
@@ -101,13 +101,13 @@ def get_available_drivers(delivery_date, timeslot):
 
 def choose_best(query_result):
     list_of_schedules= query_result['data']['schedule_result']['data']['schedules']
-    print("reached!")
-    print(list_of_schedules)
+    #print("reached!")
+    #print(list_of_schedules)
 
     mydict={}
     for i in range(len(list_of_schedules)):
         current_schedule=list_of_schedules[i]
-        print(current_schedule)
+        #print(current_schedule)
 
         counter=0
         timeslots_to_check=['t_8_to_10', 't_10_to_12', 't_12_to_2', 't_2_to_4', 't_4_to_6']
@@ -117,7 +117,7 @@ def choose_best(query_result):
         
         mydict[i]=counter
     
-    print(mydict)
+    #print(mydict)
 
     max_value=max(mydict.values())
 

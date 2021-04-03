@@ -47,10 +47,13 @@ CREATE TABLE IF NOT EXISTS `schedule` (
 -- Dumping data for table `order`
 --
 
-INSERT INTO `schedule` (`SID`, `driver_ID`, `delivery_date`, `t_8_to_10`, `t_10_to_12`, `t_12_to_2`, `t_2_to_4`, `t_4_to_6`) VALUES
+INSERT INTO `schedule` (`SID`, `driver_ID`, `delivery_date`, `8_to_10`, `10_to_12`, `12_to_2`, `2_to_4`, `4_to_6`) VALUES
 (1, 23, '2020-06-12', 0 , 0, 0, 1, 0),
-(2, 17, '2020-06-17', 0, 0, 1, 0, 0);
-
+(2, 17, '2020-06-17', 0, 0, 0, 1, 0),
+(3, 54, '2021-06-17', 0, 1, 0, 1, 0),
+(4, 66, '2021-06-17', 1, 0, 0, 0, 0)
+(5, 23, '2020-10-17', 0, 0, 1, 0, 0),
+(6, 23, '2020-03-17', 1, 0, 1, 0, 1);
 
 COMMIT;
 
