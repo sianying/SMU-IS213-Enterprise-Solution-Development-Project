@@ -16,30 +16,67 @@
     </div>
 
 <script>
+    // access sessionStorage to get the delivery data
+    delivery_data = sessionStorage.getItem("delivery_data");
+
+    // retreives the session ID from the URL
     let params = new URLSearchParams(location.search);
     let session_id = params.get('session_id');
-    // console.log(session_id);
-    var serviceURL = "http://localhost:4242/checkout_session/" + session_id;
+    console.log(session_id);
+
+    // var serviceURL = "http://localhost:4242/checkout_session/" + session_id;
+    
+    // processOrder as the serviceURL, temporary port: 5100
+    var serviceURL = "http://localhost:5100/process_order";
     // console.log(serviceURL);
 
+    // invoke ProcessOrder (with payment session id & delivery_data)
     $(async () => {
         try {
-            const response = await fetch (
-                serviceURL, { method: 'GET' }
-            );
+            const response = await fetch (serviceURL, { 
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        "session_id": session_id,
+                        "delivery_data": delivery_data
+                    })
+                
+                });
             const data = await response.json();
             if (response.ok){
-                console.log(data);
-                // console.log(data.payment_status);
+                processOrderData = data;
+                console.log(processOrderData);
             }
             else {
-                console.log("try block failed");
+                console.log("There is an error in retrieving the payment data: Error " + response.status);
             }
         } 
         catch(error) {
-            console.log("Error:", error);
+            console.log("Error: ", error);
         }
     });
+
+
+    // $(async () => {
+    //     try {
+    //         const response = await fetch (
+    //             serviceURL, { method: 'GET' }
+    //         );
+    //         const data = await response.json();
+    //         if (response.ok){
+    //             payment_data = data;
+    //             console.log(payment_data);
+    //         }
+    //         else {
+    //             console.log("There is an error in retrieving the payment data: Error " + response.status);
+    //         }
+    //     } 
+    //     catch(error) {
+    //         console.log("Error: ", error);
+    //     }
+    // });
 
 
     // fetch(url, {
