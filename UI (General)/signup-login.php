@@ -72,7 +72,7 @@
             width: 600px;
             height: 250px;
             margin: 0 auto;
-            margin-top: 70px;
+            margin-top: 30%;
         }
         
         .left,
