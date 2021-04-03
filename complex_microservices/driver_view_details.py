@@ -1,133 +1,210 @@
-#driver views job details, call google distance matrix api
+# Process workflow
 
-# 1. driver wants to view job details, clicks on a particular job on the UI
-# 2. HTTP GET request to delivery microservice and retrieve existing delivery details from db
-# 3. delivery microservice returns job details
-# 4. Based on the pickup location and destination, call Google Distance Matrix API and return distance
-# 5. Google Distance API returns distance and estimated journey duration to complex microservice
-# 6. Complex microservice collates all the information, javascript will process the json returned and display it on the UI
+# 1. customer logs into his account, a customer id is provided
+# 2. invoke customer microservice to retrieve customer details
+# 3. customer microservice returns customer name and contact number ONLY
+# 4. invoke delivery microservice to return all jobs that match the customer's id
+# 5. for each job, return relevant job details only: timeslot, driver_id, pickup location, destination
+# 6. using the driver_id returned earlier, invoke driver microservice retrieving details of driver
+# 7. driver microservice returns driver name and contact number
+# 8. for each job, display timeslot, customer_name, customer contact, driver name, driver contact, pickup location and destination, status on UI
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
-
 import os
 import requests
-import google
+
 from invokes import invoke_http
+
+import amqp_setup
+import pika
+import json
 
 app = Flask(__name__)
 CORS(app)
 
 # Main function that calls other functions
-@app.route("/job_details/<int:delivery_ID>", methods=['GET'])
-def view_job_details(delivery_ID):
+@app.route("/customer_view_details/<int:customer_ID>", methods=['GET'])
+def customer_view_details(customer_ID):
     try:
-        # do the actual work
-        # 1. get info already stored in database
-        intermediate_result = get_existing_info(delivery_ID)
+        # Do the actual work (3 steps)
+        
+        # 1. get info stored in customer MS
+        #result 1 is a list in the form [name, phone no, email, tele id]
+        result1 = get_customer_info(customer_ID)
 
-        #print(intermediate_result)
+        # 2. retrieve all jobs from delivery MS matching the customer ID
+        result2= retrieve_all_deliveries(customer_ID)
+        print("2nd function completed!")
 
-        # 2. get additional info by calling the google distance api
-        final_result=get_more_info(intermediate_result)
+        # 3. for each job, add the customer name and customer contact. Next, add driver name and contact no.
+        # Once everything is ready, return the final_result. 
+        list_of_deliveries=result2['data']['delivery_result']  
 
-        return jsonify(final_result), final_result["code"]
+        print("List of deliveries:")
+        print(list_of_deliveries)
+
+        final_result=[]
+        for delivery in list_of_deliveries:
+            # print("")
+            # print ("initial delivery")
+            # print(delivery)
+            delivery['customer_name']= result1[0]
+            delivery['customer_mobile']= result1[1]
+            delivery['customer_email']= result1[2]
+            delivery['customer_teleid']= result1[3]
+
+            # print("")
+            # print("final delivery")
+            # print(delivery)
+            add_driver_details(delivery)
+
+            final_result.append(delivery)
+
+        # print("")
+        # print(final_result)
+
+        return {
+            "code": 202,
+            "data": {
+                "customer_view_details": final_result,
+            }
+        }
 
     except Exception as e:
         # Unexpected error in code
 
         return jsonify({
             "code": 500,
-            "message": "view_job_details.py internal error"
+            "message": "customer_view_details.py internal error"
         }), 500
 
 
+def get_customer_info(customer_ID):
+    # 2. Invoke the customer microservice
+    print('\n-----Invoking customer microservice-----')
+    customer_result = invoke_http("http://localhost:5002/customer/" + str(customer_ID), method='GET')
+    print('customer_result:', customer_result)
 
-def get_existing_info(delivery_ID):
+    # 3. Check the delivery result; if a failure, send it to the error microservice.
+    code = customer_result["code"]
+    if code not in range(200, 300):
+        print('\n\n-----Publishing the (customer error) message with routing_key=CustomerViewDetails.customer.error-----')
+        message=json.dumps(customer_result)
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="CustomerViewDetails.customer.error", 
+            body=message, properties=pika.BasicProperties(delivery_mode = 2))
+
+        print("\nCustomer MS call status ({:d}) published to the RabbitMQ Exchange:".format(
+            code), customer_result)
+
+        # print('\n\n-----Invoking error microservice as delivery fails-----')
+        # invoke_http("http://localhost:5007/error", method="POST", json=customer_result)
+        # # - reply from the invocation is not used; 
+        # # continue even if this invocation fails
+        # print("Delivery status ({:d}) sent to the error microservice:".format(
+        #     code), customer_result)
+
+        return {
+            "code": 501,
+            "data": {"customer_result": customer_result},
+            "message": "Failed to retrieve customer data, sent for error handling."
+        }
+
+    data=customer_result['data']
+    returned_list=[data['CName'], data['CMobile'], data['CEmail'], data['CTeleID']]
+    print(returned_list)
+
+    return returned_list
+    # return {
+    #     "code": 201,
+    #     "data": {
+    #         "customer_result": customer_result,
+    #     }
+    # }
+
+def retrieve_all_deliveries(customer_ID):
     # 2. Invoke the delivery microservice
     print('\n-----Invoking delivery microservice-----')
-    delivery_result = invoke_http("http://localhost:5000/delivery/" + str(delivery_ID), method='GET')
+    delivery_result = invoke_http("http://localhost:5000/delivery/customer/" + str(customer_ID), method='GET')
     print('delivery_result:', delivery_result)
 
     # 3. Check the delivery result; if a failure, send it to the error microservice.
     code = delivery_result["code"]
     if code not in range(200, 300):
-        print('\n\n-----Invoking error microservice as delivery fails-----')
-        invoke_http("http://localhost:5007/error", method="POST", json=delivery_result)
-        # - reply from the invocation is not used; 
-        # continue even if this invocation fails
-        print("Delivery status ({:d}) sent to the error microservice:".format(
+        print('\n\n-----Publishing the (delivery error) message with routing_key=CustomerViewDetails.delivery.error-----')
+        message=json.dumps(delivery_result)
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="CustomerViewDetails.delivery.error", 
+            body=message, properties=pika.BasicProperties(delivery_mode = 2))
+
+        print("\nDelivery MS Call status ({:d}) published to the RabbitMQ Exchange:".format(
             code), delivery_result)
 
+        # print('\n\n-----Invoking error microservice as delivery fails-----')
+        # invoke_http("http://localhost:5007/error", method="POST", json=delivery_result)
+        # # - reply from the invocation is not used; 
+        # # continue even if this invocation fails
+        # print("Delivery status ({:d}) sent to the error microservice:".format(
+        #     code), delivery_result)
+
         return {
-            "code": 501,
+            "code": 502,
             "data": {"delivery_result": delivery_result},
-            "message": "Delivery update failure, sent for error handling."
+            "message": "Failed to retrieve the customer's list of deliveries, sent for error handling."
         }
 
     return {
         "code": 201,
         "data": {
-            "delivery_result": delivery_result,
+            "delivery_result": delivery_result['data']['deliveries'],
         }
     }
 
-# call google distance api to get estimated time taken
-# might have to call api twice, but for now just do once
+def add_driver_details(delivery):
+    driver_ID=delivery['driver_ID']
 
-def get_more_info(delivery):
-    api_key = 'AIzaSyCOb2n2zlVPQd7Jd6eGY0HoMO9Md4VLtqU'   
-    url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&"
+     # 2. Invoke the driver microservice
+    print('\n-----Invoking driver microservice-----')
+    driver_result = invoke_http("http://localhost:5001/driver/" + str(driver_ID), method='GET')
+    print('driver_result:', driver_result)
 
-    #get from json returned in the 1st function
-    origins=delivery['data']['delivery_result']['data']['pickup_location']
-    #print(origins)
-    destination=delivery['data']['delivery_result']['data']['destination']
-    #print(destination)
+    # 3. Check the delivery result; if a failure, send it to the error microservice.
+    code = driver_result["code"]
+    if code not in range(200, 300):
+        print('\n\n-----Publishing the (driver error) message with routing_key=CustomerViewDetails.driver.error-----')
+        message=json.dumps(driver_result)
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="CustomerViewDetails.driver.error", 
+            body=message, properties=pika.BasicProperties(delivery_mode = 2))
 
-    response = requests.get(url + "origins=" + origins + "&destinations=" + destination + "&key=" + api_key)
-    response_json=response.json()
+        print("\nDriver MS Call status ({:d}) published to the RabbitMQ Exchange:".format(
+            code), driver_result)
 
-    print("until here ok!")
-
-    print(response_json)
-
-    if response_json['status']!='OK':
-        print('\n\n-----Invoking error microservice as api call fails-----')
-        invoke_http("http://localhost:5007/error", method="POST", json=response)
-        # - reply from the invocation is not used; 
-        # continue even if this invocation fails
-        print("Details of API Call ({:d}) sent to the error microservice:".format(response_json['status']), response_json)
+        # print('\n\n-----Invoking error microservice as delivery fails-----')
+        # invoke_http("http://localhost:5007/error", method="POST", json=driver_result)
+        # # - reply from the invocation is not used; 
+        # # continue even if this invocation fails
+        # print("Driver MS call status ({:d}) sent to the error microservice:".format(
+        #     code), driver_result)
 
         return {
-            "code": 400,
-            "data": {"api_call_result1": response_json},
-            "message": "API Call failure, sent for error handling."
+            "code": 502,
+            "data": {"driver_result": driver_result},
+            "message": "Failed to retrieve driver's details, sent for error handling."
         }
 
-    distance_in_km= round(response_json['rows'][0]['elements'][0]['distance']['value']/1000, 1)
-    duration_in_min= response_json['rows'][0]['elements'][0]['duration']['text']
+    #adding driver details to be added in the end
+    delivery['driver_name']=driver_result['data']['DName']
+    delivery['driver_mobile']=driver_result['data']['DMobile']
+    delivery['driver_email']= driver_result['data']['DEmail']
 
-    delivery['distance_in_km']=distance_in_km
-    delivery['duration_in_min']=duration_in_min
-
-    return {
-        "code": 201,
-        "data": {
-            "api_call_result": delivery,
-        }
-    }
-
-# SAMPLE JSON CODE
-#{'destination_addresses': ['21 Lower Kent Ridge Rd, University Hall, Singapore 119077'], 'origin_addresses': ['81 Victoria St, Singapore 188065'], 'rows': [{'elements': [{'distance': {'text': '6.3 mi', 'value': 10187}, 'duration': {'text': '15 mins', 'value': 913}, 'status': 'OK'}]}], 'status': 'OK'}
+    return delivery
 
 
 # Execute this program if it is run as a main script (not by 'import')
 if __name__ == "__main__":
     print("This is flask " + os.path.basename(__file__) +
-          " for placing an order...")
-    app.run(host="0.0.0.0", port=5100, debug=True)
+          " for customer viewing delivery details...")
+    app.run(host="0.0.0.0", port=5102, debug=True)
     # Notes for the parameters:
     # - debug=True will reload the program automatically if a change is detected;
     #   -- it in fact starts two instances of the same flask program,
