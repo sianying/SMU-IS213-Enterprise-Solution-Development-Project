@@ -11,12 +11,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <!-- Stripe -->
     <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
 
     <title>Delivery Order</title>
 </head>
 <body>
     
-    <div class="container-fluid">
+    <div id='app' class="container-fluid">
 
         <div class="jumbotron jumbotron-fluid">
             <div class="container">
@@ -88,8 +89,8 @@
                     </div> 
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="origin">asdf</label>
-                            <div class="input-group mb-3">
+                            <label for="origin"></label>
+                            <div class="input-group mb-3 mt-2">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="origin">Postal code</span>
                                 </div>
@@ -113,8 +114,8 @@
                     </div> 
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="destination">asdf</label>
-                            <div class="input-group mb-3">
+                            <label for="destination"></label>
+                            <div class="input-group mb-3 mt-2">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="destination">Postal code</span>
                                 </div>
@@ -123,6 +124,34 @@
                         </div> 
                     </div> 
                 </div>
+                <!-- Date and Time  -->
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label for="date">Delivery Date</label>
+                            <div class="input-group mb-3">
+                                <!-- <div class="input-group-prepend">
+                                    <span class="input-group-text" id="destination">Address Line</span>
+                                </div> -->
+                                <input type="date" class="form-control" id="date" placeholder="" value="">
+                            </div>
+                        </div> 
+                    </div> 
+                    <div class="col-md-4">
+                        <div class="form-group ">
+                            <label for="schedule">Schedule</label>
+                            <select @change = "checkSchedule" id="schedule" class="form-control">
+                                <option selected value='8_to_10'>8 am to 10 am</option>
+                                <option value='10_to_12'>10 am to 12pm</option>
+                                <option value='12_to_2'>12pm to 2pm</option>
+                                <option value="2_to_4">2pm to 4pm</option>
+                                <option value='4_to_6'>4pm to 6pm</option>
+                            </select>
+                        </div> 
+                    </div> 
+                </div>
+                <div style='color:red;' v-if = "error"> {{ error }} </div>
+
                 <br>
                 <button type="button" class="btn btn-primary mb-3" id="checkout-button">Checkout</button>
             </form>
@@ -175,6 +204,39 @@
 
 
 <script>
+
+
+    var app = new Vue({
+        el: "#app",
+        data: {
+            error: false
+        },
+        methods: {
+            checkSchedule: function() {
+            var date = $("#date").val();
+            var schedule = $('#schedule').val()
+            var get_all_schedule = "http://localhost:5004/schedule/date/" + date + "/" + schedule;
+            // console.log(date);
+            const response =
+                            fetch(get_all_schedule)
+                                .then(response => response.json())
+                                .then(data => {
+                                    console.log(response);
+                                    console.log(data);
+                                    if (data.code === 404) {
+                                        // no book in db
+                                        this.error = data.message;
+                                        // console.log(data.message);
+                                    }
+                                     else {
+                                        this.error = false;
+                                    }
+                                })
+            }
+
+        }
+
+    })
     $("#checkout-button").click(function() {
         var description = $("#description").val();
         var origin = $("#origin").val();
@@ -192,6 +254,8 @@
         sessionStorage.setItem("delivery_data", json);
     });
 
+    
+    
 
     var stripe = Stripe('pk_test_51IX1pfEh2v7rRS8AqOB3PG6BLj1qQh8g4V0oI5GLProGPMmJRG60qzCXGH0297oQKyRIblMPKhFPlQEshp993pBN00CvpCrI7z');
     
