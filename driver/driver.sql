@@ -32,7 +32,7 @@ USE `driver`;
 
 DROP TABLE IF EXISTS `driver`;
 CREATE TABLE IF NOT EXISTS `driver` (
-  `DID` int(2) NOT NULL,
+  `DID` int(2) NOT NULL AUTO_INCREMENT,
   `DName` varchar(64) NOT NULL,
   `DEmail` varchar(128) NOT NULL,
   `DMobile` int(8) NOT NULL,
