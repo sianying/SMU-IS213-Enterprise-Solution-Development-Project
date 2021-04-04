@@ -9,7 +9,6 @@ body{
     padding: 0;
     background-color: #F7F0E6;
     background-image: url("../images/cheetah.png");
-    /* background-position: center; */
     background-repeat: no-repeat;
     background-size:cover;
     background-attachment: fixed;
@@ -118,12 +117,12 @@ button:hover{
 }
 
 .searchButton {
-    width: 125px;
+    width: 100px;
     height: 40px;
     border: 1px solid white;
     background: #F7F0E6;
     text-align: center;
-    color: black;
+    color: gray;
     border-radius: 0 20px 20px 0;
     cursor: pointer;
     font-size: 20px;
@@ -136,4 +135,15 @@ button:hover{
     top: 50%;
     left: 20%;
     transform: translate(-50%, -50%);
+}
+
+.placeholder{
+    border:1px solid white;
+    border-right: none;
+    padding-left: 20px;
+    height: 40px;
+    border-radius: 20px 0px 0px 20px;
+    outline: none;
+    background-color: #1C00ff00;
+    color:white"
 }
