@@ -32,19 +32,19 @@ USE `driver`;
 
 DROP TABLE IF EXISTS `driver`;
 CREATE TABLE IF NOT EXISTS `driver` (
-  `DID` int(2) NOT NULL AUTO_INCREMENT,
-  `DName` varchar(64) NOT NULL,
-  `DEmail` varchar(128) NOT NULL,
-  `DMobile` int(8) NOT NULL,
-  `DTeleID` varchar(20) DEFAULT NULL,
+  `driver_ID` int(2) NOT NULL AUTO_INCREMENT,
+  `driver_name` varchar(64) NOT NULL,
+  `driver_email` varchar(128) NOT NULL,
+  `driver_mobile` int(8) NOT NULL,
+  `driver_teleID` varchar(20) DEFAULT NULL,
   `vehicle_no` varchar(8) NOT NULL,
-  PRIMARY KEY (`DID`)
+  PRIMARY KEY (`driver_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `driver
 
-INSERT INTO `driver` (`DID`, `DName`, `DEmail`, `DMobile`, `DTeleID`, `vehicle_no`) VALUES
+INSERT INTO `driver` (`driver_ID`, `driver_name`, `driver_email`, `driver_mobile`, `driver_teleID`, `vehicle_no`) VALUES
 (23, 'Tom Smith ', 'tomsmith@hotmail.com', 98765432, 'TS', 'SJD1234A'),
 (17, 'SSL Monster', 'sslmonster@hotmail.com', 12345678, 'SSLM', 'SJW1234F'),
 (54, 'Hong Seng', 'hs@hotmail.com', 10293847, 'nobluetooth', 'SBS1234A'),
