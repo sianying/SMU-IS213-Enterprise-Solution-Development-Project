@@ -19,8 +19,6 @@ import json
 app = Flask(__name__)
 CORS(app)
 
-error_URL = "http:localhost:5007/error"
-
 # Main function that calls other functions
 @app.route("/complete_delivery/<int:delivery_ID>", methods=['POST'])
 def complete_delivery(delivery_ID):
