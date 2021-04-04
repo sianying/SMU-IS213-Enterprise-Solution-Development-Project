@@ -1,13 +1,13 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 import datetime
-from flask_cors import CORS
 
 app = Flask(__name__)
 
-CORS(app)
+HOST = '0.0.0.0'
+PORT = 5000
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/delivery_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/delivery'
 #'mysql+mysqlconnector://root@localhost:3306/book'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
  
@@ -23,13 +23,17 @@ class Delivery(db.Model):
     timeslot = db.Column(db.VARCHAR(20), nullable=False)
     pickup_location = db.Column(db.VARCHAR(60), nullable=False)
     destination = db.Column(db.VARCHAR(60), nullable=False)
+    delivery_item = db.Column(db.VARCHAR(40), nullable=False)
+    description = db.Column(db.VARCHAR(120), nullable=False)
+    payment_amount = db.Column(db.INT(), nullable=False)
+    payment_status = db.Column(db.VARCHAR(6), nullable=False)
     #wa idk how to include for the timestamps and default values help
-    status = db.Column(db.VARCHAR(10), nullable=False, default='New')
+    delivery_status = db.Column(db.VARCHAR(10), nullable=False, default='New')
     created = db.Column(db.TIMESTAMP, nullable=False, default=db.func.now())
     last_updated = db.Column(db.TIMESTAMP, nullable=False, server_default=db.func.now(), onupdate=db.func.now())
     #default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow
     
-    def __init__(self, delivery_ID, driver_ID, customer_ID, delivery_date, timeslot, pickup_location, destination, status, created, last_updated):
+    def __init__(self, delivery_ID, driver_ID, customer_ID, delivery_date, timeslot, pickup_location, destination, delivery_item, description, payment_amount, payment_status, delivery_status, created, last_updated):
         self.delivery_ID = delivery_ID
         self.driver_ID = driver_ID
         self.customer_ID = customer_ID
@@ -37,7 +41,11 @@ class Delivery(db.Model):
         self.timeslot = timeslot
         self.pickup_location = pickup_location
         self.destination = destination
-        self.status = status
+        self.delivery_item = delivery_item
+        self.description = description
+        self.payment_amount = payment_amount
+        self.payment_status = payment_status
+        self.delivery_status = delivery_status
         self.created = created
         self.last_updated = last_updated
 
@@ -49,7 +57,11 @@ class Delivery(db.Model):
                 "timeslot": self.timeslot, 
                 "pickup_location": self.pickup_location, 
                 "destination": self.destination,
-                "status": self.status,
+                "delivery_item": self.delivery_item,
+                "description": self.description,
+                "payment_amount": self.payment_amount,
+                "payment_status": self.payment_status,
+                "delivery_status": self.delivery_status,
                 "created": self.created,
                 "last_updated": self.last_updated
             }
@@ -147,20 +159,25 @@ def find_by_customer_ID(customer_ID):
 @app.route("/delivery", methods=['POST'])
 def create_delivery():
     #diagram might need to change, necessary to find an available driver first and add it into the request
-    driver_ID=request.json.get('driver_ID', None)
-    customer_ID = request.json.get('customer_ID', None)
-    delivery_date = request.json.get('delivery_date', None)
-    timeslot = request.json.get('timeslot', None)
-    pickup_location = request.json.get('pickup_location', None)
-    destination = request.json.get('destination', None)
 
+    # if request.is_json():
+    data = request.get_json()
+
+    #query from the last entry and increment by 1 for delivery_ID
     delivery = Delivery.query.order_by(Delivery.delivery_ID.desc()).first()
     delivery_ID= delivery.delivery_ID + 1
-
     created=datetime.datetime.now()
     last_updated=created
 
-    delivery=Delivery(delivery_ID=delivery_ID, driver_ID= driver_ID, customer_ID=customer_ID, delivery_date=delivery_date, timeslot=timeslot, pickup_location=pickup_location, destination=destination, status='NEW', created=created, last_updated=last_updated) 
+    delivery = Delivery(delivery_ID=delivery_ID, **data, delivery_status="NEW", created=created, last_updated=last_updated)
+    # driver_ID=request.json.get('driver_ID', None)
+    # customer_ID = request.json.get('customer_ID', None)
+    # delivery_date = request.json.get('delivery_date', None)
+    # timeslot = request.json.get('timeslot', None)
+    # pickup_location = request.json.get('pickup_location', None)
+    # destination = request.json.get('destination', None)
+
+# delivery=Delivery(delivery_ID=delivery_ID, driver_ID= driver_ID, customer_ID=customer_ID, delivery_date=delivery_date, timeslot=timeslot, pickup_location=pickup_location, destination=destination, status='NEW', created=created, last_updated=last_updated) 
 
     try:
         db.session.add(delivery)
@@ -261,4 +278,4 @@ def delete_delivery(delivery_ID):
     ), 203
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host=HOST, port=PORT, debug=True)
