@@ -26,10 +26,6 @@
       @import url('https://fonts.googleapis.com/css2?family=Patua+One&display=swap');
     </style>
 
-    <style>
-
-    </style>
-
     <title>Landing Page</title>
   </head>
   <body>
@@ -37,57 +33,25 @@
     <!--Bootstrap source code-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
 
-    <!--Leopard pic-->
-    <!--<div class = 'container-fluid' style="background-image: url('https://www.desktopbackground.org/p/2011/06/25/224625_cheetahs-running-full-speed-wallpaper_1600x900_h.jpg'); height: 100%; background-position: center; background-repeat: no-repeat; background-size: cover;"></div>-->
-
-    <!-- <div class = 'container-fluid'>
-            <div class="dropdown" style="position: absolute; top: 20px; left:1010px;">
-                <button class="dropbtn" style="background-color: #1C00ff00; width: 100px; height: 40px; border: 1px solid #FFFFFF; border-radius: 20px;color: white;font-family: 'Roboto', sans-serif;" >Log In</button>
-                <div class="dropdown-content" style="border-radius: 10px;">
-                  <a href="#">Driver</a>
-                  <a href="#">Customer</a>
-                </div>
-              </div>
-
-            <div class="dropdown" style="position: absolute; top: 20px; left:1120px;">
-                <button class="dropbtn" style="background-color: white; width: 100px; height: 40px;border: 1px solid #FFFFFF;box-sizing: border-box; border-radius: 20px;color: black;font-family: 'Roboto', sans-serif;" >Sign Up</button>
-                <div class="dropdown-content" style="border-radius: 10px;">
-                  <a href="#">Driver</a>
-                  <a href="#">Customer</a>
-                </div>
-              </div>
-        
-            <div class="jumbotron">
-                <h1 style="margin-top: 200px; padding-left: 74px; font-size: 50px; font-family: 'Patua One', cursive;">Always on the move.</h1>
-                <div class="wrap" style="margin-left: 50px;">
-                    <div class="search" style="padding-top: 10px;">
-                       <input type="text" class="searchTerm" placeholder="Enter your delivery ID" style="font-family: 'Rubik', sans-serif; font-size: 20px; padding-left: 20px;">
-                       <button type="submit" class="searchButton" style="font-family: 'Rubik', sans-serif; font-size: 20px;">Track
-                         <i class="fa fa-search"></i>
-                      </button>
-                    </div>
-                 </div>
-        </div>
-    </div> -->
-
     <div class = 'container-fluid'>
       <div class = 'container-fluid'>
         <div class="dropdown" style="position:absolute; float:right; top: 4%; left:76%;">
             <button class="dropbtn" style="background-color: #1C00ff00; width: 100px; height: 40px; border: 1px solid #FFFFFF; border-radius: 20px;color: white;font-family: 'Roboto', sans-serif;" >Log In</button>
             <div class="dropdown-content" style="border-radius: 10px;">
-              <a href="#">Driver</a>
-              <a href="#">Customer</a>
+              <a href="../UI(General)/signup-login.php">Driver</a>
+              <a href="../UI(General)/signup-login.php">Customer</a>
             </div>
           </div>
 
         <div class="dropdown" style="position: absolute; float:right; top: 4%; left:87%;">
             <button class="dropbtn" style="background-color: white; width: 100px; height: 40px;border: 1px solid #FFFFFF;box-sizing: border-box; border-radius: 20px;color: black;font-family: 'Roboto', sans-serif;" >Sign Up</button>
             <div class="dropdown-content" style="border-radius: 10px;">
-              <a href="#">Driver</a>
-              <a href="#">Customer</a>
+              <a href="../UI(General)/signup-login.php">Driver</a>
+              <a href="../UI(General)/signup-login.php">Customer</a>
             </div>
           </div>
     </div>
+    
     <div class = 'container-fluid' style="padding-top: 10%;">
         <div class="jumbotron  col-sm-4 text-nowrap">
         <h1 style="font-size:45px; font-family: 'Patua One', cursive; margin-bottom: 0; color: black;">Always on the move.</h1>
@@ -104,7 +68,7 @@
             color:white'
             >
                 <div class="input-group-prepend">
-                <button class="btn" type="submit" value="Submit" style="    width: 100px;
+                <button class="btn" type="submit" value="Submit" style="width: 100px;
                 height: 40px;
                 border: 1px solid white;
                 background: #F7F0E6;
@@ -112,13 +76,89 @@
                 color: gray;
                 border-radius: 0 20px 20px 0;
                 cursor: pointer;
-                font-size: 20px;" id = 'searchButton'>Search</button>
+                font-size: 20px;" id ='searchButton'><a href="../UI(General)/signup-login.php"  style="color: inherit; text-decoration: none;">Search</a></button>
                 </div>
             </div>
         </form>
         </div>
         
     </div>
+
+<!-- JAVASCRIPT PART
+    <script>
+        $("#login-driver").click(function() {
+            // var username = $("#username").val();
+            // var password = $("#password").val();
+            // var role = $("#role").val();
+            console.log("hello")
+            serviceURL = "http://localhost:5105/authenticate"
+    
+            fetch(serviceURL, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    "username": username,
+                    "password": password,
+                    "role": role
+                })
+            })
+            .then(function (response) {
+                data = response.json();
+                localStorage.setItem("login", data);
+                location.replace("http://localhost/esd/project/delivery_order.html");
+                return data
+                // return response.json();
+            })
+            .then(function (result) {
+              // If redirectToCheckout fails due to a browser or network
+              // error, you should display the localized error message to your
+              // customer using error.message.
+                if (result.error) {
+                    alert(result.error.message);
+                }
+            })
+            .catch(function (error) {
+                console.error("Error:", error);
+            });
+    
+            // $(async() => {
+            //     try {
+            //         const response = await fetch (serviceURL, {
+            //             method: 'POST',
+            //             headers: {
+            //                 'Content-Type': 'application/json'
+            //             },
+            //             body: JSON.stringify({
+            //                 "username": username,
+            //                 "password": password,
+            //                 "role": role
+            //             })
+            //         });
+            //         const data = await response.json();
+            //         if (response.ok){
+            //             console.log(data);
+            //         }
+            //         else {
+            //         console.log("There is an error in logging in: Error " + response.status);
+            //         }
+            //     }
+            //     catch(error){
+            //         console.log(error);
+            //     }
+            // });
+    
+        });
+    
+    </script> -->
+    
+    
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
   </body>
 </html>

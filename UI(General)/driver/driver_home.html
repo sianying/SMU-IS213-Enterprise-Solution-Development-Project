@@ -11,9 +11,6 @@
     <!-- External CSS styling -->
     <link rel="stylesheet" href="../css/driver_home.css">
 
-    <!--CSS Template-->
-    <link rel="stylesheet" type="text/css" href="css-template.css" />
-
     <!--Import Rubik font-->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Rubik&display=swap');
@@ -38,21 +35,19 @@
         <img class="logo" src="../images/logo.jpg" width='80px;' height='40px;' alt="logo">
         <nav>
             <ul class="nav__links">
-                <li><a href="#">Home</a></li>
-                <li><a href="#">View Schedule</a></li>
-                <li><a href="#">Profile</a></li>
+                <li><a href="../driver/driver_home.html">Home</a></li>
+                <li><a href="../driver/schedule.html">View Schedule</a></li>
+                <li><a href="../customer/profile.html">Profile</a></li>
             </ul>
         </nav>
-        <a class="LogOut" href="#"><button class='btn'>Log Out</button></a>
+        <a class="LogOut" href="../landing-page.html"><button class='btn'>Log Out</button></a>
     </header>
 
-    <div class = 'container-fluid' style="padding-top: 20%; 
-    padding-bottom: 200px; 
-    padding-left: 50px;;">
+    <div class = 'container-fluid' style="padding-top: 20%; padding-left: 6%;">
         <div class="jumbotron  col-sm-4 text-nowrap">
         <h1 style="font-size:45px; font-family: 'Patua One', cursive; margin-bottom: 0; color: black;">Delivery just got easier.</h1>
         <form action="#searchbar-results" method="POST">
-            <div class="input-group search" style="margin: 0; padding: 0; margin-top: 5px; font-family: 'Rubik', sans-serif;">
+            <div class="input-group search" style="margin-left: 20px; padding: 0; margin-top: 5px; font-family: 'Rubik', sans-serif;">
             <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="Enter date for schedule" name ='searchterm' style='
             border:1px solid white;
             border-right: none;
@@ -64,7 +59,7 @@
             color:white'
             >
                 <div class="input-group-prepend">
-                <button class="btn" type="submit" value="Submit" style="    width: 100px;
+                <button class="btn" type="submit" value="Submit" style="width: 100px;
                 height: 40px;
                 border: 1px solid white;
                 background: #F7F0E6;
@@ -72,66 +67,16 @@
                 color: gray;
                 border-radius: 0 20px 20px 0;
                 cursor: pointer;
-                font-size: 20px;" id = 'searchButton'>Search</button>
+                font-size: 20px;" id ='searchButton'><a href="../signup-login.php"  style="color: inherit; text-decoration: none;">Search</a></button>
                 </div>
             </div>
         </form>
         </div>
         
     </div>
-    <!-- <div class="jumbotron">
-        <h1 style="margin-top: 200px; padding-left: 74px; font-size: 50px; font-family: 'Patua One', cursive;">Delivery just got easier.</h1>
-        <div class="wrap" style="margin-left: 50px; margin-top: 60px;">
-            <div class="search" style="padding-top: 10px;">
-               <input type="text" class="searchTerm" placeholder="Enter date for schedule" style="font-family: 'Rubik', sans-serif; font-size: 20px; padding-left: 20px;">
-               <button type="submit" class="searchButton" style="font-family: 'Rubik', sans-serif; font-size: 20px;">Enter
-                 <i class="fa fa-search"></i>
-              </button>
-            </div>
-         </div> -->
-
-
-    <!-- <nav class="navbar navbar-expand-lg navbar-light" style="background-color:#EEE2CC; padding: 12px;">
-        <div class = 'container' style="padding: 0;">
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <span class = 'logo' style="padding: 10px; font-size: 25px; padding-bottom: 5px;" ><img src = "logo.jpg" height = 70px width = 100px></span>
-            <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
-                <ul class="nav nav-fill" style="margin: auto;">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="#">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">View Deliveries</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Add a New Delivery</a>
-                    </li> -->
-                    
-                <!-- <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Task
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="./views/book2.php">Browse</a>
-                    <a class="dropdown-item" href="./views/Booktask.php">Post</a>
-                    </div>
-                </li> -->
-                <!-- </ul>
-            </div>
-        </div> -->
-    <!-- </nav> -->
-
-    <!-- Optional JavaScript; choose one of the two! -->
 
     <!-- Option 1: Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
 
-    <!-- Option 2: Separate Popper and Bootstrap JS -->
-    
-    <!-- <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js" integrity="sha384-SR1sx49pcuLnqZUnnPwx6FCym0wLsk5JZuNx2bPPENzswTNFaQU1RDvt3wT4gWFG" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.min.js" integrity="sha384-j0CNLUeiqtyaRmlzUHCPZ+Gy5fQu0dQ6eZ/xAww941Ai1SxSY+0EQqNXNE6DZiVc" crossorigin="anonymous"></script>
-    -->
     </body>
 </html>
