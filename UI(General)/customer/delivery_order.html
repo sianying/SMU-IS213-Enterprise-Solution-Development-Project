@@ -102,27 +102,27 @@
 
                 </div>
         
-                <!-- Origin Address -->
+                <!-- pickup Address -->
                 <div class="row">
                     <div class="col-md-8">
                         <div class="form-group">
-                            <label for="origin">Origin Address</label>
+                            <label for="pickup">Pickup Address</label>
                             <div class="input-group mb-3">
                                 <!-- <div class="input-group-prepend">
-                                    <span class="input-group-text" id="origin">Address Line</span>
+                                    <span class="input-group-text" id="pickup">Address Line</span>
                                 </div> -->
-                                <input type="text" class="form-control" id="origin" placeholder="" value="">
+                                <input type="text" class="form-control" id="pickup" placeholder="" value="">
                             </div>
                         </div> 
                     </div> 
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="origin"></label>
+                            <label for="pickup"></label>
                             <div class="input-group mb-3 mt-2">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text" id="origin">Postal code</span>
+                                    <span class="input-group-text" id="pickup">Postal code</span>
                                 </div>
-                                <input type="number" class="form-control" id="originPostalCode" placeholder="" value="">
+                                <input type="number" class="form-control" id="pickupPostalCode" placeholder="" value="">
                             </div>
                         </div> 
                     </div> 
@@ -152,6 +152,15 @@
                         </div> 
                     </div> 
                 </div>
+                <!-- Receiver Name -->
+                <div class="row">
+                    <div class="col-md">
+                        <div class="form-group">
+                            <label for="receiver_name">Receiver's Name</label>
+                            <input type="text" class="form-control" id="receiver_name" placeholder="Enter receiver's name" value="">
+                        </div>
+                    </div> 
+                </div>
                 <!-- Date and Time  -->
                 <div class="row">
                     <div class="col-md-8">
@@ -167,8 +176,8 @@
                     </div> 
                     <div class="col-md-4">
                         <div class="form-group ">
-                            <label for="schedule">Schedule</label>
-                            <select @change = "checkSchedule" id="schedule" class="form-control">
+                            <label for="time">Schedule</label>
+                            <select @change = "checkSchedule" id="time" class="form-control">
                                 <option selected value='8_to_10'>8 am to 10 am</option>
                                 <option value='10_to_12'>10 am to 12pm</option>
                                 <option value='12_to_2'>12pm to 2pm</option>
@@ -242,8 +251,8 @@
         methods: {
             checkSchedule: function() {
             var date = $("#date").val();
-            var schedule = $('#schedule').val()
-            var get_all_schedule = "http://localhost:5004/schedule/date/" + date + "/" + schedule;
+            var time = $('#time').val()
+            var get_all_schedule = "http://localhost:5004/schedule/date/" + date + "/" + time;
             // console.log(date);
             const response =
                             fetch(get_all_schedule)
@@ -266,17 +275,25 @@
 
     })
     $("#checkout-button").click(function() {
+        var deliveryItem = $("#deliveryItem").val();
         var description = $("#description").val();
-        var origin = $("#origin").val();
-        var originPostalCode = $("#originPostalCode").val();
+        var pickup = $("#pickup").val();
+        var pickupPostalCode = $("#pickupPostalCode").val();
         var destination = $("#destination").val();
         var destinationPostalCode = $("#destinationPostalCode").val();
+        var receiver_name = $("#receiver_name").val();
+        var date = $("#date").val();
+        var time = $("#time").val();
         json = JSON.stringify({
+            "delivery_item": deliveryItem,
             "description": description,
-            "origin": origin,
-            "originPostalCode": originPostalCode,
+            "pickup": pickup,
+            "pickupPostalCode": pickupPostalCode,
             "destination": destination,
             "destinationPostalCode": destinationPostalCode,
+            "receiver_name": receiver_name,
+            "date": date,
+            "time": time
         });
         console.log(json);
         sessionStorage.setItem("delivery_data", json);

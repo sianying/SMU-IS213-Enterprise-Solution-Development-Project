@@ -281,7 +281,7 @@
                                 <div class="g-recaptcha" style="margin-top: 10%;" data-sitekey="6Lf2x-IZAAAAALMzDGQ3989jbM0-iRozvWHqGvb9"></div>
                                 <br/>
                                 <div id = 'errorLI'></div>
-                                <button type = 'button' class="form-btn text-center" style="margin-left: 20%;" onclick='logInValidate()'>Log In</button>
+                                <button type = 'button' id='login-button' class="form-btn text-center" style="margin-left: 20%;" onclick='logInValidate()'>Log In</button>
                                 </form>
                             </div>
                         </div>
@@ -408,7 +408,7 @@
             });
             console.log(json);
             sessionStorage.setItem("account_details", json);
-            location.replace("http://localhost/esd/project/delivery_order.html");
+            location.replace("../customer/delivery_order.html");
         })
         .catch(function (error) {
             console.log("Error:", error);

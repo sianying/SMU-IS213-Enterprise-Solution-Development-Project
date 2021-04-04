@@ -17,7 +17,15 @@
 
 <script>
     // access sessionStorage to get the delivery data
-    delivery_data = sessionStorage.getItem("delivery_data");
+    delivery_data = JSON.parse(sessionStorage.getItem("delivery_data"));
+    // retrieve the Customer ID 
+    account_details = JSON.parse(sessionStorage.getItem("account_details"));
+    if (account_details.account_type == "customer"){
+        customer_ID = account_details.customer_ID;
+    }
+    else {
+        console.log("Delivery order failed to be created.")
+    }
 
     // retreives the session ID from the URL
     let params = new URLSearchParams(location.search);
@@ -33,7 +41,7 @@
     // invoke ProcessOrder (with payment session id & delivery_data)
     $(async () => {
         try {
-            const response = await fetch (serviceURL, { 
+            const response = await fetch (serviceURL + "/" + String(customer_ID), { 
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -48,6 +56,7 @@
             if (response.ok){
                 processOrderData = data;
                 console.log(processOrderData);
+                alert("Your order has been successfully created! :D")
             }
             else {
                 console.log("There is an error in retrieving the payment data: Error " + response.status);
