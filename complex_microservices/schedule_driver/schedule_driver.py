@@ -16,8 +16,6 @@ import amqp_setup
 import pika
 import json
 
-import datetime
-
 app = Flask(__name__)
 CORS(app)
 
