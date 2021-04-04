@@ -14,6 +14,12 @@
     <!--CSS Template-->
     <link rel="stylesheet" type="text/css" href="css-template.css" />
 
+    <!--Import JS calendar library-->
+    <script src = 'https://cdn.jsdelivr.net/npm/fullcalendar@5.6.0/main.min.js'></script>
+
+    <!--Import JS calendar CSS-->
+    <link rel = 'stylesheet' href = 'https://cdn.jsdelivr.net/npm/fullcalendar@5.6.0/main.min.css'>
+
     <!--Import Rubik font-->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Rubik&display=swap');
@@ -46,7 +52,36 @@
         <a class="LogOut" href="#"><button class='btn'>Log Out</button></a>
     </header>
 
-    <div class="container">
+    <script>
+
+      document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+          initialView: 'dayGridMonth',
+          headerToolbar:{
+            left:'prev,next Today',
+            center: 'title',
+            right: 'dayGridMonth, timeGridWeek, timeGridDay'
+          }
+          events: [{
+            title: 'Event 1',
+            start: '2021-04-08T20:00:00',
+            end: '2021-04-08T02:00:00', 
+            
+          }],
+          eventColor: '#378006',
+          
+        });
+        calendar.render();
+      });
+
+    </script>
+
+    <div class='row justify-content-center'>
+      <div id='calendar'  style="width: 80%; height:80%; margin-top: 20px;"></div>
+    </div>
+    
+    <!-- <div class="container">
         <div class="row row-cols-2">
           <div class="col" id="scheduleheader" style="text-align: center; margin-top: 20px;">Calendar
             <div class="jumbotron" id="delivery">
@@ -60,7 +95,8 @@
               </div>
           </div>
         </div>
-      </div>
+      </div> -->
+
     
 
     <!-- Option 1: Bootstrap Bundle with Popper -->
