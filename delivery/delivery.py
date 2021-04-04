@@ -27,13 +27,14 @@ class Delivery(db.Model):
     description = db.Column(db.VARCHAR(120), nullable=False)
     payment_amount = db.Column(db.INT(), nullable=False)
     payment_status = db.Column(db.VARCHAR(6), nullable=False)
+    receiver_name = db.Column(db.VARCHAR(64), nullable=False)
     #wa idk how to include for the timestamps and default values help
     delivery_status = db.Column(db.VARCHAR(10), nullable=False, default='New')
     created = db.Column(db.TIMESTAMP, nullable=False, default=db.func.now())
     last_updated = db.Column(db.TIMESTAMP, nullable=False, server_default=db.func.now(), onupdate=db.func.now())
     #default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow
     
-    def __init__(self, delivery_ID, driver_ID, customer_ID, delivery_date, timeslot, pickup_location, destination, delivery_item, description, payment_amount, payment_status, delivery_status, created, last_updated):
+    def __init__(self, delivery_ID, driver_ID, customer_ID, delivery_date, timeslot, pickup_location, destination, delivery_item, description, payment_amount, payment_status, receiver_name, delivery_status, created, last_updated):
         self.delivery_ID = delivery_ID
         self.driver_ID = driver_ID
         self.customer_ID = customer_ID
@@ -45,6 +46,7 @@ class Delivery(db.Model):
         self.description = description
         self.payment_amount = payment_amount
         self.payment_status = payment_status
+        self.receiver_name = receiver_name
         self.delivery_status = delivery_status
         self.created = created
         self.last_updated = last_updated
@@ -61,6 +63,7 @@ class Delivery(db.Model):
                 "description": self.description,
                 "payment_amount": self.payment_amount,
                 "payment_status": self.payment_status,
+                "receiver_name": se;f.receiver_name,
                 "delivery_status": self.delivery_status,
                 "created": self.created,
                 "last_updated": self.last_updated
