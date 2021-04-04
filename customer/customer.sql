@@ -32,18 +32,18 @@ USE `customer`;
 
 DROP TABLE IF EXISTS `customer`;
 CREATE TABLE IF NOT EXISTS `customer` (
-  `CID` int NOT NULL AUTO_INCREMENT,
-  `CName` varchar(64) NOT NULL,
-  `CEmail` varchar(128) NOT NULL,
-  `CMobile` int(8) NOT NULL,
-  `CTeleID` varchar(20) DEFAULT NULL,
-  PRIMARY KEY (`CID`)
+  `customer_ID` int NOT NULL AUTO_INCREMENT,
+  `customer_name` varchar(64) NOT NULL,
+  `customer_email` varchar(128) NOT NULL,
+  `customer_mobile` int(8) NOT NULL,
+  `customer_teleID` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`customer_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `customer
 
-INSERT INTO `customer` (`CID`, `CName`, `CEmail`, `CMobile`, `CTeleID`) VALUES
+INSERT INTO `customer` (`customer_ID`, `customer_name`, `customer_email`, `customer_mobile`, `customer_teleID`) VALUES
 (12345678, 'Jing Wei ', 'jingwei@hotmail.com', '91231234', NULL),
 (23456789, 'Sian Ying', 'sygoh@hotmail.com', '81234567', 'sysy'),
 (11112222, 'Li Yin', 'lly@hotmail.com', '91234567', 'lly');
