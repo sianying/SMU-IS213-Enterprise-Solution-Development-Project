@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- JQuery  -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <title>Login</title>
+</head>
+<body>
+    <div class="container-fluid">
+
+        <div class="jumbotron jumbotron-fluid">
+            <div class="container">
+                <h1 class="display-4">Login Page</h1>
+                <p class="lead">Login as a customer or a driver!</p>
+            </div>
+        </div>
+
+        <form>
+
+            <div class="container">
+                <!-- Username -->
+                <div class="row">
+                    <div class="col-md">
+                        <div class="form-group">
+                            <label for="deliveryItem">Username</label>
+                            <input type="text" class="form-control" id="username" placeholder="Enter Username" value="">
+                        </div>
+                    </div>
+                </div>
+                <!-- Password -->
+                <div class="row">
+                    <div class="col-md">
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control" id="password" placeholder="Enter Password" value="">
+                        </div>
+                    </div> 
+                </div>
+                <!-- account_type -->
+                <label for="account_type">Are you a customer?</label>
+                <select class="form-control" id="account_type">
+                    <option value="customer">Customer</option>
+                    <option value="driver">Driver</option>
+                </select>
+                <br>
+                <!-- submit button -->
+                <button type="button" class="btn btn-primary mb-3" id="login-button">Login</button>
+            </form>
+                
+            </div>
+
+<script>
+    $("#login-button").click(function() {
+        var username = $("#username").val();
+        var password = $("#password").val();
+        var account_type = $("#account_type").val();
+        // console.log(account_type);
+        serviceURL = "http://localhost:5005/authenticate";
+
+        fetch(serviceURL, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                "username": username,
+                "password": password,
+                "account_type": account_type
+            })
+        })
+        .then(function (response) {
+            data = response.json();
+            console.log(data);
+            // account = {
+            //     "account_type": data.account_type,
+            //     "customer_ID": data.customer_ID
+            // }
+            // localStorage.setItem("account", account);
+            // console.log(account);
+            // location.replace("http://localhost/esd/project/delivery_order.html");
+            return data
+            // return response.json();
+        })
+        .then(function (result) {
+            json = JSON.stringify({
+                "username": result.data.username,
+                "customer_ID": result.data.customer_ID,
+                "account_type": result.data.account_type
+            });
+            console.log(json);
+            sessionStorage.setItem("account_details", json);
+            location.replace("http://localhost/esd/project/delivery_order.html");
+        })
+        .catch(function (error) {
+            console.log("Error:", error);
+        });
+
+        // async () => {
+        //     const data = await response;
+        //     console.log(data);
+        // };
+
+        // $(async() => {
+        //     try {
+        //         const response = await fetch (serviceURL, {
+        //             method: 'POST',
+        //             headers: {
+        //                 'Content-Type': 'application/json'
+        //             },
+        //             body: JSON.stringify({
+        //                 "username": username,
+        //                 "password": password,
+        //                 "account_type": account_type
+        //             })
+        //         });
+        //         const data = await response.json();
+        //         if (response.ok){
+        //             console.log(data);
+        //         }
+        //         else {
+        //         console.log("There is an error in logging in: Error " + response.status);
+        //         }
+        //     }
+        //     catch(error){
+        //         console.log(error);
+        //     }
+        // });
+
+    });
+
+</script>
+
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>

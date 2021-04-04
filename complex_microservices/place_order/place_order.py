@@ -90,8 +90,8 @@ def processOrderCreation(session_id, delivery_data, customer_ID):
     # 1. invoke payment MS using session id to get payment details
     # Invoke the payment microservice
     print('\n-----Invoking payment microservice-----')
-    payment_data = invoke_http(payment_URL + session_id, method='GET')
-    print('payment_results:', payment_data)
+    payment_data = invoke_http(payment_URL + "/" + session_id, method='GET')
+    print('payment_results:', str(payment_data))
 
     #4. Retrieve the payment_status for verification
     payment_status = payment_data['payment_status']
@@ -107,9 +107,11 @@ def processOrderCreation(session_id, delivery_data, customer_ID):
     #have not implement calendar + selection of delivery date
     print('\n-----Invoking schedule_driver microservice-----')
     #hardcode date and time first: "2020-06-1", "8_to_10"
-    date = "2020-06-01"
-    time = "8_to_10"
-    url = schedule_driver_URL + "/" + str(date) + "/" + str(time)
+    # date = "2020-06-01"
+    # time = "8_to_10"
+    date = delivery_data['date']
+    time = delivery_data['time']
+    url = schedule_driver_URL + "/" + date + "/" + time
     print(url)
     selected_driver = invoke_http(schedule_driver_URL + "/" + str(date) + "/" + str(time), method='GET')
     print('Selected_driver: ' + str(selected_driver) + "\n")
@@ -122,21 +124,22 @@ def processOrderCreation(session_id, delivery_data, customer_ID):
         return 
 
     #Initialise the driver ID and data for updating of their schedule
-    selected_driver_ID = selected_driver['data']['SID']
+    selected_schedule_ID = selected_driver['data']['SID']
     updated_schedule = selected_driver['data']
     print(updated_schedule)
     # remove SID from POST body data
     updated_schedule.pop('SID')
     updated_schedule['delivery_date'] = date
     #remove SID as it will be passed through the URL rather than the body
-    timeslots = ['8_to_10', '10_to_12', '12_to_2', '2_to_4', '4_to_6']
-    for timeslot in timeslots:
-        timeslot = "t_" + timeslot
-        if time == updated_schedule[timeslot]:
-            updated_schedule[timeslot] = time
+    updated_schedule["t_"+time] = True
+    # timeslots = ['8_to_10', '10_to_12', '12_to_2', '2_to_4', '4_to_6']
+    # for timeslot in timeslots:
+    #     timeslot = "t_" + timeslot
+    #     if time == updated_schedule[timeslot]:
+    #         updated_schedule[timeslot] = time
     #6. Invoke schedule to update allocated driver's schedule
     print('\n-----Invoking Schedule Microservice-----')
-    driver_schedule_updated = invoke_http(schedule_URL + "/" + str(selected_driver_ID), method='PUT', json=updated_schedule)
+    driver_schedule_updated = invoke_http(schedule_URL + "/" + str(selected_schedule_ID), method='PUT', json=updated_schedule)
     print("Updated Driver's schedule: " + str(driver_schedule_updated) + "\n")
 
     #check the driver updated results: if failure send to error microservice for logging
@@ -146,43 +149,42 @@ def processOrderCreation(session_id, delivery_data, customer_ID):
         return
     
     #7. Invoke the Driver Microservice to get the details of the allocated driver
-    print('\n-----Invoking Driver Microservice-----')
-    driver_data = invoke_http(driver_URL + "/" + str(selected_driver_ID))
-    print("Updated Driver's schedule"+ str(driver_data) + "\n")
+    # print('\n-----Invoking Driver Microservice-----')
+    # driver_data = invoke_http(driver_URL + "/" + str(selected_driver_ID))
+    # print("Updated Driver's schedule"+ str(driver_data) + "\n")
 
-    #check the driver's data: if failure send to error microservice for logging
-    code = driver_schedule_updated['code']
-    if code not in range(200, 300):
-        #send over to error microservice for logging
-        return
+    # #check the driver's data: if failure send to error microservice for logging
+    # code = driver_schedule_updated['code']
+    # if code not in range(200, 300):
+    #     #send over to error microservice for logging
+    #     return
     
     #8. Invoke the Customer Microservice to get the details of the customer
-    print('\n-----Invoking Customer Microservice-----')
-    customer_data = invoke_http(customer_URL + "/" + customer_ID)
-    print("Customer's information: "+ str(customer_data) + "\n")
+    # print('\n-----Invoking Customer Microservice-----')
+    # customer_data = invoke_http(customer_URL + "/" + customer_ID)
+    # print("Customer's information: "+ str(customer_data) + "\n")
 
-    #check the customer's data: if failure send to error microservice for logging
-    code = customer_data['code']
-    if code not in range(200, 300):
-        #send over to error microservice for logging
-        return
+    # #check the customer's data: if failure send to error microservice for logging
+    # code = customer_data['code']
+    # if code not in range(200, 300):
+    #     #send over to error microservice for logging
+    #     return
 
     #9. Invoke Delivery Microservice to create new Delivery order using POST
     #create the POST data
 
-    payment_status = "paid"
-
     delivery_entry = {
-        "driver_ID": selected_driver_ID,
+        "driver_ID": selected_driver['data']['driver_ID'],
         "customer_ID": customer_ID,
-        "delivery_date": date,
-        "timeslot": time,
+        "delivery_date": delivery_data['date'],
+        "timeslot": delivery_data['time'],
         "pickup_location": delivery_data['pickup'] + delivery_data['pickupPostalCode'],
         "destination": delivery_data['destination'] + delivery_data['destinationPostalCode'],
         "delivery_item": delivery_data['delivery_item'],
         "description": delivery_data['description'],
         "payment_amount": payment_data['amount_total'],
-        "payment_status": payment_status
+        "payment_status": payment_status,
+        "receiver_name": delivery_data['receiver_name']
     }
 
     print('\n-----Invoking Delivery Microservice-----')

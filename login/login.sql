@@ -19,35 +19,33 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `driver`
+-- Database: `customer`
 --
-CREATE DATABASE IF NOT EXISTS `driver` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-USE `driver`;
+CREATE DATABASE IF NOT EXISTS `login` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `login`;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `driver`
+-- Table structure for table `customer`
 --
 
-DROP TABLE IF EXISTS `driver`;
-CREATE TABLE IF NOT EXISTS `driver` (
-  `driver_ID` int(7) NOT NULL,
-  `driver_name` varchar(64) NOT NULL,
-  `driver_email` varchar(128) NOT NULL,
-  `driver_mobile` int(8) NOT NULL,
-  `driver_teleID` varchar(20) DEFAULT NULL,
-  `vehicle_no` varchar(8) NOT NULL,
-  PRIMARY KEY (`driver_ID`)
+DROP TABLE IF EXISTS `login`;
+CREATE TABLE IF NOT EXISTS `login` (
+  `username` varchar(64) NOT NULL,
+  `password` varchar(12) NOT NULL,
+  `account_type` varchar(8) NOT NULL,
+  `ID` int NOT NULL,
+  PRIMARY KEY (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `driver
+-- Dumping data for table `customer
 
-INSERT INTO `driver` (`driver_ID`, `driver_name`, `driver_email`, `driver_mobile`, `driver_teleID`, `vehicle_no`) VALUES
-('0000000', 'Tom Smith ', 'tomsmith@hotmail.com', '98765432', 'TS', 'SJD1234A'),
-('0000001', 'SSL Monster', 'sslmonster@hotmail.com', '12345678', 'SSLM', 'SJW1234F'),
-('0000002', 'Hong Seng', 'hs@hotmail.com', '10293847', 'nobluetooth', 'SBS1234A');
+INSERT INTO `login` (`username`, `password`, `account_type`, `ID`) VALUES
+('jinglesim', 'password', 'customer', 0),
+('sy', 'password123', 'customer', 1),
+('tomsmith80', 'password', 'driver', '0');
 -- ('Understanding People', '9781349471231', '99.40', 25),
 -- ('Happy in Workplace', '9781434474234', '94.00', 1),
 -- ('PHP Soup', '9781442374221', '20.50', 2),
