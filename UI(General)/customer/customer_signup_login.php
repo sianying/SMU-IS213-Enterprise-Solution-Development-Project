@@ -273,7 +273,7 @@
                             <div class="login hide ">
                                 <form method="post"  action="../Main/process_login.php" >
                                 <h2 class="form-header">Log In</h2>  
-                                <input type="text" name="email" id = 'emailLI' placeholder="Email"><i class="fa fa-envelope-o"></i></input>
+                                <input type="text" name="username" id = 'usernameLI' placeholder="Username"><i class="fa fa-envelope-o"></i></input>
                                 
                                 <input type="password" name="password" id = 'passwordLI' placeholder="Password"><i class="fa fa-lock"></i></input>
                             
@@ -325,7 +325,7 @@
         };
 
     function logInValidate(){
-        var emailLI = document.getElementById("emailLI").value;
+        var username = document.getElementById("usernameLI").value;
         var passwordLI = document.getElementByID("passwordLI").value;
 
         if (emailLI === "" || passwordLI === ""){
@@ -340,7 +340,7 @@
     js = d.createElement(s); js.id = id;
     js.src = "//connect.facebook.net/en_US/sdk.js";
     fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));
+    }(document, 'script', 'facebook-jssdk'));
 
         $(document).ready(function() {
             var signUp = $('.signup-but');
@@ -366,6 +366,87 @@
             });
         });
     </script>
+
+<script>
+    $("#login-button").click(function() {
+        var username = $("#usernameLI").val();
+        var password = $("#passwordLI").val();
+        var account_type = "customer"
+        // console.log(account_type);
+        serviceURL = "http://localhost:5005/authenticate";
+
+        fetch(serviceURL, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                "username": username,
+                "password": password,
+                "account_type": "customer"
+            })
+        })
+        .then(function (response) {
+            data = response.json();
+            console.log(data);
+            // account = {
+            //     "account_type": data.account_type,
+            //     "customer_ID": data.customer_ID
+            // }
+            // localStorage.setItem("account", account);
+            // console.log(account);
+            // location.replace("http://localhost/esd/project/delivery_order.html");
+            return data
+            // return response.json();
+        })
+        .then(function (result) {
+            json = JSON.stringify({
+                "username": result.data.username,
+                "customer_ID": result.data.customer_ID,
+                "account_type": "customer"
+            });
+            console.log(json);
+            sessionStorage.setItem("account_details", json);
+            location.replace("http://localhost/esd/project/delivery_order.html");
+        })
+        .catch(function (error) {
+            console.log("Error:", error);
+        });
+
+        // async () => {
+        //     const data = await response;
+        //     console.log(data);
+        // };
+
+        // $(async() => {
+        //     try {
+        //         const response = await fetch (serviceURL, {
+        //             method: 'POST',
+        //             headers: {
+        //                 'Content-Type': 'application/json'
+        //             },
+        //             body: JSON.stringify({
+        //                 "username": username,
+        //                 "password": password,
+        //                 "account_type": account_type
+        //             })
+        //         });
+        //         const data = await response.json();
+        //         if (response.ok){
+        //             console.log(data);
+        //         }
+        //         else {
+        //         console.log("There is an error in logging in: Error " + response.status);
+        //         }
+        //     }
+        //     catch(error){
+        //         console.log(error);
+        //     }
+        // });
+
+    });
+
+</script>
 </body>
 
 </html>
