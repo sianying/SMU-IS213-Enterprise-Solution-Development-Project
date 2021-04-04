@@ -36,6 +36,61 @@
         @import url('https://fonts.googleapis.com/css2?family=Patua+One&display=swap');
     </style>
 
+    <!--Animate.js CDN-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+<style>
+    /* Center the loader */
+    #loader {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        z-index: 1;
+        width: 120px;
+        height: 120px;
+        margin: -76px 0 0 -76px;
+        border: 16px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 16px solid #CEA68C;
+        -webkit-animation: spin 2s linear infinite;
+        animation: spin 2s linear infinite;
+    }
+    
+    @-webkit-keyframes spin {
+        0% { -webkit-transform: rotate(0deg); }
+        100% { -webkit-transform: rotate(360deg); }
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    /* Add animation to "page content" */
+    /* .animate-bottom {
+        position: relative;
+        -webkit-animation-name: animatebottom;
+        -webkit-animation-duration: 1s;
+        animation-name: animatebottom;
+        animation-duration: 5s
+    } */
+    
+    /* @-webkit-keyframes animatebottom {
+        from { bottom:-100px; opacity:0 } 
+        to { bottom:0px; opacity:1 }
+    }
+    
+    @keyframes animatebottom { 
+        from{ bottom:-100px; opacity:0 } 
+        to{ bottom:0; opacity:1 }
+    } */ 
+    
+    #myDiv {
+        display: none;
+        text-align: center;
+    }
+</style>
+
     </head>
 
     <body>
@@ -51,21 +106,64 @@
             </nav>
             <a class="LogOut" href="#"><button class='btn'>Log Out</button></a>
         </header>
+        
 
         <div id='app' @load='getDeliveries()'>
             <div class='container'>
                 <div class='row'>
-                    <div class='col'>My Deliveries</div>
+                    <div class='col'></div>
+                    <div class='col'><h1 class='pt-3' style='color:#CEA68C; font-family: "Patua One", cursive;'>My Deliveries</h1></div>
+                    <div class='col'></div>
                 </div>
-                <div class='row' v-if='hasDeliveries'>
-                    <div class='col-md-8' style='background-color:#FFFAF0;'>
+                <div class='row' v-if='!hasDeliveries'>
+        
+                    <div id="loader"></div>
+                    
+                    
+                </div>
+                
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class='col mx-auto'></div>
+                            <div class='col d-flex justify-content-center smx-auto loader'></div>
+                            <div class='col mx-auto'></div>
+                        </div>
+                    </div>
+                <table v-if='hasDeliveries' class = "table table-striped animate__animated animate__backInUp">
+                    <!-- <div class='col-md-8 my-3' style='background-color:#FFFAF0;'>
                         hello
                     </div>
-                </div>
+                    <div class='col-md-4 my-3'>
+                        hello
+                    </div> -->
+                    <thead>
+                        <tr>
+                            <th>Delivery ID</th>
+                            <th>Delivery Item</th>
+                            <th>Delivery Description</th>
+                            <th>Delivery Status</th>
+                            <th>Delivery Date</th>
+                            <th>Pickup Location</th>
+                            <th>Destination</th>
+                            <th>Payment Status</th>
+                        </tr>
+                        <tr v-for="delivery in deliveries">
+                                <td>{{delivery.delivery_ID}}</td>
+                                <td>{{delivery.delivery_item}}</td>
+                                <td>{{delivery.description}}</td>
+                                <td>{{delivery.delivery_status}}</td>
+                                <td>{{delivery.delivery_date.slice(0,-12)}}</td>
+                                <td>{{delivery.pickup_location}}</td>
+                                <td>{{delivery.destination}}</td>
+                                <td>{{delivery.payment_status}}</td>
+
+                        </tr>
+                    </thead>
+                </table>
             </div>
         </div>
         <script>
-            get_details_url = "http://localhost:5102/customer_view_details/12345678"
+            var get_details_url = "http://localhost:5102/customer_view_details/12345678"
             var app = new Vue({
                 el: "#app",
                 data:{
@@ -82,7 +180,7 @@
                             .then(response => response.json())
                             .then(data => {
                                 console.log(response);
-                                console.log(data);
+                                console.log(data.data);
                                 // if (data.code === 404) {
                                 //     // no book in db
                                 //     this.message = data.message;
@@ -91,6 +189,8 @@
                                 // }
                                 if (data.data.customer_view_details.length>0){
                                     this.hasDeliveries = true
+                                    
+                                    this.deliveries = data.data.customer_view_details
                                 }
                             })
                             .catch(error => {
@@ -102,6 +202,17 @@
                     }
                 }
             })
+
+            var myVar;
+        
+        function myFunction() {
+            myVar = setTimeout(showPage, 3000);
+        }
+            
+        function showPage() {
+            document.getElementById("loader").style.display = "none";
+            document.getElementById("myDiv").style.display = "block";
+        }
         </script>
     </body>
 
