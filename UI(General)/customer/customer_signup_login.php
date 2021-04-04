@@ -271,7 +271,8 @@
                         </div>
                         <div class="my-5">
                             <div class="login hide ">
-                                <form method="post"  action="../Main/process_login.php" >
+                                <!-- <form method="post"  action="../Main/process_login.php" > -->
+                                <form method="get">
                                 <h2 class="form-header">Log In</h2>  
                                 <input type="text" name="username" id = 'usernameLI' placeholder="Username"><i class="fa fa-envelope-o"></i></input>
                                 
@@ -280,7 +281,7 @@
                                 <div class="g-recaptcha" style="margin-top: 10%;" data-sitekey="6Lf2x-IZAAAAALMzDGQ3989jbM0-iRozvWHqGvb9"></div>
                                 <br/>
                                 <div id = 'errorLI'></div>
-                                <button type = 'submit' class="form-btn text-center" style="margin-left: 20%;" onclick='logInValidate()'>Log In</button>
+                                <button type = 'button' class="form-btn text-center" style="margin-left: 20%;" onclick='logInValidate()'>Log In</button>
                                 </form>
                             </div>
                         </div>
@@ -326,9 +327,9 @@
 
     function logInValidate(){
         var username = document.getElementById("usernameLI").value;
-        var passwordLI = document.getElementByID("passwordLI").value;
+        var passwordLI = document.getElementById("passwordLI").value;
 
-        if (emailLI === "" || passwordLI === ""){
+        if (username === "" || passwordLI === ""){
             document.getElementById("errorLI").innerHTML = `<p class = 'text-danger'>None of your fields can be empty</p>`;
 
         };
