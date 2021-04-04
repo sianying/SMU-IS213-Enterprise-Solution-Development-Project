@@ -1,14 +1,19 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+
+import os
 from os import environ
 
 app = Flask(__name__)
-
 CORS(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/customer'
+HOST = "0.0.0.0"
+PORT = 5002
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/customer'
+# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:password@localhost:3306/customer'
 #there is a need for authentication to the database using root (user) and pass(if there is any)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -17,26 +22,26 @@ db = SQLAlchemy(app)
 class Customer(db.Model):
     __tablename__ = 'customer'
 
-    CID = db.Column(db.Integer, primary_key=True)
-    CName = db.Column(db.String(64), nullable=False)
-    CEmail = db.Column(db.String(128), nullable=False)
-    CMobile = db.Column(db.Integer, nullable=False)
-    CTeleID = db.Column(db.String(20), nullable=True)
+    customer_ID = db.Column(db.Integer, primary_key=True)
+    customer_name = db.Column(db.String(64), nullable=False)
+    customer_email = db.Column(db.String(128), nullable=False)
+    customer_mobile = db.Column(db.Integer, nullable=False)
+    customer_teleID = db.Column(db.String(20), nullable=True)
 
-    def __init__(self, CID, CName, CEmail, CMobile, CTeleID):
-        self.CID = CID
-        self.CName = CName
-        self.CEmail = CEmail
-        self.CMobile = CMobile
-        self.CTeleID = CTeleID
+    def __init__(self, customer_ID, customer_name, customer_email, customer_mobile, customer_teleID):
+        self.customer_ID = customer_ID
+        self.customer_name = customer_name
+        self.customer_email = customer_email
+        self.customer_mobile = customer_mobile
+        self.customer_teleID = customer_teleID
 
     def json(self):
         return {
-            "CID": self.CID, 
-            "CName": self.CName, 
-            "CEmail": self.CEmail, 
-            "CMobile": self.CMobile, 
-            "CTeleID": self.CTeleID
+            "customer_ID": self.customer_ID,
+            "customer_name": self.customer_name, 
+            "customer_email": self.customer_email, 
+            "customer_mobile": self.customer_mobile, 
+            "customer_teleID": self.customer_teleID
         }
 
 #return all customers
@@ -60,9 +65,9 @@ def get_all():
     ), 400
 
 #return a specific customer
-@app.route("/customer/<int:CID>")
-def find_by_CID(CID):
-    customer = Customer.query.filter_by(CID=CID).first()
+@app.route("/customer/<int:customer_ID>")
+def find_by_customer_ID(customer_ID):
+    customer = Customer.query.filter_by(customer_ID=customer_ID).first()
     if customer:
         return jsonify(
             {
@@ -77,22 +82,36 @@ def find_by_CID(CID):
         }
     ), 404
 
-#create a new customer
-@app.route("/customer/<int:CID>", methods=['POST'])
-def create_customer(CID):
-    if (Customer.query.filter_by(CID=CID).first()):
-        return jsonify(
-            {
-                "code": 400,
-                "data": {
-                    "CID": CID
-                },
-                "message": "Customer already exists."
-            }
-        ), 400
-    
+#create a new customer, customer_ID will be auto incremented 
+#pass in POST request, except customer_ID 
+@app.route("/customer", methods=['POST'])
+def create_customer():
+
+    #shift the checking of existing customer to the registration microservice
+    #this is because of the auto increment of the customer_ID
+    #customer creation will only be invoked from the Registration CMS
+    # if (Customer.query.filter_by(customer_ID=data['customer_ID']).first()):
+    #     return jsonify(
+    #         {
+    #             "code": 400,
+    #             "data": {
+    #                 "customer_ID": customer_ID,
+    #             },
+    #             "message": "Customer already exists."
+    #         }
+    #     ), 400
+
+    #create customer_ID, auto increment
+    #if no customer in the database, the incoming customer have an id of 0
+    recent_customer = Customer.query.order_by(Customer.customer_ID.desc()).first()
+    if not (recent_customer):
+        customer_ID = 1000000
+    else:
+        customer_ID = recent_customer.customer_ID + 1
+
     data = request.get_json()
-    customer = Customer(CID, **data)
+    customer = Customer(customer_ID, **data)
+    # print(str(customer_ID))
 
     try:
         db.session.add(customer)
@@ -102,7 +121,7 @@ def create_customer(CID):
             {
                 "code": 500,
                 "data": {
-                    "CID": CID
+                    "customer_ID": customer_ID
                 },
                 "message": "An error occurred creating the customer."
             }
@@ -116,15 +135,15 @@ def create_customer(CID):
     ), 201
 
 #delete a customer
-@app.route("/customer/<int:CID>", methods=['DELETE'])
-def delete_customer(CID):
-    customer = Customer.query.filter_by(CID=CID).first()
+@app.route("/customer/<int:customer_ID>", methods=['DELETE'])
+def delete_customer(customer_ID):
+    customer = Customer.query.filter_by(customer_ID=customer_ID).first()
     if not (customer):
         return jsonify(
             {
                 "code": 400,
                 "data": {
-                    "CID": CID
+                    "customer_ID": customer_ID
                 },
                 "message": "This customer does not exist."
             }
@@ -138,7 +157,7 @@ def delete_customer(CID):
             {
                 "code": 500,
                 "data": {
-                    "CID": CID
+                    "customer_ID": customer_ID
                 },
                 "message": "An error occurred creating the customer."
             }
@@ -153,39 +172,39 @@ def delete_customer(CID):
     ), 203
 
 #update a customer 
-@app.route("/customer/<int:CID>", methods=['PUT'])
-def update_customer(CID):
-    old_customer = Customer.query.filter_by(CID=CID).first()
+@app.route("/customer/<int:customer_ID>", methods=['PUT'])
+def update_customer(customer_ID):
+    old_customer = Customer.query.filter_by(customer_ID=customer_ID).first()
     if not (old_customer):
         return jsonify(
             {
                 "code": 400,
                 "data": {
-                    "CID": CID
+                    "customer_ID": customer_ID
                 },
                 "message": "Customer does not exist."
             }
         ), 400
 
     data = request.get_json()
-    new_customer = Customer(CID, **data)
+    new_customer = Customer(customer_ID, **data)
 
     try:
-        # key_list = [attr for attr in dir(old_customer) if "C" in attr and "CID" not in attr]
+        # key_list = [attr for attr in dir(old_customer) if "C" in attr and "customer_ID" not in attr]
         # for key in key_list:
         #     old_customer[key] = new_customer[key]
 
-        old_customer.CName = new_customer.CName
-        old_customer.CEmail = new_customer.CEmail
-        old_customer.CMobile = new_customer.CMobile
-        old_customer.CTeleID = new_customer.CTeleID
+        old_customer.customer_name = new_customer.customer_name
+        old_customer.customer_email = new_customer.customer_email
+        old_customer.customer_mobile = new_customer.customer_mobile
+        old_customer.customer_teleID = new_customer.customer_teleID
         db.session.commit()
     except:
         return jsonify(
             {
                 "code": 500,
                 "data": {
-                    "CID": CID
+                    "customer_ID": customer_ID
                 },
                 "message": "An error occurred updating the customer."
             }
@@ -200,5 +219,7 @@ def update_customer(CID):
     ), 202
 
 
-if __name__ =='__main__':
-    app.run(host='0.0.0.0', port=5002, debug=True)
+if __name__ == '__main__':
+    print("This is flask " + os.path.basename(__file__) + " for Customer details...")
+    print(os.path.basename(__file__) + " is running on " + str(HOST) + ":" + str(PORT) + " ...")
+    app.run(host=HOST, port=PORT, debug=True)
