@@ -56,7 +56,7 @@ def update_delivery_status(delivery, delivery_ID):
 
     delivery_result = invoke_http("http://localhost:5000/delivery/" + str(delivery_ID), method='PUT', json=delivery)
     driver_result = invoke_http("http://localhost:5001/driver/" + str(delivery_result['data']['driver_ID']), method='GET')
-    delivery_driver = driver_result['data']['DName']
+    delivery_driver = driver_result['data']['driver_name']
     print('delivery_result:', delivery_result)
     # print(delivery_driver)
 
