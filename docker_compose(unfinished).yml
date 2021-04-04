@@ -51,7 +51,7 @@ services:
 
     #port 5104, but done first since it is needed by 5100
     schedule_driver:
-        image: <dockerid>/ScheduleDriver:1.0
+        image: <dockerid>/schedule_driver:1.0
         depends_on:
         -schedule
         environment:
@@ -59,7 +59,7 @@ services:
     
     #port 5100
     process_order:
-        image: <dockerid>/ProcessOrder:1.0
+        image: <dockerid>/process_order:1.0
         depends_on:
         - delivery
         - driver
@@ -78,7 +78,7 @@ services:
 
     #port 5101
     driver_view_details:
-        image: <dockerid>/DriverViewDetails:1.0
+        image: <dockerid>/driver_view_details:1.0
         depends_on:
         - delivery
         environment:
@@ -87,7 +87,7 @@ services:
 
     # port 5102
     customer_view_details:
-        image: <dockerid>/CustomerViewDetails:1.0
+        image: <dockerid>/customer_view_details:1.0
         depends_on:
         - delivery
         - driver
@@ -97,7 +97,7 @@ services:
 
     #port 5103
     driver_complete_delivery:
-        image: <dockerid>/DriverCompleteDelivery:1.0
+        image: <dockerid>/driver_complete_delivery:1.0
         depends_on:
         - delivery
         - driver
@@ -107,7 +107,7 @@ services:
 
     #port 5105
     register_user:
-        image: <dockerid>/RegisterUser:1.0
+        image: <dockerid>/register_user:1.0
         depends_on:
             - login
             - customer
@@ -116,3 +116,97 @@ services:
                 loginURL: http://login:5005/login
                 customerURL: http://customer:5002/customer
                 driverURL: http://driver:5001/driver
+
+
+#KONGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
+#version: "3"
+
+volumes:
+    pgdata: 
+    kongadata:
+  
+networks:
+    kong-net:
+        driver: bridge
+  
+services:
+
+#######################################
+# Postgres: The database used by Kong
+#######################################
+    kong-database:
+        image: postgres:9.6
+        restart: always
+        networks:
+        - kong-net
+        environment:
+        POSTGRES_DB: kong
+        POSTGRES_USER: kong
+        POSTGRES_PASSWORD: password
+        ports:
+        - "5432:5432"
+        healthcheck:
+        test: ["CMD", "pg_isready", "-U", "kong"]
+        interval: 10s
+        timeout: 5s
+        retries: 5
+        volumes:
+        - pgdata:/var/lib/postgresql/data
+
+    #######################################
+    # Kong database migration
+    #######################################
+    kong-migration:
+        image: kong:2.0.4
+        command: "kong migrations bootstrap"
+        restart: on-failure
+        networks:
+        - kong-net
+        environment:
+        KONG_DATABASE: postgres
+        KONG_PG_HOST: kong-database
+        KONG_PG_USER: kong
+        KONG_PG_PASSWORD: password
+        depends_on:
+        - kong-database
+
+    #######################################
+    # Kong: The API Gateway
+    #######################################
+    kong:
+        image: kong:2.0.4
+        restart: always
+        networks:
+        - kong-net
+        environment:
+        KONG_DATABASE: postgres
+        KONG_PG_HOST: kong-database
+        KONG_PG_USER: kong
+        KONG_PG_PASSWORD: password
+        KONG_PROXY_LISTEN: 0.0.0.0:8000
+        KONG_ADMIN_LISTEN: 0.0.0.0:8001
+        depends_on:
+        - kong-migration
+        ports:
+        - "8000:8000"
+
+    #######################################
+    # Konga: Kong GUI
+    #######################################
+    konga:
+        image: pantsel/konga
+        restart: always
+        networks:
+            - kong-net
+        environment:
+        DB_ADAPTER: postgres
+        DB_HOST: kong-database
+        DB_USER: kong
+        DB_PASSWORD: password
+        DB_DATABASE: konga_db
+        depends_on:
+        - kong
+        ports:
+        - "1337:1337"
+        volumes:
+        - kongadata:/app/kongadata
