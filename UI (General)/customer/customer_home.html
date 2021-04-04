@@ -29,29 +29,6 @@
       @import url('https://fonts.googleapis.com/css2?family=Patua+One&display=swap');
     </style>
 
-    <style>
-        body {
-            background-image: url('../images/cheetah.png'); 
-            background-attachment: fixed;  
-            background-size:cover; 
-            background-position: center; 
-            background-attachment: sticky; 
-
-        }
-
-        ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-            color: white;
-            opacity: 1; /* Firefox */
-        }
-
-        .search {
-            width: 100%;
-            position: relative;
-            display: flex;
-            
-        }
-
-    </style>
     <title>Customer Homepage</title>
     
     </head>
@@ -77,26 +54,9 @@
         <h1 style="font-size:45px; font-family: 'Patua One', cursive; margin-bottom: 0; color: black;">Delivery just got better.</h1>
         <form action="#searchbar-results" method="POST">
             <div class="input-group search" style="margin: 0; padding: 0; margin-top: 5px; font-family: 'Rubik', sans-serif;">
-            <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="Enter your delivery ID" name ='searchterm' style="
-            border:1px solid white;
-            border-right: none;
-            padding-left: 20px;
-            height: 40px;
-            border-radius: 20px 0px 0px 20px;
-            outline: none;
-            background-color: #1C00ff00;
-            color:white"
-            >
+            <input type="text" class="form-control placeholder" id="inlineFormInputGroup" placeholder="Enter your delivery ID" name ='searchterm'>
                 <div class="input-group-prepend">
-                <button class="btn" type="submit" value="Submit" style="    width: 100px;
-                height: 40px;
-                border: 1px solid white;
-                background: #F7F0E6;
-                text-align: center;
-                color: gray;
-                border-radius: 0 20px 20px 0;
-                cursor: pointer;
-                font-size: 20px;" id = 'searchButton'>Search</button>
+                <button class="btn searchButton" type="submit" value="Submit">Search</button>
                 </div>
             </div>
         </form>
