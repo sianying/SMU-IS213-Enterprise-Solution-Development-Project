@@ -226,8 +226,8 @@ def update_delivery(delivery_ID):
 
         # Updates status and Timestamp (based on line of code above)
         data = request.get_json()
-        if data['status']:
-            delivery.status = data['status']
+        if data['delivery_status']:
+            delivery.delivery_status = data['delivery_status']
             db.session.commit()
             return jsonify(
                 {

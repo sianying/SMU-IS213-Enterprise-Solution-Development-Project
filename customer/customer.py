@@ -11,9 +11,9 @@ CORS(app)
 HOST = "0.0.0.0"
 PORT = 5002
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/customer'
+
 # app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:password@localhost:3306/customer'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:password@localhost:3306/customer'
 #there is a need for authentication to the database using root (user) and pass(if there is any)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 

@@ -32,22 +32,23 @@ USE `driver`;
 
 DROP TABLE IF EXISTS `driver`;
 CREATE TABLE IF NOT EXISTS `driver` (
-  `driver_ID` int(7) NOT NULL,
-  `driver_name` varchar(64) NOT NULL,
-  `driver_email` varchar(128) NOT NULL,
-  `driver_mobile` int(8) NOT NULL,
-  `driver_teleID` varchar(20) DEFAULT NULL,
+  `DID` int(2) NOT NULL AUTO_INCREMENT,
+  `DName` varchar(64) NOT NULL,
+  `DEmail` varchar(128) NOT NULL,
+  `DMobile` int(8) NOT NULL,
+  `DTeleID` varchar(20) DEFAULT NULL,
   `vehicle_no` varchar(8) NOT NULL,
-  PRIMARY KEY (`driver_ID`)
+  PRIMARY KEY (`DID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `driver
 
-INSERT INTO `driver` (`driver_ID`, `driver_name`, `driver_email`, `driver_mobile`, `driver_teleID`, `vehicle_no`) VALUES
-('0000000', 'Tom Smith ', 'tomsmith@hotmail.com', '98765432', 'TS', 'SJD1234A'),
-('0000001', 'SSL Monster', 'sslmonster@hotmail.com', '12345678', 'SSLM', 'SJW1234F'),
-('0000002', 'Hong Seng', 'hs@hotmail.com', '10293847', 'nobluetooth', 'SBS1234A');
+INSERT INTO `driver` (`DID`, `DName`, `DEmail`, `DMobile`, `DTeleID`, `vehicle_no`) VALUES
+(23, 'Tom Smith ', 'tomsmith@hotmail.com', 98765432, 'TS', 'SJD1234A'),
+(17, 'SSL Monster', 'sslmonster@hotmail.com', 12345678, 'SSLM', 'SJW1234F'),
+(54, 'Hong Seng', 'hs@hotmail.com', 10293847, 'nobluetooth', 'SBS1234A'),
+(66, 'Yew Teng', 'yt@hotmail.com', 10000000, 'bestman', 'SBS5678A');
 -- ('Understanding People', '9781349471231', '99.40', 25),
 -- ('Happy in Workplace', '9781434474234', '94.00', 1),
 -- ('PHP Soup', '9781442374221', '20.50', 2),
