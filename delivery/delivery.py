@@ -63,7 +63,7 @@ class Delivery(db.Model):
                 "description": self.description,
                 "payment_amount": self.payment_amount,
                 "payment_status": self.payment_status,
-                "receiver_name": se;f.receiver_name,
+                "receiver_name": self.receiver_name,
                 "delivery_status": self.delivery_status,
                 "created": self.created,
                 "last_updated": self.last_updated
@@ -204,7 +204,7 @@ def create_delivery():
 @app.route("/delivery/<int:delivery_ID>", methods=['PUT'])
 def update_delivery(delivery_ID):
     try:
-        print("Testtest")
+        # print("Testtest")
         #based on given delivery ID, gets the first delivery that appears
         delivery = Delivery.query.filter_by(delivery_ID=delivery_ID).first()
 
