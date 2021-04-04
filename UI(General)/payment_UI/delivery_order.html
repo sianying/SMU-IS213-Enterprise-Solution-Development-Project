@@ -12,16 +12,44 @@
     <!-- Stripe -->
     <script src="https://js.stripe.com/v3/"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <link rel="stylesheet" href="../../UI(General)/css/view_delivery.css">
+
+     <!--Import Rubik font-->
+     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Rubik&display=swap');
+    </style>
+
+    <!--Import Roboto font-->
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+    </style>
+
+    <!--Import Patua One font-->
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Patua+One&display=swap');
+    </style>
+
 
     <title>Delivery Order</title>
 </head>
 <body>
-    
+    <header> 
+        <img class="logo" src="../../UI(General)/images/logo.jpg" width='80px;' height='40px;' alt="logo">
+        <nav>
+            <ul class="nav__links">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">View Deliveries</a></li>
+                <li><a href="#">Add New Delivery</a></li>
+                <li><a href="#">Profile</a></li>
+            </ul>
+        </nav>
+        <a class="LogOut" href="#"><button class='btn'>Log Out</button></a>
+    </header>
     <div id='app' class="container-fluid">
 
-        <div class="jumbotron jumbotron-fluid">
+        <div>
             <div class="container">
-                <h1 class="display-4">Delivery Order</h1>
+                <h1 class="display-4" style='color:#CEA68C; font-family: "Patua One", cursive;'>Delivery Order</h1>
                 <p class="lead">Fill in your delivery details and proceed for payment</p>
             </div>
         </div>
@@ -228,7 +256,7 @@
                                         this.error = data.message;
                                         // console.log(data.message);
                                     }
-                                     else {
+                                    else {
                                         this.error = false;
                                     }
                                 })

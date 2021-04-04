@@ -1,3 +1,4 @@
+
 -- phpMyAdmin SQL Dump
 -- version 4.7.4
 -- https://www.phpmyadmin.net/
@@ -56,9 +57,11 @@ CREATE TABLE IF NOT EXISTS `delivery` (
 -- Dumping data for table `order`
 --
 
-INSERT INTO `delivery` (`delivery_ID`, `driver_ID`, `customer_ID`, `delivery_date`, `timeslot`, `pickup_location`, `destination`, `delivery_item`, `description`, `payment_amount`, `payment_status`, `receiver_name`, `delivery_status`, `created`, `last_updated`) VALUES
-(1, 23, 12345678 , '2020-06-12', '2_to_4', 'Lentor Ave Blk 25', 'Yishun Street 22 Blk 299','Billy123', 'a cutie giraffe', '100', 'paid', 'sysy','NEW', '2019-06-10 02:14:55', '2020-06-12 02:14:55'),
-(2, 17, 23456789, '2020-06-17', '12_to_2', 'Bishan St 25 Blk 125', 'Tampines Street 17 Blk 300', 'uwubuntu', 'as cute as Billygoh', '100', 'paid', 'jwjw', 'NEW', '2019-06-15 03:14:55', '2020-06-17 02:14:55');
+INSERT INTO `delivery` (`delivery_ID`, `driver_ID`, `customer_ID`, `delivery_date`, `timeslot`, `pickup_location`, `destination`, `delivery_item`, `description`, `payment_amount`, `payment_status`, `receiver_name`, `delivery_status`,  `created`, `last_updated`) VALUES
+(1, 23, 12345678 , '2020-06-12', '2_to_4', 'Lentor Ave Blk 25', 'Yishun Street 22 Blk 299', 'Billy123', 'a cutie giraffe', '100', 'paid', 'sysy', 'On the way','2019-06-10 02:14:55', '2020-06-12 02:14:55'),
+(2, 17, 23456789, '2020-06-17', '12_to_2', 'Bishan St 25 Blk 125', 'Tampines Street 17 Blk 300', 'uwubuntu', 'as cute as Billygoh', '100', 'paid', 'jwjw', 'On the way', '2019-06-15 03:14:55', '2020-06-17 02:14:55'),
+(3, 54, 11112222, '2020-06-22', '2_to_4', 'Ang Mo Kio Street 34 Blk 277', 'Yishun Emerald Blk 23', 'apples', 'really fresh', '2000', 'unpaid', 'bernice', 'NEW', '2021-03-22 18:58:31', '2021-03-22 18:58:31'),
+(4, 66, 12345678, '2021-04-01', '4_to_6', '81 Victoria St, Singapore 188065', '21 Lower Kent Ridge Rd, University Hall, Singapore 119077', 'knife', 'kidnap billy hehe', '3000', 'unpaid', 'zong', 'NEW', '2021-04-01 23:05:17', '2021-04-01 23:05:17');
 
 
 COMMIT;

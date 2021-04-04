@@ -1,12 +1,13 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from os import environ
 
 app = Flask(__name__)
 
 CORS(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/driver'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:password@localhost:3306/driver'
 #there is a need for authentication to the database using root (user) and pass(if there is any)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -200,4 +201,4 @@ def update_driver(DID):
 
 
 if __name__ =='__main__':
-    app.run(port=5001, debug=True)
+    app.run(host='0.0.0.0', port=5001, debug=True)

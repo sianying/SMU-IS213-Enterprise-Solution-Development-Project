@@ -81,17 +81,6 @@ body {
     color: white;
 }
 
-.searchButton {
-    width: 125px;
-    height: 40px;
-    border: 1px solid white;
-    background: #F7F0E6;
-    text-align: center;
-    color: black;
-    border-radius: 0 20px 20px 0;
-    cursor: pointer;
-    font-size: 20px;
-}
 
         /*Resize the wrap to see the search bar change!*/
 .wrap{
@@ -101,3 +90,14 @@ body {
     left: 20%;
     transform: translate(-50%, -50%);
 } 
+
+#help {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    border-radius: 10px;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    text-decoration: none;
+}

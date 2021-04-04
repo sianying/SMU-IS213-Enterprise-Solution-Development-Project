@@ -32,28 +32,27 @@ def customer_view_details(customer_ID):
         
         # 1. get info stored in customer MS
         #result 1 is a list in the form [name, phone no, email, tele id]
-        result1 = get_customer_info(customer_ID)
+        # result1 = get_customer_info(customer_ID)
 
         # 2. retrieve all jobs from delivery MS matching the customer ID
         result2= retrieve_all_deliveries(customer_ID)
-        print("2nd function completed!")
 
         # 3. for each job, add the customer name and customer contact. Next, add driver name and contact no.
         # Once everything is ready, return the final_result. 
         list_of_deliveries=result2['data']['delivery_result']  
 
-        print("List of deliveries:")
-        print(list_of_deliveries)
+        # print("List of deliveries:")
+        # print(list_of_deliveries)
 
         final_result=[]
         for delivery in list_of_deliveries:
             # print("")
             # print ("initial delivery")
             # print(delivery)
-            delivery['customer_name']= result1[0]
-            delivery['customer_mobile']= result1[1]
-            delivery['customer_email']= result1[2]
-            delivery['customer_teleid']= result1[3]
+            # delivery['customer_name']= result1[0]
+            # delivery['customer_mobile']= result1[1]
+            # delivery['customer_email']= result1[2]
+            # delivery['customer_teleid']= result1[3]
 
             # print("")
             # print("final delivery")
@@ -81,41 +80,41 @@ def customer_view_details(customer_ID):
         }), 500
 
 
-def get_customer_info(customer_ID):
-    # 2. Invoke the customer microservice
-    print('\n-----Invoking customer microservice-----')
-    customer_result = invoke_http("http://localhost:5002/customer/" + str(customer_ID), method='GET')
-    print('customer_result:', customer_result)
+# def get_customer_info(customer_ID):
+#     # 2. Invoke the customer microservice
+#     print('\n-----Invoking customer microservice-----')
+#     customer_result = invoke_http("http://localhost:5002/customer/" + str(customer_ID), method='GET')
+#     print('customer_result:', customer_result)
 
-    # 3. Check the delivery result; if a failure, send it to the error microservice.
-    code = customer_result["code"]
-    if code not in range(200, 300):
-        print('\n\n-----Publishing the (customer error) message with routing_key=CustomerViewDetails.customer.error-----')
-        message=json.dumps(customer_result)
-        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="CustomerViewDetails.customer.error", 
-            body=message, properties=pika.BasicProperties(delivery_mode = 2))
+#     # 3. Check the delivery result; if a failure, send it to the error microservice.
+#     code = customer_result["code"]
+#     if code not in range(200, 300):
+#         print('\n\n-----Publishing the (customer error) message with routing_key=CustomerViewDetails.customer.error-----')
+#         message=json.dumps(customer_result)
+#         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="CustomerViewDetails.customer.error", 
+#             body=message, properties=pika.BasicProperties(delivery_mode = 2))
 
-        print("\nCustomer MS call status ({:d}) published to the RabbitMQ Exchange:".format(
-            code), customer_result)
+#         print("\nCustomer MS call status ({:d}) published to the RabbitMQ Exchange:".format(
+#             code), customer_result)
 
-        # print('\n\n-----Invoking error microservice as delivery fails-----')
-        # invoke_http("http://localhost:5007/error", method="POST", json=customer_result)
-        # # - reply from the invocation is not used; 
-        # # continue even if this invocation fails
-        # print("Delivery status ({:d}) sent to the error microservice:".format(
-        #     code), customer_result)
+#         # print('\n\n-----Invoking error microservice as delivery fails-----')
+#         # invoke_http("http://localhost:5007/error", method="POST", json=customer_result)
+#         # # - reply from the invocation is not used; 
+#         # # continue even if this invocation fails
+#         # print("Delivery status ({:d}) sent to the error microservice:".format(
+#         #     code), customer_result)
 
-        return {
-            "code": 501,
-            "data": {"customer_result": customer_result},
-            "message": "Failed to retrieve customer data, sent for error handling."
-        }
+#         return {
+#             "code": 501,
+#             "data": {"customer_result": customer_result},
+#             "message": "Failed to retrieve customer data, sent for error handling."
+#         }
 
-    data=customer_result['data']
-    returned_list=[data['CName'], data['CMobile'], data['CEmail'], data['CTeleID']]
-    print(returned_list)
+#     data=customer_result['data']
+#     returned_list=[data['CName'], data['CMobile'], data['CEmail'], data['CTeleID']]
+#     print(returned_list)
 
-    return returned_list
+#     return returned_list
     # return {
     #     "code": 201,
     #     "data": {
@@ -125,20 +124,19 @@ def get_customer_info(customer_ID):
 
 def retrieve_all_deliveries(customer_ID):
     # 2. Invoke the delivery microservice
-    print('\n-----Invoking delivery microservice-----')
+    #print('\n-----Invoking delivery microservice-----')
     delivery_result = invoke_http("http://localhost:5000/delivery/customer/" + str(customer_ID), method='GET')
-    print('delivery_result:', delivery_result)
+    #print('delivery_result:', delivery_result)
 
     # 3. Check the delivery result; if a failure, send it to the error microservice.
     code = delivery_result["code"]
     if code not in range(200, 300):
-        print('\n\n-----Publishing the (delivery error) message with routing_key=CustomerViewDetails.delivery.error-----')
+        #print('\n\n-----Publishing the (delivery error) message with routing_key=CustomerViewDetails.delivery.error-----')
         message=json.dumps(delivery_result)
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="CustomerViewDetails.delivery.error", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2))
 
-        print("\nDelivery MS Call status ({:d}) published to the RabbitMQ Exchange:".format(
-            code), delivery_result)
+        #print("\nDelivery MS Call status ({:d}) published to the RabbitMQ Exchange:".format(code), delivery_result)
 
         # print('\n\n-----Invoking error microservice as delivery fails-----')
         # invoke_http("http://localhost:5007/error", method="POST", json=delivery_result)
@@ -164,9 +162,9 @@ def add_driver_details(delivery):
     driver_ID=delivery['driver_ID']
 
      # 2. Invoke the driver microservice
-    print('\n-----Invoking driver microservice-----')
+    #print('\n-----Invoking driver microservice-----')
     driver_result = invoke_http("http://localhost:5001/driver/" + str(driver_ID), method='GET')
-    print('driver_result:', driver_result)
+    #print('driver_result:', driver_result)
 
     # 3. Check the delivery result; if a failure, send it to the error microservice.
     code = driver_result["code"]
@@ -176,8 +174,7 @@ def add_driver_details(delivery):
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="CustomerViewDetails.driver.error", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2))
 
-        print("\nDriver MS Call status ({:d}) published to the RabbitMQ Exchange:".format(
-            code), driver_result)
+        #print("\nDriver MS Call status ({:d}) published to the RabbitMQ Exchange:".format(code), driver_result)
 
         # print('\n\n-----Invoking error microservice as delivery fails-----')
         # invoke_http("http://localhost:5007/error", method="POST", json=driver_result)
