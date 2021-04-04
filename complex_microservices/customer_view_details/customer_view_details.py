@@ -12,7 +12,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
-import os
+import os 
 import requests
 
 from invokes import invoke_http
@@ -190,9 +190,9 @@ def add_driver_details(delivery):
         }
 
     #adding driver details to be added in the end
-    delivery['driver_name']=driver_result['data']['DName']
-    delivery['driver_mobile']=driver_result['data']['DMobile']
-    delivery['driver_email']= driver_result['data']['DEmail']
+    delivery['driver_name']=driver_result['data']['driver_name']
+    delivery['driver_mobile']=driver_result['data']['driver_mobile']
+    delivery['driver_email']= driver_result['data']['driver_email']
 
     return delivery
 
