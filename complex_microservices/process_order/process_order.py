@@ -6,7 +6,7 @@ import os, sys
 import requests
 from invokes import invoke_http
 
-# import amqp_setup
+import amqp_setup
 import pika
 import json
 
@@ -58,8 +58,8 @@ def process_order(customer_ID):
             # 1. Send order info {delivery order}
             order = processOrderCreation(session_id, delivery_data, customer_ID)
             if order:
-                # order_ID = order['delivery_ID']
-                # send_notification(order_ID)
+                order_ID = order['delivery_ID']
+                send_notification(order_ID)
 
                 print(data)
                 return data
@@ -292,18 +292,18 @@ def processOrderCreation(session_id, delivery_data, customer_ID):
 
 def send_notification(order_ID):
     #invoke the notification AMQP to inform customer of new delivery order
-    print('\n\n-----Invoking customer_notification microservice-----')
-    print('\n\n-----Publishing the (successful order creation) message with routing_key=customer.order.created-----')  
-    message_customer = "Your order has been created. Your order ID is", order_ID, "Thank you for using Cheetah Express! "
-    amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="customer.order.created", 
-            body=message_customer)
+    # print('\n\n-----Invoking customer_notification microservice-----')
+    customer_message = "Your delivery order #" + str(order_ID) + " has been successfully created! \n" + "Please proceed to 'View My Deliveries' to have a glimpse."
+    driver_message = "You have a new delivery order #" + str(order_ID) + "!\n" + "Please proceed to 'View My Deliveries' or 'View my Schedule' to have a glimpse."
 
-    #invoke the notification AMQP to inform driver of new delivery order
-    print('\n\n-----Invoking driver_notification microservice-----')
-    print('\n\n-----Publishing the (successful order creation) message with routing_key=driver.order.created-----')  
-    message_driver = "You have a new delivery order! The order ID is", order_ID
-    amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="driver.order.created", 
-            body=message_customer)
+    messages = json.dumps({
+            "customer_message": customer_message,
+            "driver_message": driver_message          
+    })
+
+    print('\n\n-----Publishing the (customer) message with routing_key=customer.order-----')
+    amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="customer.DeliveryCreated", body=messages)
+    amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="driver.DeliveryCreated", body=messages)
 
 # Execute this program if it is run as a main script (not by 'import')
 if __name__ == "__main__":
