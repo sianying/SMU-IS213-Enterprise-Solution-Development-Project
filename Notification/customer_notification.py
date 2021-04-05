@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 # The above shebang (#!) operator tells Unix-like environments
 # to run this file as a python3 script
-
+from flask import request
 import json
 import os
 
 import amqp_setup
-import telegram_send
+# import telegram_send
+from invokes import invoke_http
 
 monitorBindingKey='customer.#'
 
@@ -33,7 +34,8 @@ def processOrderLog(order):
 
 def send_telemessage(message):
     print("sending telegram message")
-    telegram_send.send(messages=[message['customer_message']])
+    customer_message = message['customer_message']
+    invoke_http('https://api.telegram.org/bot1771827825:AAHVkbX5b9YpUWE78cTcBjz0SwkHqhrPbFA/sendMessage?chat_id=230470702&text=' + customer_message, method='GET')
 
 
 if __name__ == "__main__":  # execute this program only if it is run as a script (not by 'import')

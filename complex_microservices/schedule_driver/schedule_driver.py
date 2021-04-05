@@ -20,7 +20,7 @@ app = Flask(__name__)
 CORS(app)
 
 HOST = '0.0.0.0'
-PORT = 51004
+PORT = 5104
 
 driver_URL = "http://localhost:5001/driver/"
 schedule_URL = "http://localhost:5004/schedule/"

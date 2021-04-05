@@ -6,7 +6,7 @@ import os, sys
 import requests
 from invokes import invoke_http
 
-# import amqp_setup
+import amqp_setup
 import pika
 import json
 
@@ -58,8 +58,8 @@ def process_order(customer_ID):
             # 1. Send order info {delivery order}
             order = processOrderCreation(session_id, delivery_data, customer_ID)
             if order:
-                # order_ID = order['delivery_ID']
-                # send_notification(order_ID)
+                order_ID = order['delivery_ID']
+                send_notification(order_ID)
 
                 print(data)
                 return data
@@ -201,109 +201,24 @@ def processOrderCreation(session_id, delivery_data, customer_ID):
     return delivery_created
 
 
-    # # Check the order result; if a failure, send it to the error microservice.
-    # code = order_result["code"]
-    # message = json.dumps(order_result)
-
-    # if code not in range(200, 300):
-    #     # Inform the error microservice
-    #     #print('\n\n-----Invoking error microservice as order fails-----')
-    #     print('\n\n-----Publishing the (order error) message with routing_key=order.error-----')
-
-    #     # invoke_http(error_URL, method="POST", json=order_result)
-    #     amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="order.error", 
-    #         body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
-    #     # make message persistent within the matching queues until it is received by some receiver 
-    #     # (the matching queues have to exist and be durable and bound to the exchange)
-
-    #     # - reply from the invocation is not used;
-    #     # continue even if this invocation fails        
-    #     print("\nOrder status ({:d}) published to the RabbitMQ Exchange:".format(
-    #         code), order_result)
-
-    #     # 7. Return error
-    #     return {
-    #         "code": 500,
-    #         "data": {"order_result": order_result},
-    #         "message": "Order creation failure sent for error handling."
-    #     }
-
-    # # Notice that we are publishing to "Activity Log" only when there is no error in order creation.
-    # # In http version, we first invoked "Activity Log" and then checked for error.
-    # # Since the "Activity Log" binds to the queue using '#' => any routing_key would be matched 
-    # # and a message sent to “Error” queue can be received by “Activity Log” too.
-
-    # else:
-    #     # 4. Record new order
-    #     # record the activity log anyway
-    #     #print('\n\n-----Invoking activity_log microservice-----')
-    #     print('\n\n-----Publishing the (order info) message with routing_key=order.info-----')        
-
-    #     # invoke_http(activity_log_URL, method="POST", json=order_result)            
-    #     amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="order.info", 
-    #         body=message)
-    
-    # print("\nOrder published to RabbitMQ Exchange.\n")
-    # # - reply from the invocation is not used;
-    # # continue even if this invocation fails
-    
-    # # 5. Send new order to shipping
-    # # Invoke the shipping record microservice
-    # print('\n\n-----Invoking shipping_record microservice-----')    
-    
-    # shipping_result = invoke_http(
-    #     shipping_record_URL, method="POST", json=order_result['data'])
-    # print("shipping_result:", shipping_result, '\n')
-
-    # # Check the shipping result;
-    # # if a failure, send it to the error microservice.
-    # code = shipping_result["code"]
-    # if code not in range(200, 300):
-    #     # Inform the error microservice
-    #     #print('\n\n-----Invoking error microservice as shipping fails-----')
-    #     print('\n\n-----Publishing the (shipping error) message with routing_key=shipping.error-----')
-
-    #     # invoke_http(error_URL, method="POST", json=shipping_result)
-    #     message = json.dumps(shipping_result)
-    #     amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="shipping.error", 
-    #         body=message, properties=pika.BasicProperties(delivery_mode = 2))
-
-    #     print("\nShipping status ({:d}) published to the RabbitMQ Exchange:".format(
-    #         code), shipping_result)
-
-    #     # 7. Return error
-    #     return {
-    #         "code": 400,
-    #         "data": {
-    #             "order_result": order_result,
-    #             "shipping_result": shipping_result
-    #         },
-    #         "message": "Simulated shipping record error sent for error handling."
-    #     }
-
-    # # 7. Return created order, shipping record
-    # return {
-    #     "code": 201,
-    #     "data": {
-    #         "order_result": order_result,
-    #         "shipping_result": shipping_result
-    #     }
-    # }
-
 def send_notification(order_ID):
     #invoke the notification AMQP to inform customer of new delivery order
-    print('\n\n-----Invoking customer_notification microservice-----')
-    print('\n\n-----Publishing the (successful order creation) message with routing_key=customer.order.created-----')  
-    message_customer = "Your order has been created. Your order ID is", order_ID, "Thank you for using Cheetah Express! "
-    amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="customer.order.created", 
-            body=message_customer)
+    # print('\n\n-----Invoking customer_notification microservice-----')
+    delivery_ID = order['data']['delivery_ID']
+    receiver_name = order['data']['receiver_name']
+    created = order['data']['created']
 
-    #invoke the notification AMQP to inform driver of new delivery order
-    print('\n\n-----Invoking driver_notification microservice-----')
-    print('\n\n-----Publishing the (successful order creation) message with routing_key=driver.order.created-----')  
-    message_driver = "You have a new delivery order! The order ID is", order_ID
-    amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="driver.order.created", 
-            body=message_customer)
+    customer_message = "Delivery Completed! +\n\nDelivery Order ID: " + str(delivery_ID) + " to " + str(receiver_name) +" has been successfully created on " + str(created) + "\nPlease proceed to 'View My Deliveries' to catch a glimpse!"
+    driver_message = "You have a new delivery order! \n\nDelivery Order ID: " + str(delivery_ID) + " has been successfully created on " + str(created) + "\nPlease proceed to 'View My Deliveries' or 'View my Schedule' to catch a glimpse!"
+
+    messages = json.dumps({
+            "customer_message": customer_message,
+            "driver_message": driver_message          
+    })
+
+    print('\n\n-----Publishing the (customer) message with routing_key=customer.order-----')
+    amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="customer.DeliveryCreated", body=messages)
+    amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="driver.DeliveryCreated", body=messages)
 
 # Execute this program if it is run as a main script (not by 'import')
 if __name__ == "__main__":
