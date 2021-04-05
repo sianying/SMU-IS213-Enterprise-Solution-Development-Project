@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # The above shebang (#!) operator tells Unix-like environments
 # to run this file as a python3 script
-from flask import Flask, request, jsonify
+from flask import request
 import json
 import os
 
 import amqp_setup
-import telegram_send
+# import telegram_send
 from invokes import invoke_http
 
 monitorBindingKey='*.error'
