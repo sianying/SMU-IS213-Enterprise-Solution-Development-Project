@@ -35,6 +35,7 @@ def processOrderLog(order):
 def send_telemessage(message):
     print("sending telegram message")
     customer_message = message['customer_message']
+    # print(customer_message)
     invoke_http('https://api.telegram.org/bot1771827825:AAHVkbX5b9YpUWE78cTcBjz0SwkHqhrPbFA/sendMessage?chat_id=230470702&text=' + customer_message, method='GET')
 
 
