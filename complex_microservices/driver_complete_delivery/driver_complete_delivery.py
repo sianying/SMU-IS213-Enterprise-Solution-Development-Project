@@ -99,8 +99,9 @@ def update_delivery_status(delivery, delivery_ID):
     customer_and_driver_msg = "Delivery Completed! \n\n" + "Delivery Order ID: " + str(delivery_result['data']['delivery_ID']) + " was delivered by " + str(delivery_driver) + " to " + str(delivery_result['data']['receiver_name']) + " on " + str(delivery_result['data']['last_updated'])
 
     messages = json.dumps({
-            "customer_message": customer_and_driver_msg          
-        })
+            "customer_message": customer_and_driver_msg,
+            "driver_message": customer_and_driver_msg         
+    })
 
     print('\n\n-----Publishing the (customer) message with routing_key=customer.order-----')
     amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="customer.CompleteDelivery", body=messages)

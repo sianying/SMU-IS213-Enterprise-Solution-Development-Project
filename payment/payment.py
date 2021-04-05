@@ -48,7 +48,7 @@ def create_checkout_session():
                 # }
         ],
             mode="payment",
-            success_url= "http://localhost/Github/UI/payment/success.html" + "?session_id={CHECKOUT_SESSION_ID}",
+            success_url= "http://localhost/ESD/UI(General)/payment/success.html" + "?session_id={CHECKOUT_SESSION_ID}",
             cancel_url="http://localhost/ESD/Project/cancel.html"
         )
         return jsonify({'id': checkout_session.id})

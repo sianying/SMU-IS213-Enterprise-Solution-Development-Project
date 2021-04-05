@@ -142,6 +142,7 @@
                             <th>Delivery Date</th>
                             <th>Pickup Location</th>
                             <th>Destination</th>
+                            <th>Driver Mobile Number</th>
                             <th>Payment Status</th>
                         </tr>
                         <tr v-for="delivery in deliveries">
@@ -152,6 +153,7 @@
                                 <td>{{delivery.delivery_date.slice(0,-12)}}</td>
                                 <td>{{delivery.pickup_location}}</td>
                                 <td>{{delivery.destination}}</td>
+                                <td>{{delivery.driver_mobile}}</td>
                                 <td>{{delivery.payment_status}}</td>
 
                         </tr>
@@ -160,7 +162,9 @@
             </div>
         </div>
         <script>
-            var get_details_url = "http://localhost:5102/customer_view_details/12345678"
+            var session = JSON.parse(sessionStorage.getItem("account_details"));
+            var customer_ID = session.customer_ID;
+            var get_details_url = "http://localhost:5102/customer_view_details/" + customer_ID;
             var app = new Vue({
                 el: "#app",
                 data:{
@@ -200,7 +204,7 @@
                 }
             })
 
-            var myVar;
+        var myVar;
         
         function myFunction() {
             myVar = setTimeout(showPage, 3000);

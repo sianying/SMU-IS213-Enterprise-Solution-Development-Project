@@ -45,6 +45,7 @@ def customer_view_details(customer_ID):
         # print(list_of_deliveries)
 
         final_result=[]
+        print("start")
         for delivery in list_of_deliveries:
             # print("")
             # print ("initial delivery")
@@ -60,7 +61,7 @@ def customer_view_details(customer_ID):
             add_driver_details(delivery)
 
             final_result.append(delivery)
-
+        print("end")
         # print("")
         # print(final_result)
 
@@ -124,7 +125,7 @@ def customer_view_details(customer_ID):
 
 def retrieve_all_deliveries(customer_ID):
     # 2. Invoke the delivery microservice
-    #print('\n-----Invoking delivery microservice-----')
+    print('\n-----Invoking delivery microservice-----')
     delivery_result = invoke_http("http://localhost:5000/delivery/customer/" + str(customer_ID), method='GET')
     #print('delivery_result:', delivery_result)
 
@@ -162,7 +163,7 @@ def add_driver_details(delivery):
     driver_ID=delivery['driver_ID']
 
      # 2. Invoke the driver microservice
-    #print('\n-----Invoking driver microservice-----')
+    print('\n-----Invoking driver microservice-----')
     driver_result = invoke_http("http://localhost:5001/driver/" + str(driver_ID), method='GET')
     #print('driver_result:', driver_result)
 
