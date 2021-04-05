@@ -305,12 +305,14 @@
     function signUpValidate(){
         document.getElementById("errorSU").innerHTML = '';
         var fullnameSU = document.getElementById("fullnameSU").value;
-        var usernameSU = document.getElementById("usernameSU").value;
+        var usernameSU = document.getElementById("UsernameSU").value;
         var emailSU = document.getElementById("emailSU").value;
         var passwordSU = document.getElementById("passwordSU").value;
+        var teleSU = document.getElementById('teleSU').value;
+        var contactSU = document.getElementById('contactSU').value;
         var errors = [];
 
-            if (fullnameSU === "" || usernameSU === "" || emailSU === "" || passwordSU === ""){
+            if (fullnameSU === "" || usernameSU === "" || emailSU === "" || passwordSU === "" || teleSU === '' || contactSU === ''){
                 event.preventDefault();
                 errors.push('Error: None of your fields can be empty');
             };
