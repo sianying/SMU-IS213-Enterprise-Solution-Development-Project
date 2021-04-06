@@ -4,27 +4,27 @@ volumes:
     rabbitmq_data:
  
 services:
-    #database
-    cheetah_db:
-        build:
-            context: ./
-            dockerfile: cheetah_db.Dockerfile
-        image: mysql:5.7
-        restart: always
-        environment:
-            MYSQL_DATABASE: 'cheetah_db'
-            MYSQL_USER: 'root'
-            MYSQL_PASSWORD: ''
-            MYSQL_ROOT_PASSWORD: ''
-        ports:
-        # <Port exposed> : < MySQL Port running inside container>
-            - '3306:3306'
-        expose:
-          # Opens port 3306 on the container
-            - '3306'
-        # Where our data will be persisted
-        volumes:
-            - my-db:/var/lib/mysql
+    # #database
+    # cheetah_db:
+    #     build:
+    #         context: ./
+    #         dockerfile: cheetah_db.Dockerfile
+    #     image: mysql:5.7
+    #     restart: always
+    #     environment:
+    #         MYSQL_DATABASE: 'cheetah_db'
+    #         MYSQL_USER: 'root'
+    #         MYSQL_PASSWORD: ''
+    #         MYSQL_ROOT_PASSWORD: ''
+    #     ports:
+    #     # <Port exposed> : < MySQL Port running inside container>
+    #         - '3306:3306'
+    #     expose:
+    #       # Opens port 3306 on the container
+    #         - '3306'
+    #     # Where our data will be persisted
+    #     volumes:
+    #         - my-db:/var/lib/mysql
 
 
     # 6 simple microservices
@@ -40,6 +40,7 @@ services:
             dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/cheetah_db
             PYTHONUNBUFFERED: 1
 
+
     #port 5001
     driver:
         build:
@@ -50,6 +51,7 @@ services:
         environment:
             dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/cheetah_db
             PYTHONUNBUFFERED: 1
+
 
     #port 5002
     customer:
@@ -62,6 +64,7 @@ services:
             dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/cheetah_db
             PYTHONUNBUFFERED: 1
 
+
     #port 5003        
     payment:
         build:
@@ -71,6 +74,7 @@ services:
         restart: always
         environment:
             PYTHONUNBUFFERED: 1
+
 
     #port 5004        
     schedule:
@@ -82,6 +86,7 @@ services:
         environment:
             dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/cheetah_db
             PYTHONUNBUFFERED: 1
+            
     
     #port 5005
     login:
@@ -236,7 +241,7 @@ services:
             deliveryURL: http://delivery:5000/delivery
             driverURL: http://driver:5001/driver
 
-            
+
     #port 5105
     register_user:
         image: <dockerid>/register_user:1.0
