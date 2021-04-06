@@ -1,13 +1,11 @@
 # Process workflow
 
 # 1. customer logs into his account, a customer id is provided
-# 2. invoke customer microservice to retrieve customer details
-# 3. customer microservice returns customer name and contact number ONLY
-# 4. invoke delivery microservice to return all jobs that match the customer's id
-# 5. for each job, return relevant job details only: timeslot, driver_id, pickup location, destination
-# 6. using the driver_id returned earlier, invoke driver microservice retrieving details of driver
-# 7. driver microservice returns driver name and contact number
-# 8. for each job, display timeslot, customer_name, customer contact, driver name, driver contact, pickup location and destination, status on UI
+# 4. invoke delivery microservice to return all deliveries that match the customer's id
+# 5. for each job, return all delivery details
+# 6. for each delivery returned, use the driver id and invoke driver microservice to retrieve details of each driver
+# 7. driver microservice returns driver details (name, teleid, mobile, email)
+# 8. after collating the info, display everything on UI
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -54,6 +52,7 @@ def customer_view_details(customer_ID):
                     delivery['driver_name']=driver['driver_name']
                     delivery['driver_mobile']=driver['driver_mobile']
                     delivery['driver_email']= driver['driver_email']
+                    delivery['driver_teleID']=driver['driver_teleID']
                     break
         # print("")
         # print(final_result)
@@ -156,10 +155,7 @@ def retrieve_all_deliveries(customer_ID):
 if __name__ == "__main__":
     print("This is flask " + os.path.basename(__file__) +
           " for customer viewing delivery details...")
-    app.run(host="0.0.0.0", port=5102, debug=True)
-    
-    #change the port to some random number like 6123 if running the slower but "more correct" customer_view_details.py
-    
+    app.run(host="0.0.0.0", port=6123, debug=True)
     # Notes for the parameters:
     # - debug=True will reload the program automatically if a change is detected;
     #   -- it in fact starts two instances of the same flask program,
