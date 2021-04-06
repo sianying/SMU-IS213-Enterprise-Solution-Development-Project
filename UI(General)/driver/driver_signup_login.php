@@ -118,9 +118,9 @@
         .form-container {
             position: absolute;
             width: 305px;
-            height: 550px;
+            height: 620px;
             background-color:#EEE2CC;
-            top: -60%;
+            top: -75%;
             left: 20px;
             -webkit-box-shadow: 9px 10px 10px 0px rgba(0, 0, 0, 0.75);
             box-shadow: 9px 10px 10px 0px rgba(0, 0, 0, 0.75);
@@ -263,9 +263,10 @@
                                 <input type="text" name="username" id = 'UsernameSU' placeholder="Username"><i class="far fa-address-card"></i></input>
                                 <input type = 'text' name='handle' id = 'teleSU' placeholder='Telegram Handle'><i class="fa fa-telegram"></i></input>
                                 <input type = 'text' name ='contact' id ='contactSU' placeholder='Contact Number'><i class="fas fa-phone-volume"></i></input>
-                                <input type = 'text' name ='carplate' id ='carplateSU' placeholder='Car Plate Number'><i class="fas fa-phone-volume"></i></input>
+                                <input type = 'text' name ='carplate' id ='carplateSU' placeholder='Car Plate Number'><i class="fas fa-car"></i></i></input>
                                 <input type="text" name="email" id = 'emailSU' placeholder="Email"><i class="fa fa-envelope-o"></i></input>
                                 <input type="password" name="password" id='passwordSU' placeholder="Password"><i class="fa fa-lock"></i></input>
+                                <input type="password" name="confirmpassword" id='confirmpasswordSU' placeholder="Confirm Password"><i class="fa fa-lock"></i></input>
                                 <button type="submit" class="form-btn " style="margin-left: 10%;" onclick = "signUpValidate()" >Sign Up</button>
                                 <div id = "errorSU"></div>
                             </form>
@@ -312,20 +313,26 @@
         var teleSU = document.getElementById('teleSU').value;
         var carplateSU = document.getElementById('carplateSU').value;
         var contactSU = document.getElementById('contactSU').value;
+        var confirmpasswordSU = document.getElementById('confirmpasswordSU').value;
         var errors = [];
 
             if (fullnameSU === "" || usernameSU === "" || emailSU === "" || passwordSU === "" || teleSU === '' || contactSU === '' || carplateSU === ''){
                 event.preventDefault();
-                errors.push('Error: None of your fields can be empty');
+                errors.push('None of your fields can be empty');
             };
 
             if (!emailSU.includes('@') || !emailSU.includes('.com')){
                 event.preventDefault();
-                errors.push('Error: Please enter a valid email');
+                errors.push('Please enter a valid email');
+            };
+
+            if (passwordSU !== confirmpasswordSU){
+                event.preventDefault();
+                errors.push('Password and confirm password does not match.');
             };
 
             for (error of errors){
-                document.getElementById("errorSU").innerHTML += `<p style = 'margin: 2px; font-size: 10px; color:red;'>${error}</p>`;
+                document.getElementById("errorSU").innerHTML += `<p style = 'margin: 2px; font-size: 10px; color:red;text-align:center;'>${error}</p>`;
             }
         };
 
@@ -334,7 +341,7 @@
         var passwordLI = document.getElementById("passwordLI").value;
 
         if (username === "" || passwordLI === ""){
-            document.getElementById("errorLI").innerHTML = `<p style = 'margin: 2px; font-size: 10px; color:red;'>Error: None of your fields can be empty</p>`;
+            document.getElementById("errorLI").innerHTML = `<p style = 'margin: 2px; font-size: 10px; color:red;text-align:center;'>None of your fields can be empty</p>`;
 
         };
     };
@@ -412,7 +419,8 @@
             });
             console.log(json);
             sessionStorage.setItem("account_details", json);
-            location.replace("../customer/delivery_order.html");
+            location.replace("../driver/driver_home.html");
+            
         })
         .catch(function (error) {
             console.log("Error:", error);

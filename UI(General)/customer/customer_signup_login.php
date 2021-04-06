@@ -118,9 +118,9 @@
         .form-container {
             position: absolute;
             width: 305px;
-            height: 500px;
+            height: 580px;
             background-color:#EEE2CC;
-            top: -50%;
+            top: -65%;
             left: 20px;
             -webkit-box-shadow: 9px 10px 10px 0px rgba(0, 0, 0, 0.75);
             box-shadow: 9px 10px 10px 0px rgba(0, 0, 0, 0.75);
@@ -266,6 +266,7 @@
                                 <input type = 'number' name ='contact' id ='contactSU' placeholder='Contact Number'><i class="fas fa-phone-volume"></i></input>
                                 <input type="text" name="email" id = 'emailSU' placeholder="Email"><i class="fa fa-envelope-o"></i></input>
                                 <input type="password" name="password" id='passwordSU' placeholder="Password"><i class="fa fa-lock"></i></input>
+                                <input type="password" name="confirmpassword" id='confirmpasswordSU' placeholder="Confirm Password"><i class="fa fa-lock"></i></input>
                                 <button type="button" id="signup-button" class="form-btn " style="margin-left: 10%;" onclick = "signUpValidate()" >Sign Up</button>
                                 <div id = "errorSU"></div>
                             </form>
@@ -311,20 +312,26 @@
         var passwordSU = document.getElementById("passwordSU").value;
         var teleSU = document.getElementById('teleSU').value;
         var contactSU = document.getElementById('contactSU').value;
+        var confirmpasswordSU = document.getElementById('confirmpasswordSU').value;
         var errors = [];
 
             if (fullnameSU === "" || usernameSU === "" || emailSU === "" || passwordSU === "" || teleSU === '' || contactSU === ''){
                 event.preventDefault();
-                errors.push('Error: None of your fields can be empty');
+                errors.push('None of your fields can be empty.');
             };
 
             if (!emailSU.includes('@') || !emailSU.includes('.com')){
                 event.preventDefault();
-                errors.push('Error: Please enter a valid email');
+                errors.push('Please enter a valid email.');
+            };
+
+            if (passwordSU !== confirmpasswordSU){
+                event.preventDefault();
+                errors.push('Password and confirm password does not match.');
             };
 
             for (error of errors){
-                document.getElementById("errorSU").innerHTML += `<p style = 'margin: 2px; font-size: 10px; color:red;'>${error}</p>`;
+                document.getElementById("errorSU").innerHTML += `<p style = 'margin: 2px; font-size: 10px; color:red; text-align:center;'>${error}</p>`;
             }
         };
 
@@ -333,7 +340,7 @@
         var passwordLI = document.getElementById("passwordLI").value;
 
         if (username === "" || passwordLI === ""){
-            document.getElementById("errorLI").innerHTML = `<p style = 'margin: 2px; font-size: 10px; color:red;'>Error: None of your fields can be empty</p>`;
+            document.getElementById("errorLI").innerHTML = `<p style = 'margin: 2px; font-size: 10px; color:red;text-align:center;'>None of your fields can be empty</p>`;
 
         };
     };
