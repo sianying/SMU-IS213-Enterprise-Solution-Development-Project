@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS `login` (
     `account_type` varchar(8) NOT NULL,
     `customer_ID` int(),
     `driver_ID` int(),
-    PRIMARY KEY (`username`),
+    PRIMARY KEY (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
