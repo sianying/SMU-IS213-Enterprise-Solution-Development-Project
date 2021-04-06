@@ -109,7 +109,7 @@
             <div class='container'>
                 <div class='row'>
                     <div class='col'></div>
-                    <div class='col'><h1 class='pt-3' style='color:#CEA68C; font-family: "Patua One", cursive;'>My Deliveries</h1></div>
+                    <div class='col'><h1 class='pt-3' style='color:#CEA68C; font-family: "Patua One", cursive; margin-left: 60px;'>My Deliveries</h1></div>
                     <div class='col'></div>
                 </div>
                 <div class='row' v-if='!hasDeliveries'>
@@ -126,7 +126,7 @@
                             <div class='col mx-auto'></div>
                         </div>
                     </div>
-                <table v-if='hasDeliveries' class = "table table-striped animate__animated animate__backInUp">
+                <table v-if='hasDeliveries' class = "table table-striped animate__animated animate__backInUp" style = 'font-family: roboto; color: #808080;'>
                     <!-- <div class='col-md-8 my-3' style='background-color:#FFFAF0;'>
                         hello
                     </div>
@@ -162,9 +162,9 @@
             </div>
         </div>
         <script>
-            var session = JSON.parse(sessionStorage.getItem("account_details"));
-            var customer_ID = session.customer_ID;
-            var get_details_url = "http://localhost:5102/customer_view_details/" + customer_ID;
+            // var session = JSON.parse(sessionStorage.getItem("account_details"));
+            // var customer_ID = session.customer_ID;
+            var get_details_url = "http://localhost:5102/customer_view_details";
             var app = new Vue({
                 el: "#app",
                 data:{
