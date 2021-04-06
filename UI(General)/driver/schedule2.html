@@ -263,6 +263,22 @@
                                 }
                                 if(this.delivery_status == 'Completed!'){
                                     this.statusPresent = false;
+                                    var notify_complete_url = "http://localhost:5103/complete_delivery/" + delivery_id; 
+                                    const response =
+                                        fetch(notify_complete_url)
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                console.log(response);
+                                                console.log(data);
+                                                
+                                                
+                                            })
+                                            .catch(error => {
+                                                // Errors when calling the service; such as network error, 
+                                                // service offline, etc
+                                                console.log(this.message + error);
+
+                                            });
                                 }
                             }
                         })
