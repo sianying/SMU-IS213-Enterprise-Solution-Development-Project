@@ -21,8 +21,8 @@ SET time_zone = "+08:00";
 --
 -- Database: `schedule`
 --
-CREATE DATABASE IF NOT EXISTS `schedule_db` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-USE `schedule_db`;
+CREATE DATABASE IF NOT EXISTS `schedule` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `schedule`;
 
 -- --------------------------------------------------------
 
