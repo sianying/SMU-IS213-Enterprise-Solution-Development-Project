@@ -58,8 +58,8 @@ def process_order(customer_ID):
             # 1. Send order info {delivery order}
             order = processOrderCreation(session_id, delivery_data, customer_ID)
             if order:
-                order_ID = order['delivery_ID']
-                send_notification(order_ID)
+                # order_ID = order['delivery_ID']
+                send_notification(order)
 
                 print(data)
                 return data
@@ -206,7 +206,7 @@ def processOrderCreation(session_id, delivery_data, customer_ID):
     return delivery_created
 
 
-def send_notification(order_ID):
+def send_notification(order):
     #invoke the notification AMQP to inform customer of new delivery order
     # print('\n\n-----Invoking customer_notification microservice-----')
     delivery_ID = order['data']['delivery_ID']
