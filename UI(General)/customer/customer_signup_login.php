@@ -263,7 +263,7 @@
                                 <input type="text" name="fullname" id = 'fullnameSU' placeholder="Full Name"><i class="fa fa-user"></i></input>
                                 <input type="text" name="username" id = 'UsernameSU' placeholder="Username"><i class="far fa-address-card"></i></input>
                                 <input type = 'text' name='handle' id = 'teleSU' placeholder='Telegram Handle'><i class="fa fa-telegram"></i></input>
-                                <input type = 'text' name ='contact' id ='contactSU' placeholder='Contact Number'><i class="fas fa-phone-volume"></i></input>
+                                <input type = 'number' name ='contact' id ='contactSU' placeholder='Contact Number'><i class="fas fa-phone-volume"></i></input>
                                 <input type="text" name="email" id = 'emailSU' placeholder="Email"><i class="fa fa-envelope-o"></i></input>
                                 <input type="password" name="password" id='passwordSU' placeholder="Password"><i class="fa fa-lock"></i></input>
                                 <button type="button" id="signup-button" class="form-btn " style="margin-left: 10%;" onclick = "signUpValidate()" >Sign Up</button>
@@ -462,14 +462,17 @@
                     "username": result.data.username,
                     "customer_ID": result.data.customer_ID,
                     "account_type": "customer"
-            });
-            console.log(json);
-            sessionStorage.setItem("account_details", json);
-            location.replace("../customer/delivery_order.html");
+                    });
+                console.log(json);
+                sessionStorage.setItem("account_details", json);
+                location.replace("../customer/delivery_order.html");
             }
             else{
                 var message = "Verification not completed or verification failed."
                 console.log(message);
+                $("#errorSU").html(`<p style = 'margin: 2px; font-size: 10px; color:red;'>
+                                        The username is taken or the account exists
+                                    </p>`);
                 return message
             }
         })
