@@ -263,7 +263,27 @@
                                 }
                                 if(this.delivery_status == 'Completed!'){
                                     this.statusPresent = false;
-                                    var notify_complete_url = "http://localhost:5103/complete_delivery/" + delivery_id; 
+                                    
+                                }
+                            }
+                        })
+                        .catch(error => {
+                            // Errors when calling the service; such as network error, 
+                            // service offline, etc
+                            console.log(this.message + error);
+
+                        });
+                },
+                updateSchedule: function(){
+                update_status_url = 'http://localhost:5000/delivery'
+                if(this.delivery_status == 'NEW'){
+                    this.delivery_status = "In Progress";
+                    this.update_delivery_status = "Update to Completed";
+                }   else if(this.delivery_status == 'In Progress'){
+                    this.delivery_status = "Completed!";
+                    this.update_delivery_status = "";
+                    this.statusPresent = false;
+                    var notify_complete_url = "http://localhost:5103/complete_delivery/" + delivery_id; 
                                     const detail = {
                                         method: "POST",
                                         headers: {
@@ -289,25 +309,6 @@
                                                 console.log(this.message + error);
 
                                             });
-                                }
-                            }
-                        })
-                        .catch(error => {
-                            // Errors when calling the service; such as network error, 
-                            // service offline, etc
-                            console.log(this.message + error);
-
-                        });
-                },
-                updateSchedule: function(){
-                update_status_url = 'http://localhost:5000/delivery'
-                if(this.delivery_status == 'NEW'){
-                    this.delivery_status = "In Progress";
-                    this.update_delivery_status = "Update to Completed";
-                }   else if(this.delivery_status == 'In Progress'){
-                    this.delivery_status = "Completed!";
-                    this.update_delivery_status = "";
-                    this.statusPresent = false;
                 }   
                 const details = {
                     method: "PUT",
