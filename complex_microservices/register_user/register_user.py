@@ -53,7 +53,7 @@ def register_user(username):
             # Invoke the Login Microservice (/check_username_exist)
             print('\n-----Invoking Login microservice-----')
             username_data = invoke_http(login_URL + "/" + "check_username_exist" + "/" + username, method='GET')
-            print('payment_results:'+ username_data + "\n")
+            print('signup_results:'+ username_data + "\n")
             #code 200 means username not taken
             #code 400 means bad request username is taken
             code= username_data['code']
