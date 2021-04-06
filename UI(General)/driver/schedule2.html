@@ -258,6 +258,9 @@
                                 if(this.delivery_status == 'NEW'){
                                     this.update_delivery_status = 'Update to In Progress';
                                 }
+                                else if(this.delivery_status == 'In Progress'){
+                                    this.update_delivery_status = 'Update to Completed';
+                                }
                                 if(this.delivery_status == 'Completed!'){
                                     this.statusPresent = false;
                                 }
