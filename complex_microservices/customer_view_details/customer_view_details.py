@@ -162,10 +162,10 @@ def retrieve_all_deliveries(customer_ID):
 def add_driver_details(delivery):
     driver_ID=delivery['driver_ID']
 
-     # 2. Invoke the driver microservice
+    # 2. Invoke the driver microservice
     print('\n-----Invoking driver microservice-----')
     driver_result = invoke_http("http://localhost:5001/driver/" + str(driver_ID), method='GET')
-    #print('driver_result:', driver_result)
+    print('driver_result:', driver_result)
 
     # 3. Check the delivery result; if a failure, send it to the error microservice.
     code = driver_result["code"]
@@ -201,7 +201,7 @@ def add_driver_details(delivery):
 # Execute this program if it is run as a main script (not by 'import')
 if __name__ == "__main__":
     print("This is flask " + os.path.basename(__file__) +
-          " for customer viewing delivery details...")
+            " for customer viewing delivery details...")
     app.run(host="0.0.0.0", port=5102, debug=True)
     # Notes for the parameters:
     # - debug=True will reload the program automatically if a change is detected;

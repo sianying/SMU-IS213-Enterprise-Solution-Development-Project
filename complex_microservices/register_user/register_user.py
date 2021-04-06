@@ -6,6 +6,7 @@ from os import environ
 
 import requests
 from invokes import invoke_http
+import amqp_setup
 
 # import amqp_setup
 import pika
@@ -53,7 +54,15 @@ def register_user(username):
             # Invoke the Login Microservice (/check_username_exist)
             print('\n-----Invoking Login microservice-----')
             username_data = invoke_http(login_URL + "/" + "check_username_exist" + "/" + username, method='GET')
-            print('signup_results:'+ username_data + "\n")
+            print('payment_results:'+ username_data + "\n")
+
+            code = username_data["code"]
+            if code not in range(200, 300):
+                print('\n\n-----Publishing the (login error) message with routing_key=login.error-----')
+                message=json.dumps(username_data)
+                amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="login.error", 
+                    body=message, properties=pika.BasicProperties(delivery_mode = 2))
+
             #code 200 means username not taken
             #code 400 means bad request username is taken
             code= username_data['code']
@@ -115,10 +124,12 @@ def registerCustomer(data):
     customer_data = invoke_http(customer_URL, method='POST', json=customer_data)
     print('customer_results:' + str(customer_data) + "\n")
 
-    code = customer_data['code']
-    if code not in range(200,300):
-        #send over to error microservice for logging
-        pass
+    code = customer_data["code"]
+    if code not in range(200, 300):
+        print('\n\n-----Publishing the (login error) message with routing_key=login.error-----')
+        message=json.dumps(customer_data)
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="login.error", 
+            body=message, properties=pika.BasicProperties(delivery_mode = 2))
     
     #return customer_ID
     customer_ID = customer_data['data']['customer_ID']
@@ -139,10 +150,12 @@ def registerDriver(data):
     driver_data = invoke_http(driver_URL, method='POST', json=driver_data)
     print('driver_results:' + str(driver_data) + "\n")
 
-    code = driver_data['code']
-    if code not in range(200,300):
-        #send over to error microservice for logging
-        pass
+    code = driver_data["code"]
+    if code not in range(200, 300):
+        print('\n\n-----Publishing the (driver error) message with routing_key=driver.error-----')
+        message=json.dumps(driver_data)
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="driver.error", 
+            body=message, properties=pika.BasicProperties(delivery_mode = 2))
         
     #return driver_ID
     driver_ID = driver_data['data']['driver_ID']
@@ -151,10 +164,12 @@ def registerDriver(data):
 
 def registerUserAccount(username, user_ID, password, account_type):
     #1. Restructure the data for Login Microservice account registration (POST)
+    user_ID_header = account_type + "_ID"
     account_data = {
         "password": password,
         "account_type": account_type,
-        "ID": user_ID
+        # "ID": user_ID
+        user_ID_header: user_ID
     }
 
     # 2. Invoke Login MS to register user 
@@ -165,9 +180,11 @@ def registerUserAccount(username, user_ID, password, account_type):
 
     #error handling
     code = account_registered['code']
-    if code not in range(200,300):
-        #send to error microservice for error logging via AMQP
-        pass
+    if code not in range(200, 300):
+        print('\n\n-----Publishing the (login error) message with routing_key=login.error-----')
+        message=json.dumps(account_registered)
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="login.error", 
+            body=message, properties=pika.BasicProperties(delivery_mode = 2))
 
     return account_registered
         #data format that is being returned

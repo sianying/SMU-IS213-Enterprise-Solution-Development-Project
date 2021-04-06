@@ -5,8 +5,8 @@ import os, sys
 
 import requests
 from invokes import invoke_http
-
 import amqp_setup
+
 import pika
 import json
 
@@ -118,10 +118,11 @@ def processOrderCreation(session_id, delivery_data, customer_ID):
 
     # check the schedule_driver results: if failure send to error microservice for logging
     code = selected_driver['code']
-    if code not in range(200,300):
-        # print('\n\n-----Invoking error microservice as schedule driver fails-----')
-        #send to error microservice via rabbitMQ
-        return 
+    if code not in range(200, 300):
+        print('\n\n-----Publishing the (schedule_driver error) message with routing_key=ScheduleDriver.schedule.error-----')
+        message=json.dumps(selected_driver)
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="ScheduleDriver.schedule.error", 
+            body=message, properties=pika.BasicProperties(delivery_mode = 2))
 
     #Initialise the driver ID and data for updating of their schedule
     selected_schedule_ID = selected_driver['data']['SID']
@@ -145,8 +146,10 @@ def processOrderCreation(session_id, delivery_data, customer_ID):
     #check the driver updated results: if failure send to error microservice for logging
     code = driver_schedule_updated['code']
     if code not in range(200, 300):
-        #send over to error microservice for logging
-        return
+        print('\n\n-----Publishing the (update schedule error) message with routing_key=schedule.error-----')
+        message=json.dumps(driver_schedule_updated)
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="schedule.error", 
+            body=message, properties=pika.BasicProperties(delivery_mode = 2))
     
     #7. Invoke the Driver Microservice to get the details of the allocated driver
     # print('\n-----Invoking Driver Microservice-----')
@@ -195,9 +198,11 @@ def processOrderCreation(session_id, delivery_data, customer_ID):
     #check the newly created delivery order: if failure send to error microservice for logging
     code = delivery_created['code']
     if code not in range(200, 300):
-        #send over to error microservice for logging
-        return
-    
+        print('\n\n-----Publishing the (delivery error) message with routing_key=delivery.error-----')
+        message=json.dumps(delivery_created)
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="delivery.error", 
+            body=message, properties=pika.BasicProperties(delivery_mode = 2))
+        
     return delivery_created
 
 
