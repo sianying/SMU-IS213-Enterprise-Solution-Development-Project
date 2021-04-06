@@ -9,9 +9,11 @@
 <link href='https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@4.4.2/main.min.css' rel='stylesheet' />
 
 <!--Calendar JS-->
-<script src='/assets/demo-to-codepen.js'></script>
 <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/core@4.4.2/main.min.js'></script>
 <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@4.4.2/main.min.js'></script>
+
+<!-- Vue JS -->
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
 
 <!--Popper & Tooltip-->
 <script src='https://unpkg.com/popper.js/dist/umd/popper.min.js'></script>
@@ -34,6 +36,9 @@
 
 <!-- External CSS styling -->
 <link rel="stylesheet" href="../css/schedule.css">
+
+<!-- Axios -->
+<script src="https://unpkg.com/axios/dist/axios.js"></script>
 
 <style>
 
@@ -142,111 +147,138 @@
             <ul class="nav__links">
                 <li><a href="../driver/driver_home.html">Home</a></li>
                 <li><a href="../driver/schedule.html">View Schedule</a></li>
-                <li><a href="../driver/driver_profile.html">Profile</a></li>
+                <li><a href="../customer/profile.html">Profile</a></li>
             </ul>
         </nav>
-        <a class="LogOut" href="../landing.html"><button class='btn'>Log Out</button></a>
+        <a class="LogOut" href="../landing-page.html"><button class='btn'>Log Out</button></a>
     </header>
+    <body>
+      <div style = 'display: flex;
+      justify-content: center;' id='app'>
+          <div id='calendar'  style="width: 50%; height:50%; margin-top: 20px; font-family: roboto; color: #9E8A81"></div>
+        </div>
+  
+    </body>
 
 <script>
-
-  document.addEventListener('DOMContentLoaded', function() {
-    var calendarEl = document.getElementById('calendar');
-
-    var calendar = new FullCalendar.Calendar(calendarEl, {
-        plugins: [ 'dayGrid' ],
-        defaultView: 'dayGridMonth',
-        navLinks:true,
-        eventColor: '#9E8A81',
-
-      eventRender: function(info) {
-        var tooltip = new Tooltip(info.el, {
-          title: info.event.extendedProps.description,
-          placement: 'top',
-          trigger: 'hover',
-          container: 'body'
-        });
-      },
-
-      events: [
-        {
-          title: 'All Day Event',
-          description: 'description for All Day Event',
-          start: '2021-03-01'
-        },
-        {
-          title: 'Long Event',
-          description: 'description for Long Event',
-          start: '2021-03-07',
-          end: '2021-03-10'
-        },
-        {
-          groupId: '999',
-          title: 'Repeating Event',
-          description: 'description for Repeating Event',
-          start: '2021-03-09T16:00:00'
-        },
-        {
-          groupId: '999',
-          title: 'Repeating Event',
-          description: 'description for Repeating Event',
-          start: '2021-03-16T16:00:00'
-        },
-        {
-          title: 'Conference',
-          description: 'description for Conference',
-          start: '2021-03-11',
-          end: '2021-03-13'
-        },
-        {
-          title: 'Meeting',
-          description: 'description for Meeting',
-          start: '2021-03-12T10:30:00',
-          end: '2021-03-12T12:30:00'
-        },
-        {
-          title: 'Lunch',
-          description: 'description for Lunch',
-          start: '2021-03-12T12:00:00'
-        },
-        {
-          title: 'Meeting',
-          description: 'fuck off',
-          start: '2021-03-12T14:30:00'
-        },
-        {
-          title: 'Birthday Party',
-          description: 'description for Birthday Party',
-          start: '2021-03-13T07:00:00'
-        },
-        {
-          title: 'yall',
-          description: 'To:390009 #08-02, From: 649412 #10-35',
-          url: 'http://google.com/',
-          start: '2021-03-28'
-        }
-      ],
-      eventTimeFormat: { // like '14:30:00'
-            hour: '2-digit',
-            minute: '2-digit',
-            meridiem: true,
-          }
+  async function fetchEvents() {
+    const response = await fetch("http://localhost:5000/delivery/driver/17")
+    const data = await response.json()
+      .then(data =>{
         
-    });
+        //console.log(data)
+          if (data.code === 404) {
+          }
+          else {
+              //console.log(data.data.deliveries)
+              events = [];
+              for(deli of data.data.deliveries){
+                  // console.log(deli)
+                  title = deli.destination;
+                  description = 'To: ' + deli.pickup_location + ' From: ' + deli.destination;
+                  // console.log(description)
+                  timing = deli.timeslot.split("_");
+                  for (timeslots in timing){
+                    if (timing[0] == '8'){
+                      start_time = '08:00:00';
+                      end_time = '10:00:00';
+                    }
+                    else if (timing[0] == '10'){
+                      start_time = '10:00:00';
+                      end_time = '12:00:00';
+                    }
+                    else if (timing[0] == '12'){
+                      start_time = '12:00:00';
+                      end_time = '14:00:00';
+                    }
+                    else if (timing[0] == '2'){
+                      start_time = '14:00:00';
+                      end_time = '16:00:00';
+                    }
+                    else {
+                      start_time = '16:00:00';
+                      end_time = '18:00:00';
+                    }
+                  }
 
-    calendar.render();
-  });
+                  //console.log(timing)
+                  start = Date.parse(deli.delivery_date.slice(0,-12) + start_time);
+                  //start = '2021-04-04T09:00'
+                  //console.log(start)
+                  // console.log(start)
+                  end = Date.parse(deli.delivery_date.slice(0,-12) + end_time);
+                  // + 'T' + timing[2] + ':00:00';
+                  //end = '2021-04-06T09:00'
+                  //console.log(end)
+                  details = {
+                        "title": title,
+                        "description": description,
+                        "start" : start,
+                        "end": end,
+                  }
+                  events.push(details)
+                  // events = events[0];
+              }
+
+              //Jeremy
+              console.log('events', events)
+              var calendarEl = document.getElementById('calendar');
+
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            plugins: [ 'dayGrid' ],
+            defaultView: 'dayGridMonth',
+            navLinks:true,
+            eventColor: '#9E8A81',
+
+          eventRender: function(info) {
+            var tooltip = new Tooltip(info.el, {
+              title: info.event.extendedProps.description,
+              placement: 'top',
+              trigger: 'hover',
+              container: 'body'
+            });
+          },
+
+          events: events, 
+      
+          eventTimeFormat: { 
+                hour: '2-digit',
+                minute: '2-digit',
+                meridiem: true,
+              },
+              
+        });
+        //calendar.addEventSource(Promise.resolve(fetchEvents()));
+        calendar.render()
+
+              //end Jeremy
+          }
+        })
+        return events //-> when called outside, it would render a promise obj 
+        //console.log(events) 
+
+        //at this position, events is still an object 
+      }
+      
+
+      //console.log(fetchEvents());
+    //fetchEvents().then(function(result) {
+    // you can access the result from the promise here
+      async function renderCalendar() {
+
+      }
+
+      document.addEventListener('DOMContentLoaded', async function() {
+        // var events = await fetchEvents();
+        // console.log(events);
+        fetchEvents()
+        
+      });
+    //});
 
 </script>
 
 </head>
-<body>
 
-    <div style = 'display: flex;
-    justify-content: center;'>
-        <div id='calendar'  style="width: 50%; height:50%; margin-top: 20px; font-family: roboto; color: #9E8A81"></div>
-      </div>
-
-</body>
 
 </html>
