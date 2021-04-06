@@ -300,7 +300,7 @@
                         });
                 },
                 updateSchedule: function(){
-                update_schedule_url = 'http://localhost:5000/delivery'
+                update_status_url = 'http://localhost:5000/delivery'
                 if(this.delivery_status == 'NEW'){
                     this.delivery_status = "In Progress";
                     this.update_delivery_status = "Update to Completed";
@@ -319,7 +319,7 @@
                     })
                 };
 
-                fetch(update_schedule_url + "/" + delivery_id, details)
+                fetch(update_status_url + "/" + delivery_id, details)
                     .then(response => response.json())
                     // console.log(response)
                     .then(data => {
