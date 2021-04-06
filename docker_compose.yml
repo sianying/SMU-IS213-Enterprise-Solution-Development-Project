@@ -32,12 +32,14 @@ services:
     #port 5000
     delivery:
       build:
-        context: ./delivery             #idk whether context needs to be ./delivery/ or ./delivery
+        context: ./delivery            #idk whether context needs to be ./delivery/ or ./delivery
         dockerfile: delivery.Dockerfile
-      image: <dockerid>/delivery:1.0
+      image: zonghanlee/delivery:1.0
       restart: always
+      ports:
+        - "5000:5000"
       environment:
-        dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/cheetah_db
+        dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/delivery
         PYTHONUNBUFFERED: 1
 
 
@@ -46,10 +48,12 @@ services:
         build:
             context: ./driver
             dockerfile: driver.Dockerfile
-        image: <dockerid>/driver:1.0
+        image: zonghanlee/driver:1.0
         restart: always
+        ports:
+            - "5001:5001"
         environment:
-            dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/cheetah_db
+            dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/driver
             PYTHONUNBUFFERED: 1
 
 
@@ -58,10 +62,12 @@ services:
         build:
             context: ./customer
             dockerfile: customer.Dockerfile
-        image: <dockerid>/customer:1.0
+        image: zonghanlee/customer:1.0
         restart: always
+        ports:
+            - "5002:5002"
         environment:
-            dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/cheetah_db
+            dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/customer
             PYTHONUNBUFFERED: 1
 
 
@@ -70,8 +76,10 @@ services:
         build:
             context: ./payment
             dockerfile: payment.Dockerfile
-        image: <dockerid>/payment:1.0
+        image: zonghanlee/payment:1.0
         restart: always
+        ports:
+            - "5003:5003"
         environment:
             PYTHONUNBUFFERED: 1
 
@@ -81,10 +89,12 @@ services:
         build:
             context: ./schedule
             dockerfile: schedule.Dockerfile
-        image: <dockerid>/schedule:1.0
+        image: zonghanlee/schedule:1.0
         restart: always
+        ports:
+            - "5004:5004"
         environment:
-            dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/cheetah_db
+            dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/schedule
             PYTHONUNBUFFERED: 1
             
     
@@ -93,10 +103,12 @@ services:
         build:
             context: ./login
             dockerfile: login.Dockerfile
-        image: <dockerid>/login:1.0
+        image: zonghanlee/login:1.0
         restart: always
+        ports:
+            - "5005:5005"
         environment:
-            dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/cheetah_db
+            dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/login
             PYTHONUNBUFFERED: 1
 
 
@@ -119,7 +131,7 @@ services:
         build:
             context: ./notification
             dockerfile: customer_noti.Dockerfile
-        image: <dockerid>/customer_noti:1.0
+        image: zonghanlee/customer_noti:1.0
         restart: always
         depends_on:
             - rabbitmq
@@ -132,7 +144,7 @@ services:
         build:
             context: ./notification
             dockerfile: driver_noti.Dockerfile
-        image: <dockerid>/driver_noti:1.0
+        image: zonghanlee/driver_noti:1.0
         restart: always
         depends_on:
             - rabbitmq
@@ -144,8 +156,8 @@ services:
     error_log:
         build:
             context: ./notification
-            dockerfile: error_log.Dockerfile
-        image: <dockerid>/error_log:1.0
+            dockerfile: error.Dockerfile
+        image: zonghanlee/error:1.0
         restart: always
         depends_on:
             - rabbitmq
@@ -164,7 +176,7 @@ services:
         build:
             context: ./complex_microservices/schedule_driver
             dockerfile: schedule_driver.Dockerfile
-        image: <dockerid>/schedule_driver:1.0
+        image: zonghanlee/schedule_driver:1.0
         depends_on:
             - schedule
             - rabbitmq
@@ -181,7 +193,7 @@ services:
         build:
             context: ./complex_microservices/process_order
             dockerfile: process_order.Dockerfile
-        image: <dockerid>/process_order:1.0
+        image: zonghanlee/process_order:1.0
         restart: always
         depends_on:
             - delivery
@@ -206,7 +218,7 @@ services:
         build:
             context: ./complex_microservices/driver_view_details
             dockerfile: driver_view_details.Dockerfile
-        image: <dockerid>/driver_view_details:1.0
+        image: zonghanlee/driver_view_details:1.0
         depends_on:
             - delivery
             - rabbitmq
@@ -214,6 +226,8 @@ services:
             rabbithost: rabbitmq
             rabbitport: 5672
             deliveryURL: http://delivery:5000/delivery
+        ports:
+            - "5101:5101"
 
 
     # port 5102
@@ -221,7 +235,7 @@ services:
         build:
             context: ./complex_microservices/customer_view_details
             dockerfile: customer_view_details.Dockerfile
-        image: <dockerid>/customer_view_details:1.0
+        image: zonghanlee/customer_view_details:1.0
         depends_on:
             - delivery
             - driver
@@ -231,14 +245,15 @@ services:
             rabbitport: 5672
             deliveryURL: http://delivery:5000/delivery
             driverURL: http://driver:5001/driver
-
+        ports:
+            - "5102:5102"
 
     #port 5103
     complete_delivery:
         build:
             context: ./complex_microservices/complete_delivery
             dockerfile: complete_delivery.Dockerfile
-        image: <dockerid>/complete_delivery:1.0
+        image: zonghanlee/complete_delivery:1.0
         depends_on:
             - delivery
             - driver
@@ -248,14 +263,15 @@ services:
             rabbitport: 5672
             deliveryURL: http://delivery:5000/delivery
             driverURL: http://driver:5001/driver
-
+        ports:
+            - "5103:5103"
 
     #port 5105
     register_user:
         build:
             context: ./complex_microservices/register_user
             dockerfile: register_user.Dockerfile
-        image: <dockerid>/register_user:1.0
+        image: zonghanlee/register_user:1.0
         depends_on:
             - login
             - customer
@@ -267,6 +283,8 @@ services:
             loginURL: http://login:5005/login
             customerURL: http://customer:5002/customer
             driverURL: http://driver:5001/driver
+        ports:
+            - "5105:5105"
 
 
 # #KONGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
