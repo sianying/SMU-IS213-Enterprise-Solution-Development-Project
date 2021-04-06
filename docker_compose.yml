@@ -1,0 +1,348 @@
+version: "3.8"
+
+volumes:
+    rabbitmq_data:
+ 
+services:
+    #database
+    cheetah_db:
+        build:
+            context: ./
+            dockerfile: cheetah_db.Dockerfile
+        image: mysql:5.7
+        restart: always
+        environment:
+            MYSQL_DATABASE: 'cheetah_db'
+            MYSQL_USER: 'root'
+            MYSQL_PASSWORD: ''
+            MYSQL_ROOT_PASSWORD: ''
+        ports:
+        # <Port exposed> : < MySQL Port running inside container>
+            - '3306:3306'
+        expose:
+          # Opens port 3306 on the container
+            - '3306'
+        # Where our data will be persisted
+        volumes:
+            - my-db:/var/lib/mysql
+
+
+    # 6 simple microservices
+
+    #port 5000
+    delivery:
+        build:
+            context: ./delivery/
+            dockerfile: delivery.Dockerfile
+        image: <dockerid>/delivery:1.0
+        restart: always
+        environment:
+            dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/cheetah_db
+            PYTHONUNBUFFERED: 1
+
+    #port 5001
+    driver:
+        build:
+            context: ./driver/
+            dockerfile: driver.Dockerfile
+        image: <dockerid>/driver:1.0
+        restart: always
+        environment:
+            dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/cheetah_db
+            PYTHONUNBUFFERED: 1
+
+    #port 5002
+    customer:
+        build:
+            context: ./customer/
+            dockerfile: customer.Dockerfile
+        image: <dockerid>/customer:1.0
+        restart: always
+        environment:
+            dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/cheetah_db
+            PYTHONUNBUFFERED: 1
+
+    #port 5003        
+    payment:
+        build:
+            context: ./payment
+            dockerfile: payment.Dockerfile
+        image: <dockerid>/payment:1.0
+        restart: always
+        environment:
+            PYTHONUNBUFFERED: 1
+
+    #port 5004        
+    schedule:
+        build:
+            context: ./schedule/
+            dockerfile: schedule.Dockerfile
+        image: <dockerid>/schedule:1.0
+        restart: always
+        environment:
+            dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/cheetah_db
+            PYTHONUNBUFFERED: 1
+    
+    #port 5005
+    login:
+        build:
+            context: ./login/
+            dockerfile: login.Dockerfile
+        image: <dockerid>/login:1.0
+        restart: always
+        environment:
+            dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/cheetah_db
+            PYTHONUNBUFFERED: 1
+
+
+
+    ############ AMQP SERVICES #############
+    rabbitmq:
+        image: rabbitmq:3-management
+        hostname: esd-rabbit
+        restart: always
+        ports:
+            - "5672:5672"
+            - "15672:15672"
+        volumes: 
+            - rabbitmq_data:/var/lib/rabbitmq
+
+    #includes both notification and error microservice
+    amqp_setup:
+        build: 
+            context: ./
+            dockerfile: amqp_setup.Dockerfile
+        image: <dockerid>/amqp_setup:1.0
+        restart: always
+        depends_on:
+            - rabbitmq
+        environment:
+            rabbit_host: rabbitmq
+            rabbit_port: 5672
+            PYTHONUNBUFFERED: 1
+
+
+    # notification:
+    #     build:
+    #         context: ./
+    #         dockerfile: notification.Dockerfile
+    #     image: <dockerid>/notification:1.0
+    #     restart: always
+    #     depends_on:
+    #     - rabbitmq
+    #     environment:
+    #         rabbit_host: rabbitmq
+    #         rabbit_port: 5672
+    #         PYTHONUNBUFFERED: 1
+
+    # error_log:
+    #     build:
+    #         context: ./
+    #         dockerfile: error_log.Dockerfile
+    #     image: <dockerid>/error_log:1.0
+    #     restart: always
+    #     depends_on:
+    #     - rabbitmq
+    #     environment:
+    #         rabbit_host: rabbitmq
+    #         rabbit_port: 5672
+    #         PYTHONUNBUFFERED: 1
+
+
+
+
+    # 5 Complex microservices
+
+    #port 5104, but done first since it is needed by 5100
+    schedule_driver:
+        image: <dockerid>/schedule_driver:1.0
+        depends_on:
+            - schedule
+            - rabbitmq
+            - amqp_setup
+        environment:
+            rabbithost: rabbitmq
+            rabbitport: 5672
+            scheduleURL: http://delivery:5004/schedule
+        ports:
+            - "5104:5104"
+    
+
+    #port 5100
+    process_order:
+        build:
+            context: ./complex_microservices/
+            dockerfile: process_order.Dockerfile
+        image: <dockerid>/process_order:1.0
+        restart: always
+        depends_on:
+            - delivery
+            - payment
+            - schedule
+            - schedule_driver
+            - rabbitmq
+            - amqp_setup
+        environment:
+            rabbithost: rabbitmq
+            rabbitport: 5672
+            deliveryURL: http://delivery:5000/delivery
+            paymentURL: http://payment:5003/payment
+            scheduleURL: http://delivery:5004/schedule
+            ScheduleDriverURL: http://delivery:5104/schedule_driver
+            PYTHONUNBUFFERED: 1
+        ports:
+            - "5100:5100"
+
+
+    #port 5101
+    driver_view_details:
+        image: <dockerid>/driver_view_details:1.0
+        depends_on:
+            - delivery
+            - rabbitmq
+            - amqp_setup
+        environment:
+            rabbithost: rabbitmq
+            rabbitport: 5672
+            deliveryURL: http://delivery:5000/delivery
+
+
+    # port 5102
+    customer_view_details:
+        image: <dockerid>/customer_view_details:1.0
+        depends_on:
+            - delivery
+            - driver
+            - rabbitmq
+            - amqp_setup
+        environment:
+            rabbithost: rabbitmq
+            rabbitport: 5672
+            deliveryURL: http://delivery:5000/delivery
+            driverURL: http://driver:5001/driver
+
+
+    #port 5103
+    driver_complete_delivery:
+        image: <dockerid>/driver_complete_delivery:1.0
+        depends_on:
+            - delivery
+            - driver
+            - rabbitmq
+            - amqp_setup
+        environment:
+            rabbithost: rabbitmq
+            rabbitport: 5672
+            deliveryURL: http://delivery:5000/delivery
+            driverURL: http://driver:5001/driver
+
+            
+    #port 5105
+    register_user:
+        image: <dockerid>/register_user:1.0
+        depends_on:
+            - login
+            - customer
+            - driver     #register a driver
+            - rabbitmq
+            - amqp_setup
+        environment:
+            rabbithost: rabbitmq
+            rabbitport: 5672
+            loginURL: http://login:5005/login
+            customerURL: http://customer:5002/customer
+            driverURL: http://driver:5001/driver
+
+
+# #KONGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
+# #version: "3"
+
+# volumes:
+#     pgdata: 
+#     kongadata:
+  
+# networks:
+#     kong-net:
+#         driver: bridge
+  
+# services:
+
+#######################################
+# Postgres: The database used by Kong
+#######################################
+    # kong-database:
+    #     image: postgres:9.6
+    #     restart: always
+    #     networks:
+    #     - kong-net
+    #     environment:
+    #     POSTGRES_DB: kong
+    #     POSTGRES_USER: kong
+    #     POSTGRES_PASSWORD: password
+    #     ports:
+    #     - "5432:5432"
+    #     healthcheck:
+    #     test: ["CMD", "pg_isready", "-U", "kong"]
+    #     interval: 10s
+    #     timeout: 5s
+    #     retries: 5
+    #     volumes:
+    #     - pgdata:/var/lib/postgresql/data
+
+    # #######################################
+    # # Kong database migration
+    # #######################################
+    # kong-migration:
+    #     image: kong:2.0.4
+    #     command: "kong migrations bootstrap"
+    #     restart: on-failure
+    #     networks:
+    #     - kong-net
+    #     environment:
+    #     KONG_DATABASE: postgres
+    #     KONG_PG_HOST: kong-database
+    #     KONG_PG_USER: kong
+    #     KONG_PG_PASSWORD: password
+    #     depends_on:
+    #     - kong-database
+
+    # #######################################
+    # # Kong: The API Gateway
+    # #######################################
+    # kong:
+    #     image: kong:2.0.4
+    #     restart: always
+    #     networks:
+    #     - kong-net
+    #     environment:
+    #     KONG_DATABASE: postgres
+    #     KONG_PG_HOST: kong-database
+    #     KONG_PG_USER: kong
+    #     KONG_PG_PASSWORD: password
+    #     KONG_PROXY_LISTEN: 0.0.0.0:8000
+    #     KONG_ADMIN_LISTEN: 0.0.0.0:8001
+    #     depends_on:
+    #     - kong-migration
+    #     ports:
+    #     - "8000:8000"
+
+    # #######################################
+    # # Konga: Kong GUI
+    # #######################################
+    # konga:
+    #     image: pantsel/konga
+    #     restart: always
+    #     networks:
+    #         - kong-net
+    #     environment:
+    #     DB_ADAPTER: postgres
+    #     DB_HOST: kong-database
+    #     DB_USER: kong
+    #     DB_PASSWORD: password
+    #     DB_DATABASE: konga_db
+    #     depends_on:
+    #     - kong
+    #     ports:
+    #     - "1337:1337"
+    #     volumes:
+    #     - kongadata:/app/kongadata
