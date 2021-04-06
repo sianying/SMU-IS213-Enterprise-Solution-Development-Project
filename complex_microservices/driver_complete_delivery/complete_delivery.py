@@ -59,8 +59,15 @@ def update_delivery_status(delivery, delivery_ID):
     # 3. Check the delivery result; if a failure, send it to the error microservice.
     code = delivery_result["code"]
     if code not in range(200, 300):
+
+        json_mine = {
+            "code": 501,
+            "data": {"delivery_result": delivery_result},
+            "message": "Failed to retrieve delivery data, sent for error handling."
+        }
+
         print('\n\n-----Publishing the (delivery error) message with routing_key=DriverCompleteDelivery.delivery.error-----')
-        message=json.dumps(delivery_result)
+        message=json.dumps(json_mine)
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="DriverCompleteDelivery.delivery.error", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2))
 
@@ -79,17 +86,18 @@ def update_delivery_status(delivery, delivery_ID):
     code = driver_result["code"]
     if code not in range(200, 300):
         print('\n\n-----Publishing the (driver error) message with routing_key=DriverCompleteDelivery.driver.error-----')
-        message=json.dumps(delivery_result)
+        json_mine = {
+            "code": 502,
+            "data": {"driver_result": driver_result},
+            "message": "Failed to retrieve driver data, sent for error handling."
+        }
+        message=json.dumps(json_mine)
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="DriverCompleteDelivery.driver.error", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2))
 
         print("\nDelivery MS call status ({:d}) published to the RabbitMQ Exchange:".format(code), driver_result)
 
-        return {
-            "code": 502,
-            "data": {"driver_result": driver_result},
-            "message": "Failed to retrieve driver data, sent for error handling."
-        }
+        return json_mine
 
     delivery_driver = driver_result['data']['driver_name']   
     # print(delivery_driver)

@@ -34,8 +34,8 @@ def processOrderLog(order):
 
 def send_telemessage(message):
     print("sending telegram message")
-    # print(message)
-    invoke_http('https://api.telegram.org/bot1771827825:AAHVkbX5b9YpUWE78cTcBjz0SwkHqhrPbFA/sendMessage?chat_id=246939574&text=' + message['message'], method='GET')
+    print(message)
+    invoke_http('https://api.telegram.org/bot1663694484:AAHENmjCBOUBxIEhvJIbaQzf-1peWopF2JQ/sendMessage?chat_id=246939574&text=' + message['message'], method='GET')
     # telegram_send.send(messages=[message])
 
 
