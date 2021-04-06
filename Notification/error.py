@@ -9,7 +9,7 @@ import amqp_setup
 # import telegram_send
 from invokes import invoke_http
 
-monitorBindingKey='*.error'
+monitorBindingKey='#.error'
 
 def receiveOrderLog():
     amqp_setup.check_setup()
