@@ -46,22 +46,21 @@ def register_user(username):
     # Simple check of input format and data of the request are JSON
     if request.is_json:
         try:
-            #session id + delivery data
             data = request.get_json()
             print("\nReceived an data in JSON:", data)
 
             #1. Invoke Login MS to check if username is taken
             # Invoke the Login Microservice (/check_username_exist)
-            # print('\n-----Invoking Login microservice-----')
-            # username_data = invoke_http(login_URL + "/" + "check_username_exist" + "/" + username, method='GET')
-            # print('payment_results:'+ username_data + "\n")
-            # #code 200 means username not taken
-            # #code 400 means bad request username is taken
-            # code= username_data['code']
-            # if code == 400:
-            #     return jsonify({
-            #         username_data
-            #     })
+            print('\n-----Invoking Login microservice-----')
+            username_data = invoke_http(login_URL + "/" + "check_username_exist" + "/" + username, method='GET')
+            print('payment_results:'+ username_data + "\n")
+            #code 200 means username not taken
+            #code 400 means bad request username is taken
+            code= username_data['code']
+            if code == 400:
+                return jsonify({
+                    username_data
+                })
             
             #2. Register user depending on their account_type {processRegisterCustomer, processRegisterDriver}
             # use the returned customer_ID or driver_ID to create the entry in Login Microservice
@@ -112,7 +111,7 @@ def registerCustomer(data):
     }
     print(customer_data)
     # Invoke the Customer Microservice (/customer)
-    print('\n-----Invoking Login microservice-----')
+    print('\n-----Invoking Customer microservice-----')
     customer_data = invoke_http(customer_URL, method='POST', json=customer_data)
     print('customer_results:' + str(customer_data) + "\n")
 
@@ -136,7 +135,7 @@ def registerDriver(data):
         "vehicle_no": data['vehicle_no']
     }
     # Invoke the driver Microservice (/driver)
-    print('\n-----Invoking Login microservice-----')
+    print('\n-----Invoking Driver microservice-----')
     driver_data = invoke_http(driver_URL, method='POST', json=driver_data)
     print('driver_results:' + str(driver_data) + "\n")
 
