@@ -146,7 +146,7 @@
         <nav>
             <ul class="nav__links">
                 <li><a href="../driver/driver_home.html">Home</a></li>
-                <li><a href="../driver/schedule.html">View Schedule</a></li>
+                <li><a href="../driver/driver_schedule.html">View Schedule</a></li>
                 <li><a href="../customer/profile.html">Profile</a></li>
             </ul>
         </nav>
@@ -161,8 +161,10 @@
     </body>
 
 <script>
+    var session = JSON.parse(sessionStorage.getItem("account_details"));
+    var driver_ID = session.driver_ID;
   async function fetchEvents() {
-    const response = await fetch("http://localhost:5000/delivery/driver/17")
+    const response = await fetch("http://localhost:5000/delivery/driver/" + driver_ID)
     const data = await response.json()
       .then(data =>{
         
@@ -177,6 +179,7 @@
                   title = deli.destination;
                   description = 'To: ' + deli.pickup_location + ' From: ' + deli.destination;
                   // console.log(description)
+                  url = '../driver/schedule2.html?delivery_ID=' + String(deli.delivery_ID);
                   timing = deli.timeslot.split("_");
                   for (timeslots in timing){
                     if (timing[0] == '8'){
@@ -215,14 +218,15 @@
                         "description": description,
                         "start" : start,
                         "end": end,
-                  }
-                  events.push(details)
+                        "url": url
+                }
+                events.push(details)
                   // events = events[0];
-              }
+            }
 
-              //Jeremy
-              console.log('events', events)
-              var calendarEl = document.getElementById('calendar');
+            
+            console.log('events', events)
+            var calendarEl = document.getElementById('calendar');
 
         var calendar = new FullCalendar.Calendar(calendarEl, {
             plugins: [ 'dayGrid' ],
@@ -230,29 +234,29 @@
             navLinks:true,
             eventColor: '#9E8A81',
 
-          eventRender: function(info) {
-            var tooltip = new Tooltip(info.el, {
-              title: info.event.extendedProps.description,
-              placement: 'top',
-              trigger: 'hover',
-              container: 'body'
-            });
-          },
+        eventRender: function(info) {
+        var tooltip = new Tooltip(info.el, {
+            title: info.event.extendedProps.description,
+            placement: 'top',
+            trigger: 'hover',
+            container: 'body'
+        });
+        },
 
-          events: events, 
-      
-          eventTimeFormat: { 
-                hour: '2-digit',
-                minute: '2-digit',
-                meridiem: true,
-              },
-              
+        events: events, 
+    
+        eventTimeFormat: { 
+            hour: '2-digit',
+            minute: '2-digit',
+            meridiem: true,
+            },
+            
         });
         //calendar.addEventSource(Promise.resolve(fetchEvents()));
         calendar.render()
 
-              //end Jeremy
-          }
+    
+            }
         })
         return events //-> when called outside, it would render a promise obj 
         //console.log(events) 
