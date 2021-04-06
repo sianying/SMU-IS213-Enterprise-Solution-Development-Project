@@ -332,7 +332,7 @@
         var passwordLI = document.getElementById("passwordLI").value;
 
         if (username === "" || passwordLI === ""){
-            document.getElementById("errorLI").innerHTML = `<p class = 'text-danger'>None of your fields can be empty</p>`;
+            document.getElementById("errorLI").innerHTML = `<p style = 'margin: 2px; font-size: 10px; color:red;'>Error: None of your fields can be empty</p>`;
 
         };
     };
