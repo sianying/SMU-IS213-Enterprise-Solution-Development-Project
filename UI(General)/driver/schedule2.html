@@ -33,6 +33,58 @@
         @import url('https://fonts.googleapis.com/css2?family=Patua+One&display=swap');
     </style>
 
+<style>
+    /* Center the loader */
+    #loader {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        z-index: 1;
+        width: 120px;
+        height: 120px;
+        margin: -76px 0 0 -76px;
+        border: 16px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 16px solid #CEA68C;
+        -webkit-animation: spin 2s linear infinite;
+        animation: spin 2s linear infinite;
+    }
+    
+    @-webkit-keyframes spin {
+        0% { -webkit-transform: rotate(0deg); }
+        100% { -webkit-transform: rotate(360deg); }
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    /* Add animation to "page content" */
+    /* .animate-bottom {
+        position: relative;
+        -webkit-animation-name: animatebottom;
+        -webkit-animation-duration: 1s;
+        animation-name: animatebottom;
+        animation-duration: 5s
+    } */
+    
+    /* @-webkit-keyframes animatebottom {
+        from { bottom:-100px; opacity:0 } 
+        to { bottom:0px; opacity:1 }
+    }
+    
+    @keyframes animatebottom { 
+        from{ bottom:-100px; opacity:0 } 
+        to{ bottom:0; opacity:1 }
+    } */ 
+    
+    #myDiv {
+        display: none;
+        text-align: center;
+    }
+    </style>
+
 </head>
 <body>
     <header> 
@@ -40,7 +92,7 @@
         <nav>
             <ul class="nav__links">
                 <li><a href="../driver/driver_home.html">Home</a></li>
-                <li><a href="../driver/schedule.html">View Schedule</a></li>
+                <li><a href="driver_schedule.html">View Schedule</a></li>
                 <li><a href="driver_profile.html">Profile</a></li>
             </ul>
         </nav>
@@ -55,37 +107,37 @@
                 <div class='col'><h1 class='pt-3' style='color:#CEA68C; font-family: "Patua One", cursive;'>Schedule</h1></div>
                 <div class='col'></div>
             </div>
-            <!-- <div class='row' v-if='!hasDeliveries'>
+            <div class='row' v-if='!hasDeliveries'>
     
                 <div id="loader"></div>
                 
                 
-            </div> -->
+            </div>
             
-            <!-- <div class="container-fluid">
+            <div class="container-fluid">
                 <div class="row">
                     <div class='col mx-auto'></div>
                     <div class='col d-flex justify-content-center smx-auto loader'></div>
                     <div class='col mx-auto'></div>
                 </div>
-            </div> -->
-            <div class='container'>
+            </div>
+            <!-- <div class='container'>
                 <div class='row mt-2'>
                     <div class='col-2' style='color:#CEA68C; font-family: "Patua One", cursive; font-size: 25px;'>Filter by:</div>
                     <div class='col'>
-                        <div class="form-group">
+                        <div class="form-group"> -->
                             <!-- <label for="time">Schedule</label> -->
-                            <select @change = "checkSchedule" id="time" class="form-control">
+                            <!-- <select @change = "checkSchedule" id="time" class="form-control">
                                 <option selected value='filterAll'>Show All</option>
-                                <option value='filterDay'>Filter by day</option>
+                                <option value='filterDay'>Filter by day</option> -->
                                 <!-- <option value='12_to_2'>12pm to 2pm</option>
                                 <option value="2_to_4">2pm to 4pm</option>
                                 <option value='4_to_6'>4pm to 6pm</option> -->
-                            </select>
+                            <!-- </select>
                         </div> 
                     </div>
-                    
-                </div>
+                    -->
+                <!-- </div> -->
             </div>
             <table v-if='hasDeliveries' class = "table table-striped animate__animated animate__backInUp">
                 <!-- <div class='col-md-8 my-3' style='background-color:#FFFAF0;'>
@@ -99,24 +151,27 @@
                         <th>Delivery ID</th>
                         <th>Delivery Item</th>
                         <th>Delivery Description</th>
-                        <th>Delivery Status</th>
                         <th>Delivery Date</th>
+                        <th>Delivery Time Slot</th>
                         <th>Pickup Location</th>
                         <th>Destination</th>
-                        <th>Driver Mobile Number</th>
-                        <th>Payment Status</th>
+                        <th>Distance (in km)</th>
+                        <th>Duration (in min)</th>
+                        <th>Receiver Name</th>
+                        <th>Delivery Status</th>
                     </tr>
-                    <tr v-for="delivery in deliveries">
-                            <td>{{delivery.delivery_ID}}</td>
-                            <td>{{delivery.delivery_item}}</td>
-                            <td>{{delivery.description}}</td>
-                            <td>{{delivery.delivery_status}}</td>
-                            <td>{{delivery.delivery_date.slice(0,-12)}}</td>
-                            <td>{{delivery.pickup_location}}</td>
-                            <td>{{delivery.destination}}</td>
-                            <td>{{delivery.driver_mobile}}</td>
-                            <td>{{delivery.payment_status}}</td>
-
+                    <tr>
+                            <td>{{delivery_ID}}</td>
+                            <td>{{delivery_item}}</td>
+                            <td>{{description}}</td>
+                            <td>{{delivery_date.slice(0,-12)}}</td>
+                            <td>{{timeslot}}</td>
+                            <td>{{pickup_location}}</td>
+                            <td>{{destination}}</td>
+                            <td>{{distance}}</td>
+                            <td>{{duration}}</td>
+                            <td>{{receiver_name}}</td>
+                            <td>{{delivery_status}}<button type='button' v-if='statusPresent' class='btn' style='width:auto' @click='updateSchedule'>{{update_delivery_status}}</button></td>
                     </tr>
                 </thead>
             </table>
@@ -124,20 +179,36 @@
     </div>
 
     <script>
-        var session = JSON.parse(sessionStorage.getItem("account_details"));
-        var customer_ID = session.customer_ID;
-        var get_details_url = "http://localhost:5004/schedule/driver/" + customer_ID;
+        // var session = JSON.parse(sessionStorage.getItem("account_details"));
+        // var customer_ID = session.customer_ID;
+        // retreives the session ID from the URL
+        let params = new URLSearchParams(location.search);
+        let delivery_id = params.get('delivery_ID');
+        console.log(delivery_id);
+        var get_details_url = "http://localhost:5101/driver_job_details/" + String(delivery_id);
         var app = new Vue({
             el: "#app",
             data:{
                 hasDeliveries: false,
-                deliveries: []
+                delivery_ID: "",
+                delivery_item: "",
+                description: "",
+                delivery_date: "",
+                timeslot: "",
+                pickup_location: "",
+                destination: "",
+                distance: 0,
+                duration: "",
+                receiver_name: "",
+                delivery_status: "",
+                update_delivery_status: "",
+                statusPresent: true
             },
             mounted: function(){
-                this.getDeliveries()
+                this.getSchedule()
             },
             methods:{
-                getDeliveries: function(){
+                getSchedule: function(){
                     const response =
                     fetch(get_details_url)
                         .then(response => response.json())
@@ -150,10 +221,49 @@
                             // } else {
                             //     this.books = data.data.books;
                             // }
-                            if (data.data.customer_view_details.length>0){
-                                this.hasDeliveries = true
-                                
-                                this.deliveries = data.data.customer_view_details
+                            if (data.code === 201){
+                                // console.log("hello")
+                                var result = data.data.api_call_result.data.delivery_result.data;
+                                var timeslot = result.timeslot;
+                                // console.log(timeslot)
+                                this.hasDeliveries = true;
+                                this.delivery_ID = result.delivery_ID;
+                                this.delivery_item = result.delivery_item;
+                                this.description = result.description;
+                                this.delivery_date = result.delivery_date;
+                                this.pickup_location = result.pickup_location;
+                                this.destination = result.destination;
+                                this.distance = data.data.api_call_result.distance_in_km;
+                                this.duration = data.data.api_call_result.duration_in_min;
+                                this.receiver_name = result.receiver_name;
+                                this.delivery_status = result.delivery_status;
+                        
+                                if (timeslot == '8_to_10'){
+                                    this.timeslot = '8am to 10am';
+                                }
+                                else if (timeslot == '10_to_12'){
+                                    this.timeslot = '10am to 12pm';
+                                }
+                                else if (timeslot == '12_to_2'){
+                                    this.timeslot = '12pm to 2pm';
+                                }
+                                else if (timeslot == '2_to_4'){
+                                    this.timeslot = '2pm to 4pm';
+                                }
+                                else if (timeslot == '4_to_6'){
+                                    this.timeslot = "4pm to 6pm";
+                                    // console.log("hello")
+                                }
+
+                                if(this.delivery_status == 'NEW'){
+                                    this.update_delivery_status = 'Update to In Progress';
+                                }
+                                else if(this.delivery_status == 'In Progress'){
+                                    this.update_delivery_status = 'Update to Completed';
+                                }
+                                if(this.delivery_status == 'Completed!'){
+                                    this.statusPresent = false;
+                                }
                             }
                         })
                         .catch(error => {
@@ -162,20 +272,51 @@
                             console.log(this.message + error);
 
                         });
-                }
-            }
-        })
+                },
+                updateSchedule: function(){
+                update_schedule_url = 'http://localhost:5000/delivery'
+                if(this.delivery_status == 'NEW'){
+                    this.delivery_status = "In Progress";
+                    this.update_delivery_status = "Update to Completed";
+                }   else if(this.delivery_status == 'In Progress'){
+                    this.delivery_status = "Completed!";
+                    this.update_delivery_status = "";
+                    this.statusPresent = false;
+                }   
+                const details = {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        "delivery_status": this.delivery_status
+                    })
+                };
 
-    var myVar;
+                fetch(update_schedule_url + "/" + delivery_id, details)
+                    .then(response => response.json())
+                    // console.log(response)
+                    .then(data => {
+                        // console.log(response)
+                        console.log(data)
+                        // this.successfulPayment = true
+                    })
+                    .catch(error=>{
+                        console.log("Error:", error);
+                    })
+            }
+        }})
+
+    // var myVar;
     
-    function myFunction() {
-        myVar = setTimeout(showPage, 3000);
-    }
+    // function myFunction() {
+    //     myVar = setTimeout(showPage, 3000);
+    // }
         
-    function showPage() {
-        document.getElementById("loader").style.display = "none";
-        document.getElementById("myDiv").style.display = "block";
-    }
+    // function showPage() {
+    //     document.getElementById("loader").style.display = "none";
+    //     document.getElementById("myDiv").style.display = "block";
+    // }
     </script>
 </body>
 </html>

@@ -32,31 +32,26 @@ USE `login`;
 
 DROP TABLE IF EXISTS `login`;
 CREATE TABLE IF NOT EXISTS `login` (
-  `username` varchar(64) NOT NULL,
-  `password` varchar(12) NOT NULL,
-  `account_type` varchar(8) NOT NULL,
-  `ID` int NOT NULL,
-  PRIMARY KEY (`username`)
+    `username` varchar(64) NOT NULL,
+    `password` varchar(12) NOT NULL,
+    `account_type` varchar(8) NOT NULL,
+    `customer_ID` int,
+    `driver_ID` int,
+    PRIMARY KEY (`username`),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `customer
 
-INSERT INTO `login` (`username`, `password`, `account_type`, `ID`) VALUES
-('jinglesim', 'password', 'customer', 0),
-('sy', 'password123', 'customer', 1),
-('tomsmith80', 'password', 'driver', '0');
--- ('Understanding People', '9781349471231', '99.40', 25),
--- ('Happy in Workplace', '9781434474234', '94.00', 1),
--- ('PHP Soup', '9781442374221', '20.50', 2),
--- ('Brief History of Time', '9781449474211', '20.00', 23),
--- ('It', '9781449474212', '1.00', 2),
--- ('Founder of Php', '9781449474221', '34.00', 1),
--- ('Albert Enstein\'s Works', '9781449474223', '18.00', 7),
--- ('Interstellar', '9781449474254', '10.00', 4),
--- ('Milk and Honey', '9781449474256', '25.00', 18),
--- ('Cooking Book', '9781449474323', '99.90', 4),
--- ('The Gathering', '9781449474342', '20.00', 50);
+INSERT INTO `login` (`username`, `password`, `account_type`, `customer_ID`, `driver_ID`) VALUES
+('jwjw', 'password', 'customer', 12345678, null),
+('sysy', 'password123', 'customer', 23456789, null),
+('liyin', 'liyin', 'customer', 11112222, null),
+('SSLMonsta', 'security', 'driver', null, 17),
+('tomsmith80', 'password', 'driver', null, 23),
+('hongsengcurryrice', 'curryrice', 'driver', null, 54),
+('yewteng', 'bestman', 'driver', null, 66);
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

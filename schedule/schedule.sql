@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `schedule` (
   `t_2_to_4` boolean not null,
   `t_4_to_6` boolean not null,
   PRIMARY KEY (`SID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `order`

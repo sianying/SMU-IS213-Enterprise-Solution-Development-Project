@@ -47,11 +47,11 @@ CREATE TABLE IF NOT EXISTS `delivery` (
   `payment_amount` int NOT NULL,
   `payment_status` varchar(6) NOT NULL DEFAULT 'Paid',
   `receiver_name` varchar(64) NOT NULL,
-  `delivery_status` varchar(10) NOT NULL DEFAULT 'NEW',
+  `delivery_status` varchar(20) NOT NULL DEFAULT 'NEW',
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `last_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`delivery_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `order`
