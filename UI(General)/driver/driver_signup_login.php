@@ -120,7 +120,7 @@
             width: 305px;
             height: 550px;
             background-color:#EEE2CC;
-            top: -58%;
+            top: -60%;
             left: 20px;
             -webkit-box-shadow: 9px 10px 10px 0px rgba(0, 0, 0, 0.75);
             box-shadow: 9px 10px 10px 0px rgba(0, 0, 0, 0.75);
@@ -263,7 +263,7 @@
                                 <input type="text" name="username" id = 'UsernameSU' placeholder="Username"><i class="far fa-address-card"></i></input>
                                 <input type = 'text' name='handle' id = 'teleSU' placeholder='Telegram Handle'><i class="fa fa-telegram"></i></input>
                                 <input type = 'text' name ='contact' id ='contactSU' placeholder='Contact Number'><i class="fas fa-phone-volume"></i></input>
-                                <input type = 'text' name = 'carplate' id = 'carplateSU' placeholder = 'Car Plate Number'><i class="fas fa-car"></i></input>
+                                <input type = 'text' name ='carplate' id ='carplateSU' placeholder='Car Plate Number'><i class="fas fa-phone-volume"></i></input>
                                 <input type="text" name="email" id = 'emailSU' placeholder="Email"><i class="fa fa-envelope-o"></i></input>
                                 <input type="password" name="password" id='passwordSU' placeholder="Password"><i class="fa fa-lock"></i></input>
                                 <button type="submit" class="form-btn " style="margin-left: 10%;" onclick = "signUpValidate()" >Sign Up</button>
@@ -272,16 +272,17 @@
                         </div>
                         <div class="my-5">
                             <div class="login hide ">
-                                <form method="post"  action="../Main/process_login.php" >
+                                <!-- <form method="post"  action="../Main/process_login.php" > -->
+                                <form method="get">
                                 <h2 class="form-header">Log In</h2>  
-                                <input type="text" name="email" id = 'emailLI' placeholder="Email"><i class="fa fa-envelope-o"></i></input>
+                                <input type="text" name="username" id = 'usernameLI' placeholder="Username"><i class="fa fa-envelope-o"></i></input>
                                 
                                 <input type="password" name="password" id = 'passwordLI' placeholder="Password"><i class="fa fa-lock"></i></input>
                             
                                 <div class="g-recaptcha" style="margin-top: 10%;" data-sitekey="6Lf2x-IZAAAAALMzDGQ3989jbM0-iRozvWHqGvb9"></div>
                                 <br/>
                                 <div id = 'errorLI'></div>
-                                <button type = 'submit' class="form-btn text-center" style="margin-left: 20%;" onclick='logInValidate()'>Log In</button>
+                                <button type = 'button' id='login-button' class="form-btn text-center" style="margin-left: 20%;" onclick='logInValidate()'>Log In</button>
                                 </form>
                             </div>
                         </div>
@@ -305,12 +306,15 @@
     function signUpValidate(){
         document.getElementById("errorSU").innerHTML = '';
         var fullnameSU = document.getElementById("fullnameSU").value;
-        var usernameSU = document.getElementById("usernameSU").value;
+        var usernameSU = document.getElementById("UsernameSU").value;
         var emailSU = document.getElementById("emailSU").value;
         var passwordSU = document.getElementById("passwordSU").value;
+        var teleSU = document.getElementById('teleSU').value;
+        var carplateSU = document.getElementById('carplateSU').value;
+        var contactSU = document.getElementById('contactSU').value;
         var errors = [];
 
-            if (fullnameSU === "" || usernameSU === "" || emailSU === "" || passwordSU === ""){
+            if (fullnameSU === "" || usernameSU === "" || emailSU === "" || passwordSU === "" || teleSU === '' || contactSU === '' || carplateSU === ''){
                 event.preventDefault();
                 errors.push('Error: None of your fields can be empty');
             };
@@ -326,11 +330,11 @@
         };
 
     function logInValidate(){
-        var emailLI = document.getElementById("emailLI").value;
-        var passwordLI = document.getElementByID("passwordLI").value;
+        var username = document.getElementById("usernameLI").value;
+        var passwordLI = document.getElementById("passwordLI").value;
 
-        if (emailLI === "" || passwordLI === ""){
-            document.getElementById("errorLI").innerHTML = `<p class = 'text-danger'>None of your fields can be empty</p>`;
+        if (username === "" || passwordLI === ""){
+            document.getElementById("errorLI").innerHTML = `<p style = 'margin: 2px; font-size: 10px; color:red;'>Error: None of your fields can be empty</p>`;
 
         };
     };
@@ -341,7 +345,7 @@
     js = d.createElement(s); js.id = id;
     js.src = "//connect.facebook.net/en_US/sdk.js";
     fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));
+    }(document, 'script', 'facebook-jssdk'));
 
         $(document).ready(function() {
             var signUp = $('.signup-but');
@@ -367,6 +371,87 @@
             });
         });
     </script>
+
+<script>
+    $("#login-button").click(function() {
+        var username = $("#usernameLI").val();
+        var password = $("#passwordLI").val();
+        var account_type = "customer"
+        // console.log(account_type);
+        serviceURL = "http://localhost:5005/authenticate";
+
+        fetch(serviceURL, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                "username": username,
+                "password": password,
+                "account_type": "customer"
+            })
+        })
+        .then(function (response) {
+            data = response.json();
+            console.log(data);
+            // account = {
+            //     "account_type": data.account_type,
+            //     "customer_ID": data.customer_ID
+            // }
+            // localStorage.setItem("account", account);
+            // console.log(account);
+            // location.replace("http://localhost/esd/project/delivery_order.html");
+            return data
+            // return response.json();
+        })
+        .then(function (result) {
+            json = JSON.stringify({
+                "username": result.data.username,
+                "customer_ID": result.data.customer_ID,
+                "account_type": "customer"
+            });
+            console.log(json);
+            sessionStorage.setItem("account_details", json);
+            location.replace("../customer/delivery_order.html");
+        })
+        .catch(function (error) {
+            console.log("Error:", error);
+        });
+
+        // async () => {
+        //     const data = await response;
+        //     console.log(data);
+        // };
+
+        // $(async() => {
+        //     try {
+        //         const response = await fetch (serviceURL, {
+        //             method: 'POST',
+        //             headers: {
+        //                 'Content-Type': 'application/json'
+        //             },
+        //             body: JSON.stringify({
+        //                 "username": username,
+        //                 "password": password,
+        //                 "account_type": account_type
+        //             })
+        //         });
+        //         const data = await response.json();
+        //         if (response.ok){
+        //             console.log(data);
+        //         }
+        //         else {
+        //         console.log("There is an error in logging in: Error " + response.status);
+        //         }
+        //     }
+        //     catch(error){
+        //         console.log(error);
+        //     }
+        // });
+
+    });
+
+</script>
 </body>
 
 </html>

@@ -30,7 +30,7 @@ class Delivery(db.Model):
     delivery_item = db.Column(db.VARCHAR(40), nullable=False)
     description = db.Column(db.VARCHAR(120), nullable=False)
     payment_amount = db.Column(db.INT(), nullable=False)
-    payment_status = db.Column(db.VARCHAR(6), nullable=False)
+    payment_status = db.Column(db.VARCHAR(6), nullable=False, default='Paid')
     receiver_name = db.Column(db.VARCHAR(64), nullable=False)
     #wa idk how to include for the timestamps and default values help
     delivery_status = db.Column(db.VARCHAR(10), nullable=False, default='New')

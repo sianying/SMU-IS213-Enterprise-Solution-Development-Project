@@ -1,0 +1,284 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8' />
+
+<!--Calendar CSS-->
+<link href='https://cdn.jsdelivr.net/npm/@fullcalendar/core@4.4.2/main.min.css' rel='stylesheet' />
+<link href='https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@4.4.2/main.min.css' rel='stylesheet' />
+
+<!--Calendar JS-->
+<script src='https://cdn.jsdelivr.net/npm/@fullcalendar/core@4.4.2/main.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@4.4.2/main.min.js'></script>
+
+<!-- Vue JS -->
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+
+<!--Popper & Tooltip-->
+<script src='https://unpkg.com/popper.js/dist/umd/popper.min.js'></script>
+<script src='https://unpkg.com/tooltip.js/dist/umd/tooltip.min.js'></script>
+
+<!--Import Rubik font-->
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Rubik&display=swap');
+</style>
+
+<!--Import Roboto font-->
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+</style>
+
+<!--Import Patua One font-->
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Patua+One&display=swap');
+</style>
+
+<!-- External CSS styling -->
+<link rel="stylesheet" href="../css/schedule.css">
+
+<!-- Axios -->
+<script src="https://unpkg.com/axios/dist/axios.js"></script>
+
+<style>
+
+  .popper,
+  .tooltip {
+    position: absolute;
+    z-index: 9999;
+    background: #EEE2CC;
+    color: black;
+    width: 200px;
+    border-radius: 3px;
+    box-shadow: 0 0 2px rgba(0,0,0,0.5);
+    padding: 10px;
+    text-align: center;
+  }
+  .style5 .tooltip {
+    background: #1E252B;
+    color: #FFFFFF;
+    max-width: 200px;
+    width: auto;
+    font-size: .8rem;
+    padding: .5em 1em;
+  }
+  .popper .popper__arrow,
+  .tooltip .tooltip-arrow {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    position: absolute;
+    margin: 5px;
+  }
+
+  .tooltip .tooltip-arrow,
+  .popper .popper__arrow {
+    border-color: #EEE2CC;
+  }
+  .style5 .tooltip .tooltip-arrow {
+    border-color: #1E252B;
+  }
+  .popper[x-placement^="top"],
+  .tooltip[x-placement^="top"] {
+    margin-bottom: 5px;
+  }
+  .popper[x-placement^="top"] .popper__arrow,
+  .tooltip[x-placement^="top"] .tooltip-arrow {
+    border-width: 5px 5px 0 5px;
+    border-left-color: transparent;
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    bottom: -5px;
+    left: calc(50% - 5px);
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+  .popper[x-placement^="bottom"],
+  .tooltip[x-placement^="bottom"] {
+    margin-top: 5px;
+  }
+  .tooltip[x-placement^="bottom"] .tooltip-arrow,
+  .popper[x-placement^="bottom"] .popper__arrow {
+    border-width: 0 5px 5px 5px;
+    border-left-color: transparent;
+    border-right-color: transparent;
+    border-top-color: transparent;
+    top: -5px;
+    left: calc(50% - 5px);
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+  .tooltip[x-placement^="right"],
+  .popper[x-placement^="right"] {
+    margin-left: 5px;
+  }
+  .popper[x-placement^="right"] .popper__arrow,
+  .tooltip[x-placement^="right"] .tooltip-arrow {
+    border-width: 5px 5px 5px 0;
+    border-left-color: transparent;
+    border-top-color: transparent;
+    border-bottom-color: transparent;
+    left: -5px;
+    top: calc(50% - 5px);
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .popper[x-placement^="left"],
+  .tooltip[x-placement^="left"] {
+    margin-right: 5px;
+  }
+  .popper[x-placement^="left"] .popper__arrow,
+  .tooltip[x-placement^="left"] .tooltip-arrow {
+    border-width: 5px 0 5px 5px;
+    border-top-color: transparent;
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    right: -5px;
+    top: calc(50% - 5px);
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+</style>
+
+    <header> 
+        <img class="logo" src="../images/logo.jpg" width='80px;' height='40px;' alt="logo">
+        <nav>
+            <ul class="nav__links">
+                <li><a href="../driver/driver_home.html">Home</a></li>
+                <li><a href="../driver/schedule.html">View Schedule</a></li>
+                <li><a href="../customer/profile.html">Profile</a></li>
+            </ul>
+        </nav>
+        <a class="LogOut" href="../landing-page.html"><button class='btn'>Log Out</button></a>
+    </header>
+    <body>
+      <div style = 'display: flex;
+      justify-content: center;' id='app'>
+          <div id='calendar'  style="width: 50%; height:50%; margin-top: 20px; font-family: roboto; color: #9E8A81"></div>
+        </div>
+  
+    </body>
+
+<script>
+  async function fetchEvents() {
+    const response = await fetch("http://localhost:5000/delivery/driver/17")
+    const data = await response.json()
+      .then(data =>{
+        
+        //console.log(data)
+          if (data.code === 404) {
+          }
+          else {
+              //console.log(data.data.deliveries)
+              events = [];
+              for(deli of data.data.deliveries){
+                  // console.log(deli)
+                  title = deli.destination;
+                  description = 'To: ' + deli.pickup_location + ' From: ' + deli.destination;
+                  // console.log(description)
+                  timing = deli.timeslot.split("_");
+                  for (timeslots in timing){
+                    if (timing[0] == '8'){
+                      start_time = '08:00:00';
+                      end_time = '10:00:00';
+                    }
+                    else if (timing[0] == '10'){
+                      start_time = '10:00:00';
+                      end_time = '12:00:00';
+                    }
+                    else if (timing[0] == '12'){
+                      start_time = '12:00:00';
+                      end_time = '14:00:00';
+                    }
+                    else if (timing[0] == '2'){
+                      start_time = '14:00:00';
+                      end_time = '16:00:00';
+                    }
+                    else {
+                      start_time = '16:00:00';
+                      end_time = '18:00:00';
+                    }
+                  }
+
+                  //console.log(timing)
+                  start = Date.parse(deli.delivery_date.slice(0,-12) + start_time);
+                  //start = '2021-04-04T09:00'
+                  //console.log(start)
+                  // console.log(start)
+                  end = Date.parse(deli.delivery_date.slice(0,-12) + end_time);
+                  // + 'T' + timing[2] + ':00:00';
+                  //end = '2021-04-06T09:00'
+                  //console.log(end)
+                  details = {
+                        "title": title,
+                        "description": description,
+                        "start" : start,
+                        "end": end,
+                  }
+                  events.push(details)
+                  // events = events[0];
+              }
+
+              //Jeremy
+              console.log('events', events)
+              var calendarEl = document.getElementById('calendar');
+
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            plugins: [ 'dayGrid' ],
+            defaultView: 'dayGridMonth',
+            navLinks:true,
+            eventColor: '#9E8A81',
+
+          eventRender: function(info) {
+            var tooltip = new Tooltip(info.el, {
+              title: info.event.extendedProps.description,
+              placement: 'top',
+              trigger: 'hover',
+              container: 'body'
+            });
+          },
+
+          events: events, 
+      
+          eventTimeFormat: { 
+                hour: '2-digit',
+                minute: '2-digit',
+                meridiem: true,
+              },
+              
+        });
+        //calendar.addEventSource(Promise.resolve(fetchEvents()));
+        calendar.render()
+
+              //end Jeremy
+          }
+        })
+        return events //-> when called outside, it would render a promise obj 
+        //console.log(events) 
+
+        //at this position, events is still an object 
+      }
+      
+
+      //console.log(fetchEvents());
+    //fetchEvents().then(function(result) {
+    // you can access the result from the promise here
+      async function renderCalendar() {
+
+      }
+
+      document.addEventListener('DOMContentLoaded', async function() {
+        // var events = await fetchEvents();
+        // console.log(events);
+        fetchEvents()
+        
+      });
+    //});
+
+</script>
+
+</head>
+
+
+</html>

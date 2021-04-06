@@ -5,4 +5,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY ./driver_complete_delivery.py .
 COPY ./amqp_setup.py .
 COPY ./invokes.py .
-CMD [ "python", "./driver_complete_delivery.py" ]
+CMD [ "python", "./complete_delivery.py" ]
