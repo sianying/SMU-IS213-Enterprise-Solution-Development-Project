@@ -66,24 +66,22 @@ CREATE TABLE IF NOT EXISTS `login` (
 
 DROP TABLE IF EXISTS `delivery`;
 CREATE TABLE IF NOT EXISTS `delivery` (
-    `delivery_ID` int NOT NULL AUTO_INCREMENT,
-    `driver_ID` int NOT NULL,     
-    `customer_ID` int NOT NULL,   
-    `delivery_date` date NOT NULL,
-    `timeslot` varchar(20) NOT NULL,
-    `pickup_location` varchar(60) NOT NULL,
-    `destination` varchar(60) NOT NULL,
-    `delivery_item` varchar(40) NOT NULL,
-    `description` varchar(120) NOT NULL,
-    `payment_amount` int NOT NULL,
-    `payment_status` varchar(6) NOT NULL,
-    `receiver_name` varchar(64) NOT NULL,
-    `delivery_status` varchar(10) NOT NULL DEFAULT 'NEW',
-    `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `last_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (`delivery_ID`),
-    FOREIGN KEY (`driver_ID`) REFERENCES driver(`driver_ID`),
-    FOREIGN KEY (`customer_ID`) REFERENCES customer(`customer_ID`)
+  `delivery_ID` int NOT NULL AUTO_INCREMENT,
+  `driver_ID` int NOT NULL,
+  `customer_ID` int NOT NULL,
+  `delivery_date` date NOT NULL,
+  `timeslot` varchar(20) NOT NULL,
+  `pickup_location` varchar(60) NOT NULL,
+  `destination` varchar(60) NOT NULL,
+  `delivery_item` varchar(40) NOT NULL,
+  `description` varchar(120) NOT NULL,
+  `payment_amount` int NOT NULL,
+  `payment_status` varchar(6) NOT NULL DEFAULT 'Paid',
+  `receiver_name` varchar(64) NOT NULL,
+  `delivery_status` varchar(20) NOT NULL DEFAULT 'NEW',
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `last_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`delivery_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
