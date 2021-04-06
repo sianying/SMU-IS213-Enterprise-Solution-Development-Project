@@ -31,20 +31,20 @@ services:
 
     #port 5000
     delivery:
-        build:
-            context: ./delivery/
-            dockerfile: delivery.Dockerfile
-        image: <dockerid>/delivery:1.0
-        restart: always
-        environment:
-            dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/cheetah_db
-            PYTHONUNBUFFERED: 1
+      build:
+        context: ./delivery             #idk whether context needs to be ./delivery/ or ./delivery
+        dockerfile: delivery.Dockerfile
+      image: <dockerid>/delivery:1.0
+      restart: always
+      environment:
+        dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/cheetah_db
+        PYTHONUNBUFFERED: 1
 
 
     #port 5001
     driver:
         build:
-            context: ./driver/
+            context: ./driver
             dockerfile: driver.Dockerfile
         image: <dockerid>/driver:1.0
         restart: always
@@ -56,7 +56,7 @@ services:
     #port 5002
     customer:
         build:
-            context: ./customer/
+            context: ./customer
             dockerfile: customer.Dockerfile
         image: <dockerid>/customer:1.0
         restart: always
@@ -79,7 +79,7 @@ services:
     #port 5004        
     schedule:
         build:
-            context: ./schedule/
+            context: ./schedule
             dockerfile: schedule.Dockerfile
         image: <dockerid>/schedule:1.0
         restart: always
@@ -91,7 +91,7 @@ services:
     #port 5005
     login:
         build:
-            context: ./login/
+            context: ./login
             dockerfile: login.Dockerfile
         image: <dockerid>/login:1.0
         restart: always
@@ -102,7 +102,8 @@ services:
 
 
     ############ AMQP SERVICES #############
-    rabbitmq:
+
+    rabbitmq:    #no build, context etc
         image: rabbitmq:3-management
         hostname: esd-rabbit
         restart: always
@@ -112,12 +113,39 @@ services:
         volumes: 
             - rabbitmq_data:/var/lib/rabbitmq
 
-    #includes both notification and error microservice
-    amqp_setup:
-        build: 
-            context: ./
-            dockerfile: amqp_setup.Dockerfile
-        image: <dockerid>/amqp_setup:1.0
+    #includes driver/customer notification and error microservice
+
+    customer_notification:
+        build:
+            context: ./notification
+            dockerfile: customer_noti.Dockerfile
+        image: <dockerid>/customer_noti:1.0
+        restart: always
+        depends_on:
+            - rabbitmq
+        environment:
+            rabbit_host: rabbitmq
+            rabbit_port: 5672
+            PYTHONUNBUFFERED: 1
+
+    driver_notification:
+        build:
+            context: ./notification
+            dockerfile: driver_noti.Dockerfile
+        image: <dockerid>/driver_noti:1.0
+        restart: always
+        depends_on:
+            - rabbitmq
+        environment:
+            rabbit_host: rabbitmq
+            rabbit_port: 5672
+            PYTHONUNBUFFERED: 1
+
+    error_log:
+        build:
+            context: ./notification
+            dockerfile: error_log.Dockerfile
+        image: <dockerid>/error_log:1.0
         restart: always
         depends_on:
             - rabbitmq
@@ -127,48 +155,23 @@ services:
             PYTHONUNBUFFERED: 1
 
 
-    # notification:
-    #     build:
-    #         context: ./
-    #         dockerfile: notification.Dockerfile
-    #     image: <dockerid>/notification:1.0
-    #     restart: always
-    #     depends_on:
-    #     - rabbitmq
-    #     environment:
-    #         rabbit_host: rabbitmq
-    #         rabbit_port: 5672
-    #         PYTHONUNBUFFERED: 1
-
-    # error_log:
-    #     build:
-    #         context: ./
-    #         dockerfile: error_log.Dockerfile
-    #     image: <dockerid>/error_log:1.0
-    #     restart: always
-    #     depends_on:
-    #     - rabbitmq
-    #     environment:
-    #         rabbit_host: rabbitmq
-    #         rabbit_port: 5672
-    #         PYTHONUNBUFFERED: 1
-
-
 
 
     # 5 Complex microservices
 
     #port 5104, but done first since it is needed by 5100
     schedule_driver:
+        build:
+            context: ./complex_microservices/schedule_driver
+            dockerfile: schedule_driver.Dockerfile
         image: <dockerid>/schedule_driver:1.0
         depends_on:
             - schedule
             - rabbitmq
-            - amqp_setup
         environment:
             rabbithost: rabbitmq
             rabbitport: 5672
-            scheduleURL: http://delivery:5004/schedule
+            scheduleURL: http://schedule:5004/schedule
         ports:
             - "5104:5104"
     
@@ -176,7 +179,7 @@ services:
     #port 5100
     process_order:
         build:
-            context: ./complex_microservices/
+            context: ./complex_microservices/process_order
             dockerfile: process_order.Dockerfile
         image: <dockerid>/process_order:1.0
         restart: always
@@ -186,14 +189,13 @@ services:
             - schedule
             - schedule_driver
             - rabbitmq
-            - amqp_setup
         environment:
             rabbithost: rabbitmq
             rabbitport: 5672
             deliveryURL: http://delivery:5000/delivery
             paymentURL: http://payment:5003/payment
-            scheduleURL: http://delivery:5004/schedule
-            ScheduleDriverURL: http://delivery:5104/schedule_driver
+            scheduleURL: http://schedule:5004/schedule
+            ScheduleDriverURL: http://schedule_driver:5104/schedule_driver
             PYTHONUNBUFFERED: 1
         ports:
             - "5100:5100"
@@ -201,11 +203,13 @@ services:
 
     #port 5101
     driver_view_details:
+        build:
+            context: ./complex_microservices/driver_view_details
+            dockerfile: driver_view_details.Dockerfile
         image: <dockerid>/driver_view_details:1.0
         depends_on:
             - delivery
             - rabbitmq
-            - amqp_setup
         environment:
             rabbithost: rabbitmq
             rabbitport: 5672
@@ -214,12 +218,14 @@ services:
 
     # port 5102
     customer_view_details:
+        build:
+            context: ./complex_microservices/customer_view_details
+            dockerfile: customer_view_details.Dockerfile
         image: <dockerid>/customer_view_details:1.0
         depends_on:
             - delivery
             - driver
             - rabbitmq
-            - amqp_setup
         environment:
             rabbithost: rabbitmq
             rabbitport: 5672
@@ -228,13 +234,15 @@ services:
 
 
     #port 5103
-    driver_complete_delivery:
-        image: <dockerid>/driver_complete_delivery:1.0
+    complete_delivery:
+        build:
+            context: ./complex_microservices/complete_delivery
+            dockerfile: complete_delivery.Dockerfile
+        image: <dockerid>/complete_delivery:1.0
         depends_on:
             - delivery
             - driver
             - rabbitmq
-            - amqp_setup
         environment:
             rabbithost: rabbitmq
             rabbitport: 5672
@@ -244,13 +252,15 @@ services:
 
     #port 5105
     register_user:
+        build:
+            context: ./complex_microservices/register_user
+            dockerfile: register_user.Dockerfile
         image: <dockerid>/register_user:1.0
         depends_on:
             - login
             - customer
             - driver     #register a driver
             - rabbitmq
-            - amqp_setup
         environment:
             rabbithost: rabbitmq
             rabbitport: 5672
