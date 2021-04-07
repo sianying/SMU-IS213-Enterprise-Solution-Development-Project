@@ -214,7 +214,7 @@ def send_notification(order):
     created = order['data']['created']
 
     customer_message = "Delivery Created! +\n\nDelivery Order ID: " + str(delivery_ID) + " to " + str(receiver_name) +" has been successfully created on " + str(created) + "\nPlease proceed to 'View My Deliveries' to catch a glimpse!"
-    driver_message = "You have a new delivery order! \n\nDelivery Order ID: " + str(delivery_ID) + " has been successfully created on " + str(created) + "\nPlease proceed to 'View My Deliveries' or 'View my Schedule' to catch a glimpse!"
+    driver_message = "You have a new delivery order! \n\nDelivery Order ID: " + str(delivery_ID) + " has been successfully created on " + str(created) + "\nPlease proceed to 'View my Schedule' to catch a glimpse!"
 
     messages = json.dumps({
             "customer_message": customer_message,

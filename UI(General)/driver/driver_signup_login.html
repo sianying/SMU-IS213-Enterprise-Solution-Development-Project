@@ -30,33 +30,18 @@
       @import url('https://fonts.googleapis.com/css2?family=Patua+One&display=swap');
     </style>
 <head>
-    <?php 
-        session_start();
-        function function_alert($message) { 
-            
-            // Display the alert box  
-            echo "<script>alert('$message');</script>"; 
-        } 
-        if (isset($_SESSION['error'])) { 
-
-        function_alert($_SESSION['error']);
-        unset($_SESSION["error"]);
-
-        }
-
-    ?>
     <style>
         * {
             margin: 0;
             padding: 0;
         }
         
-      body{
-        font-family: 'Roboto', sans-serif;
-        background-image: url('../images/bg-img.JPG');
-        background-position: center;
-        background-attachment: fixed;
-      }
+        body{
+            font-family: 'Roboto', sans-serif;
+            background-image: url('../images/bg-img.JPG');
+            background-position: center;
+            background-attachment: fixed;
+        }
         
         button:hover {
             cursor: pointer;
@@ -112,7 +97,7 @@
         
         .background .right button {
             left: 550px;
-            margin-top:
+            /* margin-top:  */
         }
         
         .form-container {
@@ -209,7 +194,7 @@
         .login button,
         .forgot {
             display: inline-block;
-          
+        
         }
         
         .forgot {
