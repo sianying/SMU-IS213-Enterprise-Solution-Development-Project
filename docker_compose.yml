@@ -180,6 +180,7 @@ services:
         depends_on:
             - schedule
             - rabbitmq
+            - error_log
         environment:
             rabbithost: rabbitmq
             rabbitport: 5672
@@ -201,11 +202,14 @@ services:
             - schedule
             - schedule_driver
             - rabbitmq
+            - error_log
+            - customer_notification
+            - driver_notification
         environment:
             rabbithost: rabbitmq
             rabbitport: 5672
             deliveryURL: http://delivery:5000/delivery
-            paymentURL: http://payment:5003/payment
+            paymentURL: http://payment:5003/checkout_session
             scheduleURL: http://schedule:5004/schedule
             ScheduleDriverURL: http://schedule_driver:5104/schedule_driver
             PYTHONUNBUFFERED: 1
@@ -222,6 +226,7 @@ services:
         depends_on:
             - delivery
             - rabbitmq
+            - error
         environment:
             rabbithost: rabbitmq
             rabbitport: 5672
@@ -240,6 +245,7 @@ services:
             - delivery
             - driver
             - rabbitmq
+            - error
         environment:
             rabbithost: rabbitmq
             rabbitport: 5672
@@ -258,6 +264,8 @@ services:
             - delivery
             - driver
             - rabbitmq
+            - customer_notication
+            - driver_notification
         environment:
             rabbithost: rabbitmq
             rabbitport: 5672
@@ -277,6 +285,7 @@ services:
             - customer
             - driver     #register a driver
             - rabbitmq
+            - error
         environment:
             rabbithost: rabbitmq
             rabbitport: 5672
