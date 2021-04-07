@@ -7,6 +7,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 import os, sys
+from os import environ
 import datetime
 
 import requests
@@ -22,9 +23,8 @@ CORS(app)
 HOST = '0.0.0.0'
 PORT = 5104
 
-driver_URL = "http://localhost:5001/driver/"
-schedule_URL = "http://localhost:5004/schedule/"
-delivery_URL = "http://localhost:5000/delivery"
+scheduleURL= environ.get('scheduleURL')
+#schedule_URL = "http://localhost:5004/schedule/"
 
 @app.route("/schedule_driver/<string:delivery_date>/<string:timeslot>", methods=['GET'])
 def schedule_driver(delivery_date, timeslot):
@@ -69,8 +69,8 @@ def get_available_drivers(delivery_date, timeslot):
     # 1. invoke schedule MS to determine which driver is free for selected day + timeslot
     # Invoke the schedule microservice
     print('\n-----Invoking schedule microservice-----')
-
-    schedule_result = invoke_http(schedule_URL + '/date/' + delivery_date + '/' + timeslot, method='GET')
+ 
+    schedule_result = invoke_http(scheduleURL + '/date/' + delivery_date + '/' + timeslot, method='GET')
     print('schedule result: ' + str(schedule_result))
 
     # 3. Check the delivery result; if a failure, send it to the error microservice.
@@ -80,21 +80,19 @@ def get_available_drivers(delivery_date, timeslot):
         # invoke_http("http://localhost:5007/error", method="POST", json=schedule_result)
 
         print('\n\n-----Publishing the (schedule error) message with routing_key=scheduler.schedule.error-----')
-        # message=json.dumps(schedule_result)
-        error_message = {
-            "code": 502,
-            "data": {"schedule_result": schedule_result},
-            "message": "Failure to retrieve available drivers, sent for error handling."
-        }
-        message = json.dumps(error_message)
+        message=json.dumps(schedule_result)
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="scheduler.schedule.error", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2))
 
         # - reply from the invocation is not used; 
         # continue even if this invocation fails
-        print("Delivery status ({:d}) published to the RabbitMQ Exchange:".format(code), error_message)
+        print("Delivery status ({:d}) published to the RabbitMQ Exchange:".format(code), schedule_result)
 
-        return error_message
+        return {
+            "code": 502,
+            "data": {"schedule_result": schedule_result},
+            "message": "Failure to retrieve available drivers, sent for error handling."
+        }
 
     return {
         "code": 201,

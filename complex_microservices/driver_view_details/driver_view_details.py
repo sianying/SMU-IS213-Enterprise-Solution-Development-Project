@@ -15,6 +15,7 @@ import os
 import requests
 import google
 
+from os import environ
 from invokes import invoke_http
 
 import amqp_setup
@@ -24,6 +25,8 @@ import json
 app = Flask(__name__)
 CORS(app)
 
+deliveryURL=environ.get('deliveryURL')
+
 # Main function that calls other functions
 @app.route("/driver_view_details/<int:delivery_ID>", methods=['GET'])
 def driver_job_details(delivery_ID):
@@ -32,7 +35,7 @@ def driver_job_details(delivery_ID):
         # 1. get info already stored in database
         intermediate_result = get_existing_info(delivery_ID)
 
-        #print(intermediate_result)
+        print(intermediate_result)
 
         # 2. get additional info by calling the google distance api
         final_result=get_more_info(intermediate_result)
@@ -52,25 +55,20 @@ def driver_job_details(delivery_ID):
 def get_existing_info(delivery_ID):
     # 2. Invoke the delivery microservice
     print('\n-----Invoking delivery microservice-----')
-    delivery_result = invoke_http("http://localhost:5000/delivery/" + str(delivery_ID), method='GET')
+    #delivery_result = invoke_http("http://localhost:5000/delivery/" + str(delivery_ID), method='GET')
+    delivery_result = invoke_http(deliveryURL+ '/' + str(delivery_ID), method='GET')
     print('delivery_result:', delivery_result)
 
     # 3. Check the delivery result; if a failure, send it to the error microservice.
     code = delivery_result["code"]
     if code not in range(200, 300):
         print('\n\n-----Publishing the (delivery error) message with routing_key=DriverViewDetails.delivery.error-----')
-        # message=json.dumps(delivery_result)
-        error_message = {
-            "code": 501,
-            "data": {"delivery_result": delivery_result},
-            "message": "Delivery update failure, sent for error handling."
-        }
-        message = json.dumps(error_message)
+        message=json.dumps(delivery_result)
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="DriverViewDetails.delivery.error", body=message, properties=pika.BasicProperties(delivery_mode = 2))
 
         # - reply from the invocation is not used; 
         # continue even if this invocation fails
-        print("Delivery MS Call status ({:d}) published to the RabbitMQ Exchange:".format(code), error_message)
+        print("Delivery MS Call status ({:d}) published to the RabbitMQ Exchange:".format(code), delivery_result)
 
 
 
@@ -82,7 +80,11 @@ def get_existing_info(delivery_ID):
         # print("Delivery status ({:d}) sent to the error microservice:".format(
         #     code), delivery_result)
 
-        return error_message
+        return {
+            "code": 501,
+            "data": {"delivery_result": delivery_result},
+            "message": "Delivery update failure, sent for error handling."
+        }
 
     return {
         "code": 201,
@@ -113,18 +115,12 @@ def get_more_info(delivery):
 
     if response_json['status']!='OK':
         print('\n\n-----Publishing the (API call error) message with routing_key=DriverViewDetails.API.error-----')
-        # message=json.dumps(response_json)
-        error_message = {
-            "code": 400,
-            "data": {"api_call_result": response_json},
-            "message": "API Call failure, sent for error handling."
-        }
-        message = json.dumps(error_message)
+        message=json.dumps(response_json)
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="DriverViewDetails.API.error", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2))
 
         print("\nAPI Call status ({:d}) published to the RabbitMQ Exchange:".format(
-            response_json['status']), error_message)
+            response_json['status']), response_json)
 
         # print('\n\n-----Invoking error microservice as api call fails-----')
         # invoke_http("http://localhost:5007/error", method="POST", json=response)
@@ -132,7 +128,11 @@ def get_more_info(delivery):
         # # continue even if this invocation fails
         # print("Details of API Call ({:d}) sent to the error microservice:".format(response_json['status']), response_json)
 
-        return error_message
+        return {
+            "code": 400,
+            "data": {"api_call_result": response_json},
+            "message": "API Call failure, sent for error handling."
+        }
 
     distance_in_km= round(response_json['rows'][0]['elements'][0]['distance']['value']/1000, 1)
     duration_in_min= response_json['rows'][0]['elements'][0]['duration']['text']
