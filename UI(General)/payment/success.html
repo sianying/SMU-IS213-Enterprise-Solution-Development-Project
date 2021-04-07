@@ -112,11 +112,12 @@
             <div class='container' v-if='!successfulPayment'>
                 <div class='row'>
                     <!-- <div class='col'></div> -->
-                    <div class='col'><h3 class='pt-3' style='color:#CEA68C; font-family: "Patua One", cursive;'>Thank you for choosing Cheetah Express. Please hold on while we process your order.</h3></div>
+                    <h3 v-if='error' style='color:#CEA68C; font-family: "Patua One", cursive;' class='col d-flex justify-content-center animate__animated animate__backInUp pt-4'>{{error}}</h3>
+                    <div v-else class='col'><h3 class='pt-3' style='color:#CEA68C; font-family: "Patua One", cursive;'>Thank you for choosing Cheetah Express. Please hold on while we process your order.</h3></div>
                     <!-- <div class='col'></div> -->
                 </div>
 
-                <div class='row'>
+                <div v-if='loading' class='row'>
         
                     <div id="loader"></div>
                                         
@@ -165,6 +166,8 @@
         el: '#app',
         data:{
             successfulPayment: false,
+            error: false,
+            loading: true
 
         },
         mounted: function(){
@@ -190,10 +193,19 @@
                     .then(data => {
                         // console.log(response)
                         console.log(data)
-                        this.successfulPayment = true
+                        if(data.code >= 500){
+                            this.error = "An error has occurred while processing your order. Please try again.";
+                            this.loading = false
+                            
+                        } else {
+                            this.successfulPayment = true;
+                        }
+                            // console.log("hello")
+                        
                     })
                     .catch(error=>{
                         console.log("Error:", error);
+                        
                     })
             }}})
 
