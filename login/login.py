@@ -25,7 +25,7 @@ class Login(db.Model):
     __tablename__ = 'login'
 
     username = db.Column(db.String(64), primary_key=True)
-    password = db.Column(db.String(12), nullable=False)
+    password = db.Column(db.String(64), nullable=False)
     account_type = db.Column(db.String(8), nullable=False)
     customer_ID = db.Column(db.Integer, nullable=True) 
     driver_ID = db.Column(db.Integer, nullable=True) 
@@ -52,29 +52,41 @@ class Login(db.Model):
 @app.route("/authenticate", methods=['POST'])
 def authenticate_user():
     user_data = request.get_json()
+    print(user_data)
     user_recorded = Login.query.filter_by(username=user_data['username']).first()
+    print(user_recorded)
     account_type = user_recorded.account_type
-    #eg. customer_ID or driver_ID
-    user_ID_header = account_type + "_ID"
-    user_ID = user_recorded.user_ID_header
-    if user_recorded:
+
+    if user_recorded is not None:
+        account_type = user_data['account_type']
         username = user_data['username']
         password = user_data['password']
-        account_type = user_data['account_type']
-
-        hashed = user_recorded['password']
+        hashed = user_recorded.password
         # if username == user_recorded.username and password == user_recorded.password:
-        if username == user_recorded.username and bcrypt.checkpw(password, hashed):
+        #encode the plain text password to match the hashed pa  ssword
+
+        if username == user_recorded.username and bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8')):
             print("Authenticated! Welcome User " + username)
-            return jsonify({
-                    "code": 200,
-                    "data": {
-                        "username":user_recorded.username,
-                        user_ID_header: user_recorded.user_ID,
-                        "account_type": account_type
-                    },
-                    "message": "Login is successful"
-                })
+            if account_type == "customer":
+                return jsonify({
+                        "code": 200,
+                        "data": {
+                            "username":user_recorded.username,
+                            "customer_ID": user_recorded.customer_ID,
+                            "account_type": account_type
+                        },
+                        "message": "Login is successful"
+                    })
+            else:
+                return jsonify({
+                        "code": 200,
+                        "data": {
+                            "username":user_recorded.username,
+                            "driver_ID": user_recorded.driver_ID,
+                            "account_type": account_type
+                        },
+                        "message": "Login is successful"
+                    })
     print("Unable to login, please sign up with Cheetah Express ;)")
     return jsonify({
             "code": 404,
@@ -137,38 +149,67 @@ def register_user(username):
 
     data = request.get_json()
     account_type = data['account_type']
-    user_ID_header = account_type  + "_ID"
+    password = data['password']
+    #hash the password using bcrypt
+    hashed = create_hash_password(password.encode('utf-8'))
+    #convert hashed password to string for db storage
+    hashed_string = str(hashed)
+    #reconstruct the data for the db addition
+    if account_type == "customer":
+        customer_ID = data['customer_ID']
+        account = Login(username, hashed_string, account_type, customer_ID, "NULL")
+    else:
+        driver_ID = data['driver_ID']
+        account = Login(username, hashed_string, account_type, "NULL", driver_ID)
 
-    account = Login(username, **data)
+    # account = Login(username, hashed_string, **data)
     try:
         db.session.add(account)
         db.session.commit()
     except:
-        return jsonify({
-                "code": 500,
-                "data": {
-                    "username": username,
-                    "account_type": account_type,
-                    user_ID_header: data[user_ID_header]
-                },
-                "message": "An error occurred creating the account."
-            }), 500
+        if account_type = "customer":
+            return jsonify({
+                    "code": 500,
+                    "data": {
+                        "username": username,
+                        "account_type": account_type,
+                        "customer_ID": customer_ID
+                    },
+                    "message": "An error occurred creating the account."
+                }), 500
+        else:
+            return jsonify({
+                    "code": 500,
+                    "data": {
+                        "username": username,
+                        "account_type": account_type,
+                        "driver_ID": driver_ID
+                    },
+                    "message": "An error occurred creating the account."
+                }), 500
     
-    return jsonify(
-        {
+    if account_type = "customer":
+        return jsonify({
             "code": 201,
             'data': {
                 "username": username,
                 "account_type": account_type,
-                user_ID_header: data[user_ID_header]
+                "customer_ID": customer_ID
             }
-        }
-    ), 201
+        }), 201
+    else:
+        return jsonify({
+            "code": 201,
+            'data': {
+                "username": username,
+                "account_type": account_type,
+                "driver_ID": driver_ID
+            }
+        }), 201
 
 def create_hash_password(password):
     salt = bcrypt.gensalt()
     hashed = bcrypt.hashpw(password, salt)
-
     return hashed
 
 
