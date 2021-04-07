@@ -20,8 +20,10 @@ import json
 app = Flask(__name__)
 CORS(app)
 
-deliveryURL=environ.get('deliveryURL')
-driverURL= environ.get('driverURL')
+# deliveryURL=environ.get('deliveryURL')
+# driverURL= environ.get('driverURL')
+deliveryURL = 'http://localhost:5000/delivery'
+driverURL = 'http://localhost:5001/driver'
 
 # Main function that calls other functions
 @app.route("/complete_delivery/<int:delivery_ID>", methods=['POST'])

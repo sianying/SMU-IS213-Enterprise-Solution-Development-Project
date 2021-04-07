@@ -404,6 +404,7 @@
         .catch(function (error) {
             console.log("Error:", error);
         });
+    });
 
 
     $("#signup-button").click(function() {
@@ -452,7 +453,7 @@
                     });
                 console.log(json);
                 sessionStorage.setItem("account_details", json);
-                location.replace("../customer/home.html");
+                location.replace("./driver_home.html");
             }
             else{
                 var message = "Verification not completed or verification failed."
@@ -469,7 +470,6 @@
 
     });
 
-    });
 
 </script>
 </body>
