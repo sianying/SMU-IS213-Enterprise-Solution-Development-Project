@@ -25,7 +25,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Main function that calls other functions
-@app.route("/driver_job_details/<int:delivery_ID>", methods=['GET'])
+@app.route("/driver_view_details/<int:delivery_ID>", methods=['GET'])
 def driver_job_details(delivery_ID):
     try:
         # do the actual work
