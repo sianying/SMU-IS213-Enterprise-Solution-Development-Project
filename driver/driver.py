@@ -12,8 +12,8 @@ HOST = "0.0.0.0"
 PORT = 5001
 
 
-# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/driver'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/driver'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/driver'
 #there is a need for authentication to the database using root (user)x and pass(if there is any)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
