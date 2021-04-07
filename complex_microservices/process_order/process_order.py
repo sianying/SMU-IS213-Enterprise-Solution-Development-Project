@@ -32,10 +32,10 @@ CORS(app)
 # and Driver subscriber MS (to inform of new Job)
 ##############################################################################################################
 
-payment_URL = environ.get(paymentURL)       #"http://localhost:4242/checkout_session"
-delivery_URL = environ.get(deliveryURL)     #"http://localhost:5000/delivery"
-schedule_URL = environ.get(scheduleURL)     #"http://localhost:5004/schedule"
-schedule_driver_URL = environ.get(ScheduleDriverURL)    #"http://localhost:5104/schedule_driver"
+payment_URL = environ.get('paymentURL')       #"http://localhost:4242/checkout_session"
+delivery_URL = environ.get('deliveryURL')     #"http://localhost:5000/delivery"
+schedule_URL = environ.get('scheduleURL')     #"http://localhost:5004/schedule"
+schedule_driver_URL = environ.get('ScheduleDriverURL')    #"http://localhost:5104/schedule_driver"
 
 
 @app.route("/process_order/<string:customer_ID>", methods=['POST'])
