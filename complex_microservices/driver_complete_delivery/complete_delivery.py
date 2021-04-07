@@ -60,25 +60,20 @@ def update_delivery_status(delivery, delivery_ID):
     code = delivery_result["code"]
     if code not in range(200, 300):
 
-        json_mine = {
+        error_message = {
             "code": 501,
             "data": {"delivery_result": delivery_result},
             "message": "Failed to retrieve delivery data, sent for error handling."
         }
 
         print('\n\n-----Publishing the (delivery error) message with routing_key=DriverCompleteDelivery.delivery.error-----')
-        message=json.dumps(json_mine)
+        message=json.dumps(error_message)
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="DriverCompleteDelivery.delivery.error", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2))
 
         print("\nDelivery MS call status ({:d}) published to the RabbitMQ Exchange:".format(code), delivery_result)
 
-        return {
-            "code": 501,
-            "data": {"delivery_result": delivery_result},
-            "message": "Failed to retrieve delivery data, sent for error handling."
-        }
-
+        return error_message
     # 5. invoke the driver microservice
     driver_result = invoke_http("http://localhost:5001/driver/" + str(delivery_result['data']['driver_ID']), method='GET')
     
@@ -86,18 +81,18 @@ def update_delivery_status(delivery, delivery_ID):
     code = driver_result["code"]
     if code not in range(200, 300):
         print('\n\n-----Publishing the (driver error) message with routing_key=DriverCompleteDelivery.driver.error-----')
-        json_mine = {
+        error_message = {
             "code": 502,
             "data": {"driver_result": driver_result},
             "message": "Failed to retrieve driver data, sent for error handling."
         }
-        message=json.dumps(json_mine)
+        message=json.dumps(error_message)
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="DriverCompleteDelivery.driver.error", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2))
 
         print("\nDelivery MS call status ({:d}) published to the RabbitMQ Exchange:".format(code), driver_result)
 
-        return json_mine
+        return error_message
 
     delivery_driver = driver_result['data']['driver_name']   
     # print(delivery_driver)
