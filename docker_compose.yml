@@ -4,42 +4,19 @@ volumes:
     rabbitmq_data:
  
 services:
-    # #database
-    # cheetah_db:
-    #     build:
-    #         context: ./
-    #         dockerfile: cheetah_db.Dockerfile
-    #     image: mysql:5.7
-    #     restart: always
-    #     environment:
-    #         MYSQL_DATABASE: 'cheetah_db'
-    #         MYSQL_USER: 'root'
-    #         MYSQL_PASSWORD: ''
-    #         MYSQL_ROOT_PASSWORD: ''
-    #     ports:
-    #     # <Port exposed> : < MySQL Port running inside container>
-    #         - '3306:3306'
-    #     expose:
-    #       # Opens port 3306 on the container
-    #         - '3306'
-    #     # Where our data will be persisted
-    #     volumes:
-    #         - my-db:/var/lib/mysql
-
-
     # 6 simple microservices
 
     #port 5000
     delivery:
       build:
-        context: ./delivery            #idk whether context needs to be ./delivery/ or ./delivery
-        dockerfile: delivery.Dockerfile
+        context: ./delivery            #idk whether context needs to be ./delivery/ or ./delivery, but ./delivery
+        dockerfile: delivery.Dockerfile   #seems to work
       image: zonghanlee/delivery:1.0
       restart: always
       ports:
         - "5000:5000"
       environment:
-        dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/delivery
+        dbURL: mysql+mysqlconnector://admin:Password123@database-1.c8zsr5fmweqm.us-east-1.rds.amazonaws.com/cheetah_db
         PYTHONUNBUFFERED: 1
 
 
@@ -53,7 +30,7 @@ services:
         ports:
             - "5001:5001"
         environment:
-            dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/driver
+            dbURL: mysql+mysqlconnector://admin:Password123@database-1.c8zsr5fmweqm.us-east-1.rds.amazonaws.com/cheetah_db
             PYTHONUNBUFFERED: 1
 
 
@@ -67,7 +44,7 @@ services:
         ports:
             - "5002:5002"
         environment:
-            dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/customer
+            dbURL: mysql+mysqlconnector://admin:Password123@database-1.c8zsr5fmweqm.us-east-1.rds.amazonaws.com/cheetah_db
             PYTHONUNBUFFERED: 1
 
 
@@ -94,7 +71,7 @@ services:
         ports:
             - "5004:5004"
         environment:
-            dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/schedule
+            dbURL: mysql+mysqlconnector://admin:Password123@database-1.c8zsr5fmweqm.us-east-1.rds.amazonaws.com/cheetah_db
             PYTHONUNBUFFERED: 1
             
     
@@ -108,7 +85,7 @@ services:
         ports:
             - "5005:5005"
         environment:
-            dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/login
+            dbURL: mysql+mysqlconnector://admin:Password123@database-1.c8zsr5fmweqm.us-east-1.rds.amazonaws.com/cheetah_db
             PYTHONUNBUFFERED: 1
 
 
@@ -136,7 +113,7 @@ services:
         depends_on:
             - rabbitmq
         environment:
-            rabbit_host: rabbitmq
+            hostname: rabbitmq
             rabbit_port: 5672
             PYTHONUNBUFFERED: 1
 
@@ -149,11 +126,11 @@ services:
         depends_on:
             - rabbitmq
         environment:
-            rabbit_host: rabbitmq
+            hostname: rabbitmq
             rabbit_port: 5672
             PYTHONUNBUFFERED: 1
 
-    error_log:
+    error:
         build:
             context: ./notification
             dockerfile: error.Dockerfile
@@ -162,7 +139,7 @@ services:
         depends_on:
             - rabbitmq
         environment:
-            rabbit_host: rabbitmq
+            hostname: rabbitmq
             rabbit_port: 5672
             PYTHONUNBUFFERED: 1
 
@@ -177,13 +154,14 @@ services:
             context: ./complex_microservices/schedule_driver
             dockerfile: schedule_driver.Dockerfile
         image: zonghanlee/schedule_driver:1.0
+        restart: always
         depends_on:
             - schedule
             - rabbitmq
-            - error_log
+            - error
         environment:
-            rabbithost: rabbitmq
-            rabbitport: 5672
+            hostname: rabbitmq
+            rabbit_port: 5672
             scheduleURL: http://schedule:5004/schedule
         ports:
             - "5104:5104"
@@ -202,12 +180,12 @@ services:
             - schedule
             - schedule_driver
             - rabbitmq
-            - error_log
+            - error
             - customer_notification
             - driver_notification
         environment:
-            rabbithost: rabbitmq
-            rabbitport: 5672
+            hostname: rabbitmq
+            rabbit_port: 5672
             deliveryURL: http://delivery:5000/delivery
             paymentURL: http://payment:5003/checkout_session
             scheduleURL: http://schedule:5004/schedule
@@ -223,14 +201,17 @@ services:
             context: ./complex_microservices/driver_view_details
             dockerfile: driver_view_details.Dockerfile
         image: zonghanlee/driver_view_details:1.0
+        restart: always
         depends_on:
             - delivery
             - rabbitmq
             - error
         environment:
-            rabbithost: rabbitmq
-            rabbitport: 5672
+            hostname: rabbitmq
+            rabbit_port: 5672
             deliveryURL: http://delivery:5000/delivery
+            dbURL: mysql+mysqlconnector://root@host.docker.internal:3306/delivery  
+            #why dunnid do this for other services
         ports:
             - "5101:5101"
 
@@ -241,14 +222,15 @@ services:
             context: ./complex_microservices/customer_view_details
             dockerfile: customer_view_details.Dockerfile
         image: zonghanlee/customer_view_details:1.0
+        restart: always
         depends_on:
             - delivery
             - driver
             - rabbitmq
             - error
         environment:
-            rabbithost: rabbitmq
-            rabbitport: 5672
+            hostname: rabbitmq
+            rabbit_port: 5672
             deliveryURL: http://delivery:5000/delivery
             driverURL: http://driver:5001/driver
         ports:
@@ -260,17 +242,20 @@ services:
             context: ./complex_microservices/complete_delivery
             dockerfile: complete_delivery.Dockerfile
         image: zonghanlee/complete_delivery:1.0
+        restart: always
         depends_on:
             - delivery
             - driver
             - rabbitmq
-            - customer_notication
+            - customer_notification
             - driver_notification
+            - error
         environment:
-            rabbithost: rabbitmq
-            rabbitport: 5672
+            hostname: rabbitmq
+            rabbit_port: 5672
             deliveryURL: http://delivery:5000/delivery
             driverURL: http://driver:5001/driver
+            dbURL: mysql+mysqlconnector://root@host.docker.internal:3306/delivery  #need insert this and change subsequently for each call
         ports:
             - "5103:5103"
 
@@ -280,6 +265,7 @@ services:
             context: ./complex_microservices/register_user
             dockerfile: register_user.Dockerfile
         image: zonghanlee/register_user:1.0
+        restart: always
         depends_on:
             - login
             - customer
@@ -287,8 +273,8 @@ services:
             - rabbitmq
             - error
         environment:
-            rabbithost: rabbitmq
-            rabbitport: 5672
+            hostname: rabbitmq
+            rabbit_port: 5672
             loginURL: http://login:5005/login
             customerURL: http://customer:5002/customer
             driverURL: http://driver:5001/driver
