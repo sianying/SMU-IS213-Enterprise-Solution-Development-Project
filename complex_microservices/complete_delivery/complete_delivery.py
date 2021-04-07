@@ -10,6 +10,7 @@ from flask_cors import CORS
 
 import os, sys
 import requests
+from os import environ
 from invokes import invoke_http
 
 import amqp_setup
@@ -18,6 +19,9 @@ import json
 
 app = Flask(__name__)
 CORS(app)
+
+deliveryURL=environ.get('deliveryURL')
+driverURL= environ.get('driverURL')
 
 # Main function that calls other functions
 @app.route("/complete_delivery/<int:delivery_ID>", methods=['POST'])
@@ -54,45 +58,45 @@ def update_delivery_status(delivery, delivery_ID):
     # 2. Invoke the delivery microservice
     print('\n-----Invoking delivery microservice-----')
 
-    delivery_result = invoke_http("http://localhost:5000/delivery/" + str(delivery_ID), method='PUT', json=delivery)
+    #delivery_result = invoke_http("http://localhost:5000/delivery/" + str(delivery_ID), method='PUT', json=delivery)
+    delivery_result = invoke_http(deliveryURL + '/' + str(delivery_ID), method='PUT', json=delivery)
     
     # 3. Check the delivery result; if a failure, send it to the error microservice.
     code = delivery_result["code"]
     if code not in range(200, 300):
+        print('\n\n-----Publishing the (delivery error) message with routing_key=DriverCompleteDelivery.delivery.error-----')
+        message=json.dumps(delivery_result)
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="DriverCompleteDelivery.delivery.error", 
+            body=message, properties=pika.BasicProperties(delivery_mode = 2))
 
-        error_message = {
+        print("\nDelivery MS call status ({:d}) published to the RabbitMQ Exchange:".format(code), delivery_result)
+
+        return {
             "code": 501,
             "data": {"delivery_result": delivery_result},
             "message": "Failed to retrieve delivery data, sent for error handling."
         }
 
-        print('\n\n-----Publishing the (delivery error) message with routing_key=DriverCompleteDelivery.delivery.error-----')
-        message=json.dumps(error_message)
-        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="DriverCompleteDelivery.delivery.error", 
-            body=message, properties=pika.BasicProperties(delivery_mode = 2))
-
-        print("\nDelivery MS call status ({:d}) published to the RabbitMQ Exchange:".format(code), error_message)
-
-        return error_message
     # 5. invoke the driver microservice
-    driver_result = invoke_http("http://localhost:5001/driver/" + str(delivery_result['data']['driver_ID']), method='GET')
-    
+    #driver_result = invoke_http("http://localhost:5001/driver" + '/' + str(delivery_result['data']['driver_ID']), method='GET')
+    driver_result = invoke_http(driverURL + '/' + str(delivery_result['data']['driver_ID']), method='GET')
+
+
     # 6. Check the driver result; if a failure, send it to the error microservice.
     code = driver_result["code"]
     if code not in range(200, 300):
         print('\n\n-----Publishing the (driver error) message with routing_key=DriverCompleteDelivery.driver.error-----')
-        error_message = {
+        message=json.dumps(delivery_result)
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="DriverCompleteDelivery.driver.error", 
+            body=message, properties=pika.BasicProperties(delivery_mode = 2))
+
+        print("\nDelivery MS call status ({:d}) published to the RabbitMQ Exchange:".format(code), driver_result)
+
+        return {
             "code": 502,
             "data": {"driver_result": driver_result},
             "message": "Failed to retrieve driver data, sent for error handling."
         }
-        message=json.dumps(error_message)
-        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="DriverCompleteDelivery.driver.error", 
-            body=message, properties=pika.BasicProperties(delivery_mode = 2))
-
-        print("\nDelivery MS call status ({:d}) published to the RabbitMQ Exchange:".format(code), error_message)
-
-        return error_message
 
     delivery_driver = driver_result['data']['driver_name']   
     # print(delivery_driver)
@@ -102,9 +106,8 @@ def update_delivery_status(delivery, delivery_ID):
     customer_and_driver_msg = "Delivery Completed! \n\n" + "Delivery Order ID: " + str(delivery_result['data']['delivery_ID']) + " was delivered by " + str(delivery_driver) + " to " + str(delivery_result['data']['receiver_name']) + " on " + str(delivery_result['data']['last_updated'])
 
     messages = json.dumps({
-            "customer_message": customer_and_driver_msg,
-            "driver_message": customer_and_driver_msg         
-    })
+            "customer_message": customer_and_driver_msg          
+        })
 
     print('\n\n-----Publishing the (customer) message with routing_key=customer.order-----')
     amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="customer.CompleteDelivery", body=messages)
