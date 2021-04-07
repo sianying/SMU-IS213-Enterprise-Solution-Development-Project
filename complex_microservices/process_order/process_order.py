@@ -2,11 +2,12 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 import os, sys
-
 import requests
-from invokes import invoke_http
-import amqp_setup
 
+from os import environ
+from invokes import invoke_http
+
+import amqp_setup
 import pika
 import json
 
@@ -31,12 +32,11 @@ CORS(app)
 # and Driver subscriber MS (to inform of new Job)
 ##############################################################################################################
 
-payment_URL = "http://localhost:4242/checkout_session"
-delivery_URL = "http://localhost:5000/delivery"
-driver_URL = "http://localhost:5001/driver"
-customer_URL = "http://localhost:5002/customer"
-schedule_URL = "http://localhost:5004/schedule"
-schedule_driver_URL = "http://localhost:5104/schedule_driver"
+payment_URL = environ.get(paymentURL)       #"http://localhost:4242/checkout_session"
+delivery_URL = environ.get(deliveryURL)     #"http://localhost:5000/delivery"
+schedule_URL = environ.get(scheduleURL)     #"http://localhost:5004/schedule"
+schedule_driver_URL = environ.get(ScheduleDriverURL)    #"http://localhost:5104/schedule_driver"
+
 
 @app.route("/process_order/<string:customer_ID>", methods=['POST'])
 def process_order(customer_ID):
