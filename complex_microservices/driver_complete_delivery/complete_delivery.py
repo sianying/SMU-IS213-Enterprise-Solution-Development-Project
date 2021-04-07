@@ -71,7 +71,7 @@ def update_delivery_status(delivery, delivery_ID):
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="DriverCompleteDelivery.delivery.error", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2))
 
-        print("\nDelivery MS call status ({:d}) published to the RabbitMQ Exchange:".format(code), delivery_result)
+        print("\nDelivery MS call status ({:d}) published to the RabbitMQ Exchange:".format(code), error_message)
 
         return error_message
     # 5. invoke the driver microservice
@@ -90,7 +90,7 @@ def update_delivery_status(delivery, delivery_ID):
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="DriverCompleteDelivery.driver.error", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2))
 
-        print("\nDelivery MS call status ({:d}) published to the RabbitMQ Exchange:".format(code), driver_result)
+        print("\nDelivery MS call status ({:d}) published to the RabbitMQ Exchange:".format(code), error_message)
 
         return error_message
 
