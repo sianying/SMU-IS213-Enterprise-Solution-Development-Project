@@ -174,7 +174,7 @@
         let params = new URLSearchParams(location.search);
         let delivery_id = params.get('delivery_ID');
         console.log(delivery_id);
-        var get_details_url = "http://localhost:5101/driver_job_details/" + String(delivery_id);
+        var get_details_url = "http://localhost:5101/driver_view_details/" + String(delivery_id);
         //var get_details_url = "http://localhost:5101/driver_job_details/1" ;
         var app = new Vue({
             el: "#app",
