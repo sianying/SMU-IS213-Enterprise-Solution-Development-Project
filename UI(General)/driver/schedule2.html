@@ -159,7 +159,8 @@
                     </div>
                     <div class = 'col-sm-4' style="background-color: #FFFAF0;padding: 20px;border-radius: 0px 20px 20px 0px;">
                         <span style="font-size: 25px; font-family: 'patua one'; color: #808080;">Estimated Travelling Time</span><br>
-                        <span style="font-size: 40px; font-family: 'rubik'; color: #CEA68C;">{{duration}}</span><br><br><br><br>
+                        <span style="font-size: 40px; font-family: 'rubik'; color: #CEA68C;">{{duration}}</span><br><br><br>
+                        <span style="font-family: 'rubik'; color: #808080; font-size: 30px;">Delivery status: {{delivery_status}}</span><br>
                         <button type='button' v-if='statusPresent' class='btn' style='width:auto' @click='updateSchedule'>{{update_delivery_status}}</button></td>
                     </div>
                 </div>
