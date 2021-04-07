@@ -257,7 +257,8 @@
                     </div>
                     <div class="form-container">
                         <div class="sign-up">
-                            <form method="post" action="#put into some registering processing page" >
+                            <!-- <form method="post" action="#put into some registering processing page" > -->
+                            <form method="post">
                                 <h2 class="form-header">Sign Up</h2>
                                 <input type="text" name="fullname" id = 'fullnameSU' placeholder="Full Name"><i class="fa fa-user"></i></input>
                                 <input type="text" name="username" id = 'UsernameSU' placeholder="Username"><i class="far fa-address-card"></i></input>
@@ -267,7 +268,7 @@
                                 <input type="text" name="email" id = 'emailSU' placeholder="Email"><i class="fa fa-envelope-o"></i></input>
                                 <input type="password" name="password" id='passwordSU' placeholder="Password"><i class="fa fa-lock"></i></input>
                                 <input type="password" name="confirmpassword" id='confirmpasswordSU' placeholder="Confirm Password"><i class="fa fa-lock"></i></input>
-                                <button type="submit" class="form-btn " style="margin-left: 10%;" onclick = "signUpValidate()" >Sign Up</button>
+                                <button type="button" id="signup-button" class="form-btn " style="margin-left: 10%;" onclick = "signUpValidate()" >Sign Up</button>
                                 <div id = "errorSU"></div>
                             </form>
                         </div>
@@ -383,7 +384,7 @@
     $("#login-button").click(function() {
         var username = $("#usernameLI").val();
         var password = $("#passwordLI").val();
-        var account_type = "customer"
+        var account_type = "driver"
         // console.log(account_type);
         serviceURL = "http://localhost:5005/authenticate";
 
@@ -395,7 +396,7 @@
             body: JSON.stringify({
                 "username": username,
                 "password": password,
-                "account_type": "customer"
+                "account_type": "driver"
             })
         })
         .then(function (response) {
@@ -403,7 +404,7 @@
             console.log(data);
             // account = {
             //     "account_type": data.account_type,
-            //     "customer_ID": data.customer_ID
+            //     "driver_ID": data.driver_ID
             // }
             // localStorage.setItem("account", account);
             // console.log(account);
@@ -414,8 +415,8 @@
         .then(function (result) {
             json = JSON.stringify({
                 "username": result.data.username,
-                "customer_ID": result.data.customer_ID,
-                "account_type": "customer"
+                "driver_ID": result.data.driver_ID,
+                "account_type": "driver"
             });
             console.log(json);
             sessionStorage.setItem("account_details", json);
@@ -426,36 +427,69 @@
             console.log("Error:", error);
         });
 
-        // async () => {
-        //     const data = await response;
-        //     console.log(data);
-        // };
 
-        // $(async() => {
-        //     try {
-        //         const response = await fetch (serviceURL, {
-        //             method: 'POST',
-        //             headers: {
-        //                 'Content-Type': 'application/json'
-        //             },
-        //             body: JSON.stringify({
-        //                 "username": username,
-        //                 "password": password,
-        //                 "account_type": account_type
-        //             })
-        //         });
-        //         const data = await response.json();
-        //         if (response.ok){
-        //             console.log(data);
-        //         }
-        //         else {
-        //         console.log("There is an error in logging in: Error " + response.status);
-        //         }
-        //     }
-        //     catch(error){
-        //         console.log(error);
-        //     }
-        // });
+    $("#signup-button").click(function() {
+    // var validate = signUpValidate();
+    // if (validate == false):
+    //     return "Login not validated!"
+        var username = $("#UsernameSU").val();
+        var name = $("#fullnameSU").val();
+        var email = $("#emailSU").val();
+        var password = $("#passwordSU").val();
+        var teleID = $("#teleSU").val();
+        var mobile = $("#contactSU").val();
+        var vehicle_no = $("#carplateSU");
+        var account_type = "driver";
+
+        // console.log(account_type);
+        serviceURL = "http://localhost:5104/register_user/" + username;
+
+        fetch(serviceURL, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                "password": password,
+                "name": name,
+                "email": email,
+                "teleID": teleID,
+                "mobile": mobile,
+                "account_type": "driver",
+                "vehicle_no": vehicle_no
+            })
+        })
+        .then(function (response) {
+            data = response.json();
+            console.log(data);
+            return data
+            // return response.json();
+        })
+        .then(function (result) {
+            if (result.code == 201){
+                json = JSON.stringify({
+                    "username": result.data.username,
+                    "driver_ID": result.data.driver_ID,
+                    "account_type": "driver"
+                    });
+                console.log(json);
+                sessionStorage.setItem("account_details", json);
+                location.replace("../customer/home.html");
+            }
+            else{
+                var message = "Verification not completed or verification failed."
+                console.log(message);
+                $("#errorSU").html(`<p style = 'margin: 2px; font-size: 10px; color:red;'>
+                                        The username is taken or the account exists
+                                    </p>`);
+                return message
+            }
+        })
+        .catch(function (error) {
+            console.log("Error:", error);
+        });
+
+    });
 
     });
 

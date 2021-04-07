@@ -33,7 +33,7 @@ USE `login`;
 DROP TABLE IF EXISTS `login`;
 CREATE TABLE IF NOT EXISTS `login` (
     `username` varchar(64) NOT NULL,
-    `password` varchar(12) NOT NULL,
+    `password` varchar(64) NOT NULL,
     `account_type` varchar(8) NOT NULL,
     `customer_ID` int,
     `driver_ID` int,
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS `login` (
 -- Dumping data for table `customer
 
 INSERT INTO `login` (`username`, `password`, `account_type`, `customer_ID`, `driver_ID`) VALUES
-('jwjw', 'password', 'customer', 12345678, null),
+('jwjw', 'password', 'customer', 12312312, null),
 ('sysy', 'password123', 'customer', 23456789, null),
 ('liyin', 'liyin', 'customer', 11112222, null),
 ('SSLMonsta', 'security', 'driver', null, 17),
