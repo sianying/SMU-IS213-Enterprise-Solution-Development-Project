@@ -20,8 +20,11 @@ import json
 app = Flask(__name__)
 CORS(app)
 
-deliveryURL=environ.get('deliveryURL') or 'mysql+mysqlconnector://root@localhost:3306/delivery'
-driverURL= environ.get('driverURL') or 'mysql+mysqlconnector://root@localhost:3306/driver'
+deliveryURL=environ.get('deliveryURL') or 'http://localhost:5000/delivery'
+driverURL= environ.get('driverURL') or 'http://localhost:5001/driver'
+
+# deliveryURL=environ.get('deliveryURL')
+# driverURL= environ.get('driverURL')
 
 # Main function that calls other functions
 @app.route("/complete_delivery/<int:delivery_ID>", methods=['POST'])

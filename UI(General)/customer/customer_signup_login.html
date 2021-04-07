@@ -330,13 +330,7 @@
         };
     };
 
-(function(d, s, id) {
-    var js, fjs = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id)) return;
-    js = d.createElement(s); js.id = id;
-    js.src = "//connect.facebook.net/en_US/sdk.js";
-    fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));
+
 
         $(document).ready(function() {
             var signUp = $('.signup-but');
@@ -426,7 +420,7 @@
         var account_type = "customer"
 
         // console.log(account_type);
-        serviceURL = "http://localhost:5104/register_user/" + username;
+        serviceURL = "http://localhost:5105/register_user/" + username;
 
         fetch(serviceURL, {
             method: "POST",

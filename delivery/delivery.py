@@ -6,6 +6,7 @@ from os import environ
 import datetime
 
 app = Flask(__name__)
+CORS(app)
 
 HOST = '0.0.0.0'
 PORT = 5000
