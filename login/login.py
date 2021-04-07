@@ -54,7 +54,7 @@ def authenticate_user():
     user_data = request.get_json()
     print(user_data)
     user_recorded = Login.query.filter_by(username=user_data['username']).first()
-    print(user_recorded)
+    # print(user_recorded)
     account_type = user_recorded.account_type
 
     if user_recorded is not None:
@@ -62,10 +62,17 @@ def authenticate_user():
         username = user_data['username']
         password = user_data['password']
         hashed = user_recorded.password
+        # print(password)
+        # print(hashed)
+        result = bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
+        print(result)
+
         # if username == user_recorded.username and password == user_recorded.password:
         #encode the plain text password to match the hashed pa  ssword
 
         if username == user_recorded.username and bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8')):
+        # if username == user_recorded.username and :
+
             print("Authenticated! Welcome User " + username)
             if account_type == "customer":
                 return jsonify({
@@ -155,8 +162,8 @@ def register_user(username):
     password = data['password']
     #hash the password using bcrypt
     hashed = create_hash_password(password.encode('utf-8'))
-    #convert hashed password to string for db storage
-    hashed_string = str(hashed)
+    #decode hashed password for db storage
+    hashed_string = hashed.decode('utf-8')
     print(hashed_string)
     print(type(hashed_string))
     #reconstruct the data for the db addition
