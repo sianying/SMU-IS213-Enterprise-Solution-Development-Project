@@ -16,6 +16,7 @@ import os
 import requests
 
 from invokes import invoke_http
+from os import environ
 
 import amqp_setup
 import pika
