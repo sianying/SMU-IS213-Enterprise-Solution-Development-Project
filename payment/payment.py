@@ -9,8 +9,10 @@ from flask_cors import CORS
 # This is a sample test API key. Sign in to see examples pre-filled with your key.
 stripe.api_key = 'sk_test_51IX1pfEh2v7rRS8AcPlo5xnom5URyB0pGOpVahhgBjIUWLThrnp864myMWWOj4Hbr6hxVJaDBiRI657dnwFOshmS008gjCP4fb'
 
-app = Flask(__name__)
+HOST = "0.0.0.0"
+PORT = 5003
 
+app = Flask(__name__)
 CORS(app)
 
 #checkout with payment
@@ -72,4 +74,6 @@ def get_checkout_session(session_id):
 
 
 if __name__ == '__main__':
-    app.run(port=4242, debug=True)
+    print("This is flask " + os.path.basename(__file__) + " for payment services using Stripe...")
+    print(os.path.basename(__file__) + " is running on " + str(HOST) + ":" + str(PORT) + " ...")
+    app.run(host=HOST, port=PORT, debug=True)
