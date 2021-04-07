@@ -8,7 +8,6 @@ import requests
 from invokes import invoke_http
 import amqp_setup
 
-# import amqp_setup
 import pika
 import json
 
@@ -20,10 +19,9 @@ CORS(app)
 
 ############################################################################################################
 #User Registration
-#1. check the role of the user - customer or driver
-#2. check if the user already has an account, if so, return "you already have an account"
-#3. user registration through Login Microservice (create new account) 
-# and use either Customer Microservice or Driver Microservice depending on their role
+#1. depending on the role of the user, check if the user already has an account (customer or driver) using Login Microservice
+#2. once verified that the account do not exists, register user particulars using Customer or Driver Microservice
+#3. register users using Login Microservice (create new account)
 ##############################################################################################################
 
 login_URL = "http://localhost:5005"
@@ -58,8 +56,13 @@ def register_user(username):
 
             code = username_data["code"]
             if code not in range(200, 300):
+                error_message = {
+                    "code": 501,
+                    "data": {"username_data": username_data},
+                    "message": "Failed to retrieve the user's account using Login Microservice (GET), sent for error handling."
+                    }
                 print('\n\n-----Publishing the (login error) message with routing_key=login.error-----')
-                message=json.dumps(username_data)
+                message=json.dumps(error_message)
                 amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="login.error", 
                     body=message, properties=pika.BasicProperties(delivery_mode = 2))
 
@@ -127,8 +130,13 @@ def registerCustomer(data):
 
     code = customer_data["code"]
     if code not in range(200, 300):
+        error_message = {
+                "code": 501,
+                "data": {"customer_data": customer_data},
+                "message": "Failed to create customer profile using Customer Microservice (POST), sent for error handling."
+            }
         print('\n\n-----Publishing the (login error) message with routing_key=login.error-----')
-        message=json.dumps(customer_data)
+        message=json.dumps(error_message)
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="login.error", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2))
     
@@ -153,8 +161,13 @@ def registerDriver(data):
 
     code = driver_data["code"]
     if code not in range(200, 300):
+        error_message = {
+                "code": 501,
+                "data": {"driver_data": driver_data},
+                "message": "Failed to create driver profile using Driver Microservice (POST), sent for error handling."
+            }
         print('\n\n-----Publishing the (driver error) message with routing_key=driver.error-----')
-        message=json.dumps(driver_data)
+        message=json.dumps(error_message)
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="driver.error", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2))
         
@@ -189,21 +202,27 @@ def registerUserAccount(username, user_ID, password, account_type):
     #error handling
     code = account_registered['code']
     if code not in range(200, 300):
+        error_message = {
+            "code": 501,
+            "data": {"account_registered": account_registered},
+            "message": "Failed to register user using the Login Microservice (POST), sent for error handling."
+        }
         print('\n\n-----Publishing the (login error) message with routing_key=login.error-----')
-        message=json.dumps(account_registered)
+        message=json.dumps(error_message)
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="login.error", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2))
 
     return account_registered
-        #data format that is being returned
-        # {
-        #     "code": 201,
-        #     'data': {
-        #         "username": username,
-        #         "account_type": data['account_type'],
-        #         "ID": data['ID']
-        #     }
-        # }
+    
+    #data format that is being returned
+    # {
+    #     "code": 201,
+    #     'data': {
+    #         "username": username,
+    #         "account_type": data['account_type'],
+    #         "ID": data['ID']
+    #     }
+    # }
 
 
 # def send_notification(order_ID):

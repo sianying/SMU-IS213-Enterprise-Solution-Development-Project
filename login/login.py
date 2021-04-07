@@ -27,8 +27,8 @@ class Login(db.Model):
     username = db.Column(db.String(64), primary_key=True)
     password = db.Column(db.String(64), nullable=False)
     account_type = db.Column(db.String(8), nullable=False)
-    customer_ID = db.Column(db.Integer, nullable=True) 
-    driver_ID = db.Column(db.Integer, nullable=True) 
+    customer_ID = db.Column(db.Integer, nullable=True, default=None) 
+    driver_ID = db.Column(db.Integer, nullable=True, default=None) 
     # customer_ID = db.Column(db.Integer, nullable=True)
     # driver_ID = db.Column(db.Integer, nullable=True)
 
@@ -48,7 +48,7 @@ class Login(db.Model):
             "driver_ID": self.driver_ID
         }
 
-#verify if a user exists
+#verify if a user exists & authenticate
 @app.route("/authenticate", methods=['POST'])
 def authenticate_user():
     user_data = request.get_json()
@@ -124,6 +124,8 @@ def register_user(username):
 
     #verifies if the user exists, but this is covered in covered in the other function
     # user_recorded = Login.query.filter_by(username=username).first()
+    # print(user_recorded.username)
+    # print(user_recorded.password)
     # if user_recorded:
     #     account_type = user_recorded.account_type
     #     if account_type == "customer":
@@ -148,26 +150,32 @@ def register_user(username):
     #             }), 400
 
     data = request.get_json()
+    print(data)
     account_type = data['account_type']
     password = data['password']
     #hash the password using bcrypt
     hashed = create_hash_password(password.encode('utf-8'))
     #convert hashed password to string for db storage
     hashed_string = str(hashed)
+    print(hashed_string)
+    print(type(hashed_string))
     #reconstruct the data for the db addition
     if account_type == "customer":
         customer_ID = data['customer_ID']
-        account = Login(username, hashed_string, account_type, customer_ID, "NULL")
+        account = Login(username, hashed_string, account_type, customer_ID, None)
     else:
         driver_ID = data['driver_ID']
-        account = Login(username, hashed_string, account_type, "NULL", driver_ID)
+        account = Login(username, hashed_string, account_type, None, driver_ID)
 
     # account = Login(username, hashed_string, **data)
     try:
         db.session.add(account)
+        print("after db add")
         db.session.commit()
-    except:
-        if account_type = "customer":
+        print("after db commit")
+    except ValueError as e:
+        print(str(e))
+        if account_type == "customer":
             return jsonify({
                     "code": 500,
                     "data": {
@@ -188,7 +196,7 @@ def register_user(username):
                     "message": "An error occurred creating the account."
                 }), 500
     
-    if account_type = "customer":
+    if account_type == "customer":
         return jsonify({
             "code": 201,
             'data': {

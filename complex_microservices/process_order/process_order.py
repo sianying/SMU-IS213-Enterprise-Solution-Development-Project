@@ -31,12 +31,6 @@ CORS(app)
 # and Driver subscriber MS (to inform of new Job)
 ##############################################################################################################
 
-#book_URL = "http://localhost:5000/book"
-# order_URL = "http://localhost:5001/order"
-# shipping_record_URL = "http://localhost:5002/shipping_record"
-#activity_log_URL = "http://localhost:5003/activity_log"
-#error_URL = "http://localhost:5004/error"
-
 payment_URL = "http://localhost:4242/checkout_session"
 delivery_URL = "http://localhost:5000/delivery"
 driver_URL = "http://localhost:5001/driver"
@@ -93,6 +87,18 @@ def processOrderCreation(session_id, delivery_data, customer_ID):
     payment_data = invoke_http(payment_URL + "/" + session_id, method='GET')
     print('payment_results:', str(payment_data))
 
+    code = payment_data['code']
+    if code not in range(200, 300):
+        error_message = {
+            "code": 501,
+            "data": {"payment_data": payment_data},
+            "message": "Failed to get payment session details using Payment Microservice(GET), sent for error handling."
+        }
+        print('\n\n-----Publishing the (payment error) message with routing_key=login.error-----')
+        message=json.dumps(error_message)
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="login.error", 
+            body=message, properties=pika.BasicProperties(delivery_mode = 2))
+
     #4. Retrieve the payment_status for verification
     payment_status = payment_data['payment_status']
 
@@ -105,23 +111,28 @@ def processOrderCreation(session_id, delivery_data, customer_ID):
     
     #5. Invoke schedule_driver to allocate the driver for the delivery
     #have not implement calendar + selection of delivery date
-    print('\n-----Invoking schedule_driver microservice-----')
     #hardcode date and time first: "2020-06-1", "8_to_10"
     # date = "2020-06-01"
     # time = "8_to_10"
     date = delivery_data['date']
     time = delivery_data['time']
     url = schedule_driver_URL + "/" + date + "/" + time
-    print(url)
+
+    print('\n-----Invoking schedule_driver microservice-----')
     selected_driver = invoke_http(schedule_driver_URL + "/" + str(date) + "/" + str(time), method='GET')
     print('Selected_driver: ' + str(selected_driver) + "\n")
 
     # check the schedule_driver results: if failure send to error microservice for logging
     code = selected_driver['code']
     if code not in range(200, 300):
-        print('\n\n-----Publishing the (schedule_driver error) message with routing_key=ScheduleDriver.schedule.error-----')
-        message=json.dumps(selected_driver)
-        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="ScheduleDriver.schedule.error", 
+        error_message = {
+            "code": 501,
+            "data": {"selected_driver": selected_driver},
+            "message": "Failed to get allocated driver using Schedule Driver Microservice (GET), sent for error handling."
+        }
+        print('\n\n-----Publishing the (schedule driver error) message with routing_key=login.error-----')
+        message=json.dumps(error_message)
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="login.error", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2))
 
     #Initialise the driver ID and data for updating of their schedule
@@ -133,11 +144,7 @@ def processOrderCreation(session_id, delivery_data, customer_ID):
     updated_schedule['delivery_date'] = date
     #remove SID as it will be passed through the URL rather than the body
     updated_schedule["t_"+time] = True
-    # timeslots = ['8_to_10', '10_to_12', '12_to_2', '2_to_4', '4_to_6']
-    # for timeslot in timeslots:
-    #     timeslot = "t_" + timeslot
-    #     if time == updated_schedule[timeslot]:
-    #         updated_schedule[timeslot] = time
+
     #6. Invoke schedule to update allocated driver's schedule
     print('\n-----Invoking Schedule Microservice-----')
     driver_schedule_updated = invoke_http(schedule_URL + "/" + str(selected_schedule_ID), method='PUT', json=updated_schedule)
@@ -146,8 +153,13 @@ def processOrderCreation(session_id, delivery_data, customer_ID):
     #check the driver updated results: if failure send to error microservice for logging
     code = driver_schedule_updated['code']
     if code not in range(200, 300):
+        error_message = {
+            "code": 501,
+            "data": {"driver_schedule_updated": driver_schedule_updated},
+            "message": "Failed to update allocated driver using Schedule Microservice (PUT), sent for error handling."
+        }
         print('\n\n-----Publishing the (update schedule error) message with routing_key=schedule.error-----')
-        message=json.dumps(driver_schedule_updated)
+        message=json.dumps(error_message)
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="schedule.error", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2))
     
@@ -198,8 +210,13 @@ def processOrderCreation(session_id, delivery_data, customer_ID):
     #check the newly created delivery order: if failure send to error microservice for logging
     code = delivery_created['code']
     if code not in range(200, 300):
+        error_message = {
+            "code": 501,
+            "data": {"delivery_created": delivery_created},
+            "message": "Failed to create Delivery Order using Delivery Microservice (POST), sent for error handling."
+        }
         print('\n\n-----Publishing the (delivery error) message with routing_key=delivery.error-----')
-        message=json.dumps(delivery_created)
+        message=json.dumps(error_message)
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="delivery.error", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2))
         
