@@ -224,7 +224,7 @@ def update_delivery(delivery_ID):
                 }
             ), 404
 
-        # Updates status and Timestamp (based on line of code above)
+        # Updates delivery_status and Timestamp (based on line of code above)
         data = request.get_json()
         if data['delivery_status']:
             delivery.delivery_status = data['delivery_status']
