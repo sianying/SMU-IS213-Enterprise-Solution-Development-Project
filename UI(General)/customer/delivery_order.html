@@ -190,7 +190,7 @@
                 <div style='color:red;' v-if = "error"> {{ error }} </div>
 
                 <br>
-                <button type="button" class="btn btn-primary mb-3" id="checkout-button">Checkout</button>
+                <button type="button" class="btn btn-primary mb-3" @click='checkout' id="checkout-button">Checkout</button>
             </form>
                 
             </div>
@@ -263,17 +263,75 @@
                                     if (data.code === 404) {
                                         // no book in db
                                         this.error = data.message;
+                                        // console.log(this.error)
                                         // console.log(data.message);
                                     }
                                     else {
                                         this.error = false;
                                     }
                                 })
-            }
+            },
+            checkout: function(){
+                var stripe = Stripe('pk_test_51IX1pfEh2v7rRS8AqOB3PG6BLj1qQh8g4V0oI5GLProGPMmJRG60qzCXGH0297oQKyRIblMPKhFPlQEshp993pBN00CvpCrI7z');
+    
+                
+                // var checkoutButton = document.getElementById("checkout-button");
+                // checkoutButton.addEventListener("click", function () {
 
-        }
+                    if(!this.error){
+                        // console.log(this.error)
+                        var deliveryItem = $("#deliveryItem").val();
+                        var size = $("#size").val();
+                        var weight = $("#weight").val();
 
-    })
+                        fetch("http://localhost:4242/create-checkout-session", {
+                            method: "POST",
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                // "price_data": {"currency": "sgd", "product_data": {"name": deliveryItem}, "unit_amount": 100},
+                                // "quantity": 1,
+                                // "metadata": {
+                                //     "description": description,
+                                //     "size": size,
+                                //     "weight": weight
+                                // },
+                    
+                                "deliveryItem": deliveryItem,
+                                "description": description,
+                                "size": size,
+                                "weight": weight
+                            }),
+                        })
+                        .then(function (response) {
+                            return response.json();
+                        })
+                        .then(function (session) {
+                            return stripe.redirectToCheckout({ sessionId: session.id });
+                        })
+                        .then(function (result) {
+                        // If redirectToCheckout fails due to a browser or network
+                        // error, you should display the localized error message to your
+                        // customer using error.message.
+                            if (result.error) {
+                                alert(result.error.message);
+                            }
+                        })
+                        .catch(function (error) {
+                            console.error("Error:", error);
+                        });
+                    }
+
+                    else{
+                        alert('Please select an available timeslot instead!');
+                    }
+                    
+                    }
+
+                }
+
+        })
     $("#checkout-button").click(function() {
         var deliveryItem = $("#deliveryItem").val();
         var description = $("#description").val();
@@ -302,53 +360,8 @@
     
     
 
-    var stripe = Stripe('pk_test_51IX1pfEh2v7rRS8AqOB3PG6BLj1qQh8g4V0oI5GLProGPMmJRG60qzCXGH0297oQKyRIblMPKhFPlQEshp993pBN00CvpCrI7z');
     
-    $("#checkout-button").click(function() {
-    // var checkoutButton = document.getElementById("checkout-button");
-    // checkoutButton.addEventListener("click", function () {
-        var deliveryItem = $("#deliveryItem").val();
-        var size = $("#size").val();
-        var weight = $("#weight").val();
 
-        fetch("http://localhost:4242/create-checkout-session", {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                // "price_data": {"currency": "sgd", "product_data": {"name": deliveryItem}, "unit_amount": 100},
-                // "quantity": 1,
-                // "metadata": {
-                //     "description": description,
-                //     "size": size,
-                //     "weight": weight
-                // },
-        
-                "deliveryItem": deliveryItem,
-                "description": description,
-                "size": size,
-                "weight": weight
-            }),
-        })
-        .then(function (response) {
-            return response.json();
-        })
-        .then(function (session) {
-            return stripe.redirectToCheckout({ sessionId: session.id });
-        })
-        .then(function (result) {
-          // If redirectToCheckout fails due to a browser or network
-          // error, you should display the localized error message to your
-          // customer using error.message.
-            if (result.error) {
-                alert(result.error.message);
-            }
-        })
-        .catch(function (error) {
-            console.error("Error:", error);
-        });
-    });
 
 </script>
 

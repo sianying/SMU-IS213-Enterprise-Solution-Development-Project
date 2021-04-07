@@ -162,9 +162,9 @@
             </div>
         </div>
         <script>
-            // var session = JSON.parse(sessionStorage.getItem("account_details"));
-            // var customer_ID = session.customer_ID;
-            var get_details_url = "http://localhost:5102/customer_view_details";
+            var session = JSON.parse(sessionStorage.getItem("account_details"));
+            var customer_ID = session.customer_ID;
+            var get_details_url = "http://localhost:6123/customer_view_details/" + customer_ID;
             var app = new Vue({
                 el: "#app",
                 data:{
@@ -181,6 +181,7 @@
                             .then(response => response.json())
                             .then(data => {
                                 console.log(response);
+                                // console.log("hello")
                                 console.log(data);
                                 // if (data.code === 404) {
                                 //     // no book in db
@@ -188,9 +189,8 @@
                                 // } else {
                                 //     this.books = data.data.books;
                                 // }
-                                if (data.data.customer_view_details.length>0){
+                                if (data.code == 202){
                                     this.hasDeliveries = true
-                                    
                                     this.deliveries = data.data.customer_view_details
                                 }
                             })

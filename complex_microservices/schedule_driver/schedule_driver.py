@@ -69,7 +69,7 @@ def get_available_drivers(delivery_date, timeslot):
     # 1. invoke schedule MS to determine which driver is free for selected day + timeslot
     # Invoke the schedule microservice
     print('\n-----Invoking schedule microservice-----')
- 
+
     schedule_result = invoke_http(schedule_URL + '/date/' + delivery_date + '/' + timeslot, method='GET')
     print('schedule result: ' + str(schedule_result))
 
@@ -80,19 +80,21 @@ def get_available_drivers(delivery_date, timeslot):
         # invoke_http("http://localhost:5007/error", method="POST", json=schedule_result)
 
         print('\n\n-----Publishing the (schedule error) message with routing_key=scheduler.schedule.error-----')
-        message=json.dumps(schedule_result)
+        # message=json.dumps(schedule_result)
+        error_message = {
+            "code": 502,
+            "data": {"schedule_result": schedule_result},
+            "message": "Failure to retrieve available drivers, sent for error handling."
+        }
+        message = json.dumps(error_message)
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="scheduler.schedule.error", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2))
 
         # - reply from the invocation is not used; 
         # continue even if this invocation fails
-        print("Delivery status ({:d}) published to the RabbitMQ Exchange:".format(code), schedule_result)
+        print("Delivery status ({:d}) published to the RabbitMQ Exchange:".format(code), error_message)
 
-        return {
-            "code": 502,
-            "data": {"schedule_result": schedule_result},
-            "message": "Failure to retrieve available drivers, sent for error handling."
-        }
+        return error_message
 
     return {
         "code": 201,

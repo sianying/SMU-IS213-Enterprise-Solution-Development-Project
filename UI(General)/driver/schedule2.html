@@ -139,42 +139,31 @@
                     -->
                 <!-- </div> -->
             </div>
-            <table v-if='hasDeliveries' class = "table table-striped animate__animated animate__backInUp">
-                <!-- <div class='col-md-8 my-3' style='background-color:#FFFAF0;'>
-                    hello
+            <div class = 'container-fluid' v-if='hasDeliveries' >
+                <div class='row justify-content-center'  >
+                    <div class = 'col-sm-3' style="background-color: #FFFAF0; margin-right: 5px; padding: 20px; border-radius: 20px;">
+                        <span style="font-size: 25px; font-family: 'patua one'; color: #808080;">Delivery ID</span><br>
+                        <span style="font-size: 40px; font-family: 'rubik'; color: #CEA68C;">{{delivery_ID}}</span><br>
+                        <span style="font-family: 'rubik'; color: #808080; font-size: 18px;">Delivery Date: {{delivery_date.slice(0,-12)}}</span><br>
+                        <span style="font-family: 'rubik'; color: #808080; font-size: 18px;">Timeslot: {{timeslot}}</span><br><br>
+                        <span style="font-size: 30px; font-family: 'patua one'; color: #CEA68C;">{{delivery_item}}</span><br>
+                        <span style="font-family: 'rubik'; color: #808080; font-size: 18px;">Description: {{description}} </span>
+                    </div>
+                    <div class = 'col-sm-4' style="background-color: #FFFAF0;padding: 20px; border-radius: 20px 0px 0px 20px;">
+                        <span style="font-size: 25px; font-family: 'patua one'; color: #808080;">Journey Distance</span><br>
+                        <span style="font-size: 40px; font-family: 'rubik'; color: #CEA68C;">{{distance}} km</span><br><br><br><br>
+                        <span style="font-family: 'rubik'; color: #808080; font-size: 18px;">Receiver Name: {{receiver_name}}</span><br>
+                        <span style="font-family: 'rubik'; color: #808080; font-size: 18px;">Pickup Location: {{pickup_location}}</span><br>
+                        <span style="font-family: 'rubik'; color: #808080; font-size: 18px;">Destination: {{destination}}</span>
+
+                    </div>
+                    <div class = 'col-sm-4' style="background-color: #FFFAF0;padding: 20px;border-radius: 0px 20px 20px 0px;">
+                        <span style="font-size: 25px; font-family: 'patua one'; color: #808080;">Estimated Travelling Time</span><br>
+                        <span style="font-size: 40px; font-family: 'rubik'; color: #CEA68C;">{{duration}}</span><br><br><br><br>
+                        <button type='button' v-if='statusPresent' class='btn' style='width:auto' @click='updateSchedule'>{{update_delivery_status}}</button></td>
+                    </div>
                 </div>
-                <div class='col-md-4 my-3'>
-                    hello
-                </div> -->
-                <thead>
-                    <tr>
-                        <th>Delivery ID</th>
-                        <th>Delivery Item</th>
-                        <th>Delivery Description</th>
-                        <th>Delivery Date</th>
-                        <th>Delivery Time Slot</th>
-                        <th>Pickup Location</th>
-                        <th>Destination</th>
-                        <th>Distance (in km)</th>
-                        <th>Duration (in min)</th>
-                        <th>Receiver Name</th>
-                        <th>Delivery Status</th>
-                    </tr>
-                    <tr>
-                            <td>{{delivery_ID}}</td>
-                            <td>{{delivery_item}}</td>
-                            <td>{{description}}</td>
-                            <td>{{delivery_date.slice(0,-12)}}</td>
-                            <td>{{timeslot}}</td>
-                            <td>{{pickup_location}}</td>
-                            <td>{{destination}}</td>
-                            <td>{{distance}}</td>
-                            <td>{{duration}}</td>
-                            <td>{{receiver_name}}</td>
-                            <td>{{delivery_status}}<button type='button' v-if='statusPresent' class='btn' style='width:auto' @click='updateSchedule'>{{update_delivery_status}}</button></td>
-                    </tr>
-                </thead>
-            </table>
+            </div>
         </div>
     </div>
 
@@ -186,6 +175,7 @@
         let delivery_id = params.get('delivery_ID');
         console.log(delivery_id);
         var get_details_url = "http://localhost:5101/driver_job_details/" + String(delivery_id);
+        //var get_details_url = "http://localhost:5101/driver_job_details/1" ;
         var app = new Vue({
             el: "#app",
             data:{

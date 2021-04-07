@@ -13,7 +13,7 @@ import pika
 import json
 
 HOST = "0.0.0.0"
-PORT = 5104
+PORT = 5105
 
 app = Flask(__name__)
 CORS(app)
@@ -54,7 +54,7 @@ def register_user(username):
             # Invoke the Login Microservice (/check_username_exist)
             print('\n-----Invoking Login microservice-----')
             username_data = invoke_http(login_URL + "/" + "check_username_exist" + "/" + username, method='GET')
-            print('payment_results:'+ username_data + "\n")
+            print('payment_results:'+ str(username_data) + "\n")
 
             code = username_data["code"]
             if code not in range(200, 300):
@@ -119,6 +119,7 @@ def registerCustomer(data):
         "customer_teleID": data['teleID']
     }
     print(customer_data)
+    print(type(customer_data))
     # Invoke the Customer Microservice (/customer)
     print('\n-----Invoking Customer microservice-----')
     customer_data = invoke_http(customer_URL, method='POST', json=customer_data)
@@ -164,13 +165,20 @@ def registerDriver(data):
 
 def registerUserAccount(username, user_ID, password, account_type):
     #1. Restructure the data for Login Microservice account registration (POST)
-    user_ID_header = account_type + "_ID"
-    account_data = {
-        "password": password,
-        "account_type": account_type,
-        # "ID": user_ID
-        user_ID_header: user_ID
-    }
+    if account_type == "customer":
+        account_data = {
+            "password": password,
+            "account_type": "customer",
+            "customer_ID": user_ID,
+            "driver_ID": "NULL"
+        }
+    else:
+        account_data = {
+            "password": password,
+            "account_type": "driver",
+            "driver_ID": user_ID,
+            "customer_ID": "NULL"
+        }
 
     # 2. Invoke Login MS to register user 
     # Invoke the Login Microservice (/register_account/<string: username>)

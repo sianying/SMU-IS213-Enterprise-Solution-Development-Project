@@ -15,7 +15,7 @@ import requests
 
 from invokes import invoke_http
 
-#import amqp_setup
+import amqp_setup
 import pika
 import json
 
@@ -86,25 +86,27 @@ def retrieve_all_deliveries(customer_ID):
     # 3. Check the delivery result; if a failure, send it to the error microservice.
     code = delivery_result["code"]
     if code not in range(200, 300):
-    #     #print('\n\n-----Publishing the (delivery error) message with routing_key=CustomerViewDetails.delivery.error-----')
-    #     message=json.dumps(delivery_result)
-    #     amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="CustomerViewDetails.delivery.error", 
-    #         body=message, properties=pika.BasicProperties(delivery_mode = 2))
+        print('\n\n-----Publishing the (delivery error) message with routing_key=CustomerViewDetails.delivery.error-----')
+        # message=json.dumps(delivery_result)
+        error_message = {
+            "code": 502,
+            "data": {"delivery_result": delivery_result},
+            "message": "Failed to retrieve the customer's list of deliveries, sent for error handling."
+        }
+        message = json.dumps(error_message)
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="CustomerViewDetails.delivery.error", 
+            body=message, properties=pika.BasicProperties(delivery_mode = 2))
 
         #print("\nDelivery MS Call status ({:d}) published to the RabbitMQ Exchange:".format(code), delivery_result)
 
-        print('\n\n-----Invoking error microservice as delivery fails-----')
-        invoke_http("http://localhost:5007/error", method="POST", json=delivery_result)
+        # print('\n\n-----Invoking error microservice as delivery fails-----')
+        # invoke_http("http://localhost:5007/error", method="POST", json=delivery_result)
         # - reply from the invocation is not used; 
         # continue even if this invocation fails
         print("Delivery status ({:d}) sent to the error microservice:".format(
             code), delivery_result)
 
-        return {
-            "code": 502,
-            "data": {"delivery_result": delivery_result},
-            "message": "Failed to retrieve the customer's list of deliveries, sent for error handling."
-        }
+        return error_message
 
     return {
         "code": 201,

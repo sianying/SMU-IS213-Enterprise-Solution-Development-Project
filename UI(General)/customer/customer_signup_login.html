@@ -22,41 +22,26 @@
 
     <!--Import Roboto font-->
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
     </style>
 
     <!--Import Patua One font-->
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Patua+One&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Patua+One&display=swap');
     </style>
 <head>
-    <?php 
-        session_start();
-        function function_alert($message) { 
-            
-            // Display the alert box  
-            echo "<script>alert('$message');</script>"; 
-        } 
-        if (isset($_SESSION['error'])) { 
-
-        function_alert($_SESSION['error']);
-        unset($_SESSION["error"]);
-
-        }
-
-    ?>
     <style>
         * {
             margin: 0;
             padding: 0;
         }
         
-      body{
-        font-family: 'Roboto', sans-serif;
-        background-image: url('../images/bg-img.JPG');
-        background-position: center;
-        background-attachment: fixed;
-      }
+        body{
+            font-family: 'Roboto', sans-serif;
+            background-image: url('../images/bg-img.JPG');
+            background-position: center;
+            background-attachment: fixed;
+        }
         
         button:hover {
             cursor: pointer;
@@ -112,15 +97,15 @@
         
         .background .right button {
             left: 550px;
-            margin-top:
+            /* margin-top: */
         }
         
         .form-container {
             position: absolute;
             width: 305px;
-            height: 620px;
+            height: 580px;
             background-color:#EEE2CC;
-            top: -75%;
+            top: -65%;
             left: 20px;
             -webkit-box-shadow: 9px 10px 10px 0px rgba(0, 0, 0, 0.75);
             box-shadow: 9px 10px 10px 0px rgba(0, 0, 0, 0.75);
@@ -263,8 +248,7 @@
                                 <input type="text" name="fullname" id = 'fullnameSU' placeholder="Full Name"><i class="fa fa-user"></i></input>
                                 <input type="text" name="username" id = 'UsernameSU' placeholder="Username"><i class="far fa-address-card"></i></input>
                                 <input type = 'text' name='handle' id = 'teleSU' placeholder='Telegram Handle'><i class="fa fa-telegram"></i></input>
-                                <input type = 'text' name ='contact' id ='contactSU' placeholder='Contact Number'><i class="fas fa-phone-volume"></i></input>
-                                <input type = 'text' name ='carplate' id ='carplateSU' placeholder='Car Plate Number'><i class="fas fa-car"></i></i></input>
+                                <input type = 'number' name ='contact' id ='contactSU' placeholder='Contact Number'><i class="fas fa-phone-volume"></i></input>
                                 <input type="text" name="email" id = 'emailSU' placeholder="Email"><i class="fa fa-envelope-o"></i></input>
                                 <input type="password" name="password" id='passwordSU' placeholder="Password"><i class="fa fa-lock"></i></input>
                                 <input type="password" name="confirmpassword" id='confirmpasswordSU' placeholder="Confirm Password"><i class="fa fa-lock"></i></input>
@@ -312,19 +296,18 @@
         var emailSU = document.getElementById("emailSU").value;
         var passwordSU = document.getElementById("passwordSU").value;
         var teleSU = document.getElementById('teleSU').value;
-        var carplateSU = document.getElementById('carplateSU').value;
         var contactSU = document.getElementById('contactSU').value;
         var confirmpasswordSU = document.getElementById('confirmpasswordSU').value;
         var errors = [];
 
-            if (fullnameSU === "" || usernameSU === "" || emailSU === "" || passwordSU === "" || teleSU === '' || contactSU === '' || carplateSU === ''){
+            if (fullnameSU === "" || usernameSU === "" || emailSU === "" || passwordSU === "" || teleSU === '' || contactSU === ''){
                 event.preventDefault();
-                errors.push('None of your fields can be empty');
+                errors.push('None of your fields can be empty.');
             };
 
             if (!emailSU.includes('@') || !emailSU.includes('.com')){
                 event.preventDefault();
-                errors.push('Please enter a valid email');
+                errors.push('Please enter a valid email.');
             };
 
             if (passwordSU !== confirmpasswordSU){
@@ -333,7 +316,7 @@
             };
 
             for (error of errors){
-                document.getElementById("errorSU").innerHTML += `<p style = 'margin: 2px; font-size: 10px; color:red;text-align:center;'>${error}</p>`;
+                document.getElementById("errorSU").innerHTML += `<p style = 'margin: 2px; font-size: 10px; color:red; text-align:center;'>${error}</p>`;
             }
         };
 
@@ -378,13 +361,15 @@
                 }, 'slow');
             });
         });
-    </script>
 
-<script>
+
     $("#login-button").click(function() {
+    // var validate = signUpValidate();
+    // if (validate == false):
+    //     return "Login not validated!"
         var username = $("#usernameLI").val();
         var password = $("#passwordLI").val();
-        var account_type = "driver"
+        var account_type = "customer"
         // console.log(account_type);
         serviceURL = "http://localhost:5005/authenticate";
 
@@ -396,35 +381,35 @@
             body: JSON.stringify({
                 "username": username,
                 "password": password,
-                "account_type": "driver"
+                "account_type": "customer"
             })
         })
         .then(function (response) {
             data = response.json();
             console.log(data);
-            // account = {
-            //     "account_type": data.account_type,
-            //     "driver_ID": data.driver_ID
-            // }
-            // localStorage.setItem("account", account);
-            // console.log(account);
-            // location.replace("http://localhost/esd/project/delivery_order.html");
             return data
             // return response.json();
         })
         .then(function (result) {
-            json = JSON.stringify({
+            if (result.code == 200){
+                json = JSON.stringify({
                 "username": result.data.username,
-                "driver_ID": result.data.driver_ID,
-                "account_type": "driver"
+                "customer_ID": result.data.customer_ID,
+                "account_type": "customer"
             });
             console.log(json);
             sessionStorage.setItem("account_details", json);
-            location.replace("../driver/driver_home.html");
-            
+            location.replace("../customer/delivery_order.html");
+            }
+            else{
+                var message = "Verification not completed or verification failed."
+                console.log(message);
+                return message
+            }
         })
         .catch(function (error) {
             console.log("Error:", error);
+            });
         });
 
 
@@ -438,8 +423,7 @@
         var password = $("#passwordSU").val();
         var teleID = $("#teleSU").val();
         var mobile = $("#contactSU").val();
-        var vehicle_no = $("#carplateSU");
-        var account_type = "driver";
+        var account_type = "customer"
 
         // console.log(account_type);
         serviceURL = "http://localhost:5104/register_user/" + username;
@@ -455,8 +439,7 @@
                 "email": email,
                 "teleID": teleID,
                 "mobile": mobile,
-                "account_type": "driver",
-                "vehicle_no": vehicle_no
+                "account_type": "customer"
             })
         })
         .then(function (response) {
@@ -469,12 +452,12 @@
             if (result.code == 201){
                 json = JSON.stringify({
                     "username": result.data.username,
-                    "driver_ID": result.data.driver_ID,
-                    "account_type": "driver"
+                    "customer_ID": result.data.customer_ID,
+                    "account_type": "customer"
                     });
                 console.log(json);
                 sessionStorage.setItem("account_details", json);
-                location.replace("../customer/home.html");
+                location.replace("../customer/delivery_order.html");
             }
             else{
                 var message = "Verification not completed or verification failed."
@@ -488,8 +471,6 @@
         .catch(function (error) {
             console.log("Error:", error);
         });
-
-    });
 
     });
 
