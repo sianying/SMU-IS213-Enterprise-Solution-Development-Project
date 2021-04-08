@@ -25,7 +25,7 @@ import json
 app = Flask(__name__)
 CORS(app)
 
-deliveryURL=environ.get('deliveryURL')
+delivery_URL=environ.get('deliveryURL') or "http://localhost:5000/delivery"
 
 # Main function that calls other functions
 @app.route("/driver_view_details/<int:delivery_ID>", methods=['GET'])
@@ -56,7 +56,7 @@ def get_existing_info(delivery_ID):
     # 2. Invoke the delivery microservice
     print('\n-----Invoking delivery microservice-----')
     #delivery_result = invoke_http("http://localhost:5000/delivery/" + str(delivery_ID), method='GET')
-    delivery_result = invoke_http(deliveryURL+ '/' + str(delivery_ID), method='GET')
+    delivery_result = invoke_http(delivery_URL+ '/' + str(delivery_ID), method='GET')
     print('delivery_result:', delivery_result)
 
     # 3. Check the delivery result; if a failure, send it to the error microservice.

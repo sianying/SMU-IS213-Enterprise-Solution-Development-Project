@@ -23,7 +23,7 @@ CORS(app)
 HOST = '0.0.0.0'
 PORT = 5104
 
-scheduleURL= environ.get('scheduleURL')
+schedule_URL= environ.get('scheduleURL') or "http://localhost:5004/schedule"
 #schedule_URL = "http://localhost:5004/schedule/"
 
 @app.route("/schedule_driver/<string:delivery_date>/<string:timeslot>", methods=['GET'])
@@ -70,7 +70,7 @@ def get_available_drivers(delivery_date, timeslot):
     # Invoke the schedule microservice
     print('\n-----Invoking schedule microservice-----')
  
-    schedule_result = invoke_http(scheduleURL + '/date/' + delivery_date + '/' + timeslot, method='GET')
+    schedule_result = invoke_http(schedule_URL + '/date/' + delivery_date + '/' + timeslot, method='GET')
     print('schedule result: ' + str(schedule_result))
 
     # 3. Check the delivery result; if a failure, send it to the error microservice.

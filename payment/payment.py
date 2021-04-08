@@ -50,8 +50,8 @@ def create_checkout_session():
                 # }
         ],
             mode="payment",
-            success_url= "http://localhost/ESD/UI(General)/payment/success.html" + "?session_id={CHECKOUT_SESSION_ID}",
-            cancel_url="http://localhost/ESD/Project/cancel.html"
+            success_url= "http://localhost/Github/UI/payment/success.html" + "?session_id={CHECKOUT_SESSION_ID}",
+            cancel_url = "http://localhost/Github/UI/customer/delivery_order.html"
         )
         return jsonify({'id': checkout_session.id})
         
@@ -64,6 +64,7 @@ def create_checkout_session():
 def get_checkout_session(session_id):
     checkout_session = stripe.checkout.Session.retrieve(session_id)
     return jsonify({
+        "code": 200,
         "payment_status": checkout_session.payment_status,
         "amount_total": checkout_session.amount_total,
         "currency": checkout_session.currency,

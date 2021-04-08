@@ -3,6 +3,7 @@ from flask_cors import CORS
 
 import os, sys
 from os import environ
+import datetime
 
 import requests
 from invokes import invoke_http
@@ -24,9 +25,10 @@ CORS(app)
 #3. register users using Login Microservice (create new account)
 ##############################################################################################################
 
-login_URL = "http://localhost:5005"
-driver_URL = "http://localhost:5001/driver"
-customer_URL = "http://localhost:5002/customer"
+login_URL = environ.get('loginURL') or "http://localhost:5005"
+driver_URL = environ.get('driverURL') or "http://localhost:5001/driver"
+customer_URL = environ.get('customerURL') or "http://localhost:5002/customer"
+schedule_URL = environ.get('scheduleURL') or "http://localhost:5004/schedule"
 
 # POST request format in the URL: "username": username,
 # {
@@ -139,6 +141,7 @@ def registerCustomer(data):
         message=json.dumps(error_message)
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="login.error", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2))
+        return error_message
     
     #return customer_ID
     customer_ID = customer_data['data']['customer_ID']
@@ -170,9 +173,41 @@ def registerDriver(data):
         message=json.dumps(error_message)
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="driver.error", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2))
+        return error_message
         
-    #return driver_ID
     driver_ID = driver_data['data']['driver_ID']
+    # return driver_ID
+
+    #getting the date to create a new empty schedule for the driver
+    today_date = datetime.datetime.today().strftime('%Y-%m-%d')
+    schedule_data = {
+        "driver_ID": driver_ID,
+        "delivery_date": today_date,
+        "t_8_to_10": False,
+        "t_10_to_12": False,
+        "t_12_to_2": False,
+        "t_2_to_4": False,
+        "t_4_to_6": False
+    }
+    #Invoke the Schedule Microservice to create a schedule for the driver
+    print('\n-----Invoking Schedule microservice-----')
+    driver_schedule = invoke_http(schedule_URL, method='POST', json=schedule_data)
+    print('driver_schedule:' + str(driver_schedule) + "\n")
+
+    #error handling
+    code = driver_data["code"]
+    if code not in range(200, 300):
+        error_message = {
+                "code": 501,
+                "data": {"driver_schedule": driver_schedule},
+                "message": "Failed to create driver profile using Driver Microservice (POST), sent for error handling."
+            }
+        print('\n\n-----Publishing the (driver error) message with routing_key=driver.error-----')
+        message=json.dumps(error_message)
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="driver.error", 
+            body=message, properties=pika.BasicProperties(delivery_mode = 2))
+        return error_message
+
     return driver_ID
 
 
@@ -211,9 +246,10 @@ def registerUserAccount(username, user_ID, password, account_type):
         message=json.dumps(error_message)
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="login.error", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2))
+        return error_message
 
     return account_registered
-    
+
     #data format that is being returned
     # {
     #     "code": 201,

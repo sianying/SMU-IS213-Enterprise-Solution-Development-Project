@@ -64,8 +64,8 @@ def authenticate_user():
         hashed = user_recorded.password
         # print(password)
         # print(hashed)
-        result = bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
-        print(result)
+        # result = bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
+        # print(result)
 
         # if username == user_recorded.username and password == user_recorded.password:
         #encode the plain text password to match the hashed pa  ssword
@@ -164,8 +164,6 @@ def register_user(username):
     hashed = create_hash_password(password.encode('utf-8'))
     #decode hashed password for db storage
     hashed_string = hashed.decode('utf-8')
-    print(hashed_string)
-    print(type(hashed_string))
     #reconstruct the data for the db addition
     if account_type == "customer":
         customer_ID = data['customer_ID']
@@ -224,6 +222,7 @@ def register_user(username):
 
 def create_hash_password(password):
     salt = bcrypt.gensalt()
+    print(salt)
     hashed = bcrypt.hashpw(password, salt)
     return hashed
 
