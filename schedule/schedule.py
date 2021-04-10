@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 CORS(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/schedule'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@127.0.0.1:3306/schedule'
 # app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -129,7 +129,7 @@ def find_by_date(delivery_date):
     return jsonify(
         {
             "code": 404,
-            "message": "Schedule not found."
+            "message": "No available timing for this day."
         }
     ), 404
 

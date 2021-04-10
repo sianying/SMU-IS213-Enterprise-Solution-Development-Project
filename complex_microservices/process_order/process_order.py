@@ -32,10 +32,10 @@ CORS(app)
 # and Driver subscriber MS (to inform of new Job)
 ##############################################################################################################
 
-payment_URL = environ.get('paymentURL') or "http://localhost:5003/checkout_session"
-delivery_URL = environ.get('deliveryURL') or "http://localhost:5000/delivery"
-schedule_URL = environ.get('scheduleURL') or "http://localhost:5004/schedule"
-schedule_driver_URL = environ.get('ScheduleDriverURL') or "http://localhost:5104/schedule_driver"
+payment_URL = environ.get('paymentURL') or "http://127.0.0.1:5003/checkout_session"
+delivery_URL = environ.get('deliveryURL') or "http://127.0.0.1:5000/delivery"
+schedule_URL = environ.get('scheduleURL') or "http://127.0.0.1:5004/schedule"
+schedule_driver_URL = environ.get('ScheduleDriverURL') or "http://127.0.0.1:5104/schedule_driver"
 
 
 @app.route("/process_order/<string:customer_ID>", methods=['POST'])
@@ -45,7 +45,7 @@ def process_order(customer_ID):
         try:
             #session id + delivery data
             data = request.get_json()
-            print("\nReceived an data in JSON:", data)
+            # print("\nReceived an data in JSON:", data)
             session_id, delivery_data = data['session_id'], data['delivery_data']
 
             # do the actual work
@@ -55,7 +55,7 @@ def process_order(customer_ID):
                 # order_ID = order['delivery_ID']
                 send_notification(order)
 
-                print(data)
+                # print(data)
                 return data
             # print('\n------------------------')
             # print('\nresult: ', result)
@@ -85,7 +85,7 @@ def processOrderCreation(session_id, delivery_data, customer_ID):
     # Invoke the payment microservice
     print('\n-----Invoking payment microservice-----')
     payment_data = invoke_http(payment_URL + "/" + session_id, method='GET')
-    print('payment_results:', str(payment_data))
+    # print('payment_results:', str(payment_data))
 
     code = payment_data['code']
     if code not in range(200, 300):
@@ -120,7 +120,7 @@ def processOrderCreation(session_id, delivery_data, customer_ID):
 
     print('\n-----Invoking schedule_driver microservice-----')
     selected_driver = invoke_http(schedule_driver_URL + "/" + str(date) + "/" + str(time), method='GET')
-    print('Selected_driver: ' + str(selected_driver) + "\n")
+    # print('Selected_driver: ' + str(selected_driver) + "\n")
 
     # check the schedule_driver results: if failure send to error microservice for logging
     code = selected_driver['code']
@@ -148,7 +148,7 @@ def processOrderCreation(session_id, delivery_data, customer_ID):
     #6. Invoke schedule to update allocated driver's schedule
     print('\n-----Invoking Schedule Microservice-----')
     driver_schedule_updated = invoke_http(schedule_URL + "/" + str(selected_schedule_ID), method='PUT', json=updated_schedule)
-    print("Updated Driver's schedule: " + str(driver_schedule_updated) + "\n")
+    # print("Updated Driver's schedule: " + str(driver_schedule_updated) + "\n")
 
     #check the driver updated results: if failure send to error microservice for logging
     code = driver_schedule_updated['code']
@@ -205,7 +205,7 @@ def processOrderCreation(session_id, delivery_data, customer_ID):
     print('\n-----Invoking Delivery Microservice-----')
     print(delivery_URL )
     delivery_created = invoke_http(delivery_URL, method='POST', json=delivery_entry)
-    print("New Delivery created: " + str(delivery_created) + "\n")
+    # print("New Delivery created: " + str(delivery_created) + "\n")
 
     #check the newly created delivery order: if failure send to error microservice for logging
     code = delivery_created['code']
