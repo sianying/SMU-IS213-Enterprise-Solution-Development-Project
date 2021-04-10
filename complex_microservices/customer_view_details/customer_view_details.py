@@ -165,7 +165,7 @@ def add_driver_details(delivery):
 
     # 2. Invoke the driver microservice
     print('\n-----Invoking driver microservice-----')
-    driver_result = invoke_http("http://127.0.0.1:5001/driver/" + str(driver_ID), method='GET')
+    driver_result = invoke_http("http://localhost:5001/driver/" + str(driver_ID), method='GET')
     print('driver_result:', driver_result)
 
     # 3. Check the delivery result; if a failure, send it to the error microservice.

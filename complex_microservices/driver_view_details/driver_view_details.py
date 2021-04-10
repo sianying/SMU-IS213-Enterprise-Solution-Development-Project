@@ -25,7 +25,7 @@ import json
 app = Flask(__name__)
 CORS(app)
 
-delivery_URL=environ.get('deliveryURL') or "http://127.0.0.1:5000/delivery"
+delivery_URL=environ.get('deliveryURL') or "http://localhost:5000/delivery"
 
 # Main function that calls other functions
 @app.route("/driver_view_details/<int:delivery_ID>", methods=['GET'])
