@@ -25,10 +25,10 @@ CORS(app)
 #3. register users using Login Microservice (create new account)
 ##############################################################################################################
 
-login_URL = environ.get('loginURL') or "http://localhost:5005"
-driver_URL = environ.get('driverURL') or "http://localhost:5001/driver"
-customer_URL = environ.get('customerURL') or "http://localhost:5002/customer"
-schedule_URL = environ.get('scheduleURL') or "http://localhost:5004/schedule"
+login_URL = environ.get('loginURL') or "http://127.0.0.1:5005"
+driver_URL = environ.get('driverURL') or "http://127.0.0.1:5001/driver"
+customer_URL = environ.get('customerURL') or "http://127.0.0.1:5002/customer"
+schedule_URL = environ.get('scheduleURL') or "http://127.0.0.1:5004/schedule"
 
 # POST request format in the URL: "username": username,
 # {
