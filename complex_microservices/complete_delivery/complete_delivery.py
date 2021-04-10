@@ -20,8 +20,8 @@ import json
 app = Flask(__name__)
 CORS(app)
 
-deliveryURL=environ.get('deliveryURL') or 'http://localhost:5000/delivery'
-driverURL= environ.get('driverURL') or 'http://localhost:5001/driver'
+deliveryURL=environ.get('deliveryURL') or 'http://127.0.0.1:5000/delivery'
+driverURL= environ.get('driverURL') or 'http://127.0.0.1:5001/driver'
 
 # deliveryURL=environ.get('deliveryURL')
 # driverURL= environ.get('driverURL')
