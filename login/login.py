@@ -14,7 +14,7 @@ HOST="0.0.0.0"
 PORT = 5005
 
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/login'
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@127.0.0.1:3306/login'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/login'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:password@localhost:3306/driver'
 #there is a need for authentication to the database using root (user) and pass(if there is any)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -62,8 +62,14 @@ def authenticate_user():
         username = user_data['username']
         password = user_data['password']
         hashed = user_recorded.password
+        # print(password)
+        # print(hashed)
+        # result = bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
+        # print(result)
 
-        #encode the plain text password to match the hashed password
+        # if username == user_recorded.username and password == user_recorded.password:
+        #encode the plain text password to match the hashed pa  ssword
+
         if username == user_recorded.username and bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8')):
         # if username == user_recorded.username and :
 
