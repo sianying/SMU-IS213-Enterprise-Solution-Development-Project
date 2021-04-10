@@ -71,7 +71,7 @@ def get_available_drivers(delivery_date, timeslot):
     print('\n-----Invoking schedule microservice-----')
  
     schedule_result = invoke_http(schedule_URL + '/date/' + delivery_date + '/' + timeslot, method='GET')
-    print('schedule result: ' + str(schedule_result))
+    # print('schedule result: ' + str(schedule_result))
 
     # 3. Check the delivery result; if a failure, send it to the error microservice.
     code = schedule_result["code"]
