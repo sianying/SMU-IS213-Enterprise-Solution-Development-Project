@@ -170,19 +170,21 @@
                                 <!-- <div class="input-group-prepend">
                                     <span class="input-group-text" id="destination">Address Line</span>
                                 </div> -->
-                                <input type="date" class="form-control" id="date" placeholder="" value="">
+                                <input type="date" class="form-control" @change = "checkSchedule" id="date" placeholder="" value="">
                             </div>
                         </div> 
                     </div> 
                     <div class="col-md-4">
                         <div class="form-group ">
                             <label for="time">Schedule</label>
-                            <select @change = "checkSchedule" id="time" class="form-control">
-                                <option selected value='8_to_10'>8 am to 10 am</option>
-                                <option value='10_to_12'>10 am to 12pm</option>
-                                <option value='12_to_2'>12pm to 2pm</option>
-                                <option value="2_to_4">2pm to 4pm</option>
-                                <option value='4_to_6'>4pm to 6pm</option>
+                            <select id="time" class="form-control">
+                                <option selected disabled hidden>Please select a timing</option>
+                                <option selected v-if='error'>No available timings!</option>
+                                <option selected value='8_to_10' v-if='t_8_to_10'>8 am to 10 am</option>
+                                <option value='10_to_12' v-if='t_10_to_12'>10 am to 12pm</option>
+                                <option value='12_to_2' v-if='t_12_to_2'>12pm to 2pm</option>
+                                <option value="2_to_4" v-if='t_2_to_4'>2pm to 4pm</option>
+                                <option value='4_to_6' v-if='t_4_to_6'>4pm to 6pm</option>
                             </select>
                         </div> 
                     </div> 
@@ -246,16 +248,24 @@
     var app = new Vue({
         el: "#app",
         data: {
-            error: false
+            error: false,
+            t_2_to_4: false,
+            t_4_to_6: false,
+            t_8_to_10: false,
+            t_10_to_12: false,
+            t_12_to_2: false,
+            // availableSchedule: false
         },
         methods: {
             checkSchedule: function() {
             var date = $("#date").val();
             var time = $('#time').val()
-            var get_all_schedule = "http://localhost:5004/schedule/date/" + date + "/" + time;
+            // var get_all_schedule = "http://localhost:5004/schedule/date/" + date + "/" + time;
+            var get_Schedule = "http://localhost:5004/schedule/date/" + date;
             // console.log(date);
             const response =
-                            fetch(get_all_schedule)
+                            // fetch(get_all_schedule)
+                            fetch(get_Schedule)
                                 .then(response => response.json())
                                 .then(data => {
                                     console.log(response);
@@ -265,9 +275,57 @@
                                         this.error = data.message;
                                         // console.log(this.error)
                                         // console.log(data.message);
+                                        this.t_8_to_10 = false;
+                                        this.t_10_to_12 = false;
+                                        this.t_12_to_2 = false;
+                                        this.t_2_to_4 = false;
+                                        this.t_4_to_6 = false;
                                     }
                                     else {
                                         this.error = false;
+                                        data.data.schedules.forEach(element => {
+                                            // console.log(element);
+                                            var count_t_8_to_10 = 0;
+                                            var count_t_10_to_12 = 0;
+                                            var count_t_12_to_2 = 0;
+                                            var count_t_2_to_4 = 0;
+                                            var count_t_4_to_6 = 0;
+                                            for (const time in element){
+                                                // console.log(element[time])
+                                                if(time == "t_8_to_10" && element[time] === false){
+                                                    // console.log("hello")
+                                                    count_t_8_to_10 += 1;
+                                                }
+                                                if(time == "t_10_to_12" && element[time] === false){
+                                                    count_t_10_to_12 += 1;
+                                                }
+                                                if(time == "t_12_to_2" && element[time] === false){
+                                                    count_t_12_to_2 += 1;
+                                                }
+                                                if(time == "t_2_to_4" && element[time] === false){
+                                                    count_t_2_to_4 += 1;
+                                                }
+                                                if(time == "t_4_to_6" && element[time] === false){
+                                                    count_t_4_to_6 += 1;
+                                                }
+                                            }
+
+                                            if(count_t_8_to_10 > 0){
+                                                this.t_8_to_10 = true;
+                                            }
+                                            if(count_t_10_to_12 > 0){
+                                                this.t_10_to_12 = true;
+                                            }
+                                            if(count_t_12_to_2 > 0){
+                                                this.t_12_to_2 = true;
+                                            }
+                                            if(count_t_2_to_4 > 0){
+                                                this.t_2_to_4 = true;
+                                            }
+                                            if(count_t_4_to_6 > 0){
+                                                this.t_4_to_6 = true;
+                                            }
+                                        });
                                     }
                                 })
             },
