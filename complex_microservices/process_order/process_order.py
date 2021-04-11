@@ -138,7 +138,7 @@ def processOrderCreation(session_id, delivery_data, customer_ID):
     #Initialise the driver ID and data for updating of their schedule
     selected_schedule_ID = selected_driver['data']['SID']
     updated_schedule = selected_driver['data']
-    print(updated_schedule)
+    # print(updated_schedule)
     # remove SID from POST body data
     updated_schedule.pop('SID')
     updated_schedule['delivery_date'] = date
@@ -193,8 +193,8 @@ def processOrderCreation(session_id, delivery_data, customer_ID):
         "customer_ID": customer_ID,
         "delivery_date": delivery_data['date'],
         "timeslot": delivery_data['time'],
-        "pickup_location": delivery_data['pickup'] + delivery_data['pickupPostalCode'],
-        "destination": delivery_data['destination'] + delivery_data['destinationPostalCode'],
+        "pickup_location": delivery_data['pickup'] + ", Singapore " + delivery_data['pickupPostalCode'],
+        "destination": delivery_data['destination'] + ", Singapore " + delivery_data['destinationPostalCode'],
         "delivery_item": delivery_data['delivery_item'],
         "description": delivery_data['description'],
         "payment_amount": payment_data['amount_total'],
@@ -203,7 +203,7 @@ def processOrderCreation(session_id, delivery_data, customer_ID):
     }
 
     print('\n-----Invoking Delivery Microservice-----')
-    print(delivery_URL )
+    # print(delivery_URL )
     delivery_created = invoke_http(delivery_URL, method='POST', json=delivery_entry)
     # print("New Delivery created: " + str(delivery_created) + "\n")
 

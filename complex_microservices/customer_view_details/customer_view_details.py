@@ -25,6 +25,9 @@ import json
 app = Flask(__name__)
 CORS(app)
 
+delivery_URL=environ.get('deliveryURL') or "http://127.0.0.1:5000/delivery"
+driver_URL=environ.get('driverURL') or "http://127.0.0.1:5001/driver"
+
 # Main function that calls other functions
 @app.route("/customer_view_details/<int:customer_ID>", methods=['GET'])
 def customer_view_details(customer_ID):
@@ -127,13 +130,13 @@ def customer_view_details(customer_ID):
 def retrieve_all_deliveries(customer_ID):
     # 2. Invoke the delivery microservice
     print('\n-----Invoking delivery microservice-----')
-    delivery_result = invoke_http("http://localhost:5000/delivery/customer/" + str(customer_ID), method='GET')
+    delivery_result = invoke_http(delivery_URL + "/customer/" + str(customer_ID), method='GET')
     #print('delivery_result:', delivery_result)
 
     # 3. Check the delivery result; if a failure, send it to the error microservice.
     code = delivery_result["code"]
     if code not in range(200, 300):
-        #print('\n\n-----Publishing the (delivery error) message with routing_key=CustomerViewDetails.delivery.error-----')
+        print('\n\n-----Publishing the (delivery error) message with routing_key=CustomerViewDetails.delivery.error-----')
         message=json.dumps(delivery_result)
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="CustomerViewDetails.delivery.error", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2))
@@ -165,7 +168,7 @@ def add_driver_details(delivery):
 
     # 2. Invoke the driver microservice
     print('\n-----Invoking driver microservice-----')
-    driver_result = invoke_http("http://127.0.0.1:5001/driver/" + str(driver_ID), method='GET')
+    driver_result = invoke_http(driver_ID + "/" + str(driver_ID), method='GET')
     print('driver_result:', driver_result)
 
     # 3. Check the delivery result; if a failure, send it to the error microservice.

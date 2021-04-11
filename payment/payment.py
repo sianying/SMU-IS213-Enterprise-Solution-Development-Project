@@ -50,8 +50,8 @@ def create_checkout_session():
                 # }
         ],
             mode="payment",
-            success_url= "http://localhost/Github/UI/payment/success.html" + "?session_id={CHECKOUT_SESSION_ID}",
-            cancel_url = "http://localhost/Github/UI/customer/delivery_order.html"
+            success_url= "http://127.0.0.1/Github/UI/payment/success.html" + "?session_id={CHECKOUT_SESSION_ID}",
+            cancel_url = "http://127.0.0.1/Github/UI/customer/delivery_order.html"
         )
         return jsonify({'id': checkout_session.id})
         

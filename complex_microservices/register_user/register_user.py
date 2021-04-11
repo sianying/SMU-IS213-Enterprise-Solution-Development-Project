@@ -54,7 +54,7 @@ def register_user(username):
             # Invoke the Login Microservice (/check_username_exist)
             print('\n-----Invoking Login microservice-----')
             username_data = invoke_http(login_URL + "/" + "check_username_exist" + "/" + username, method='GET')
-            print('payment_results:'+ str(username_data) + "\n")
+            # print('payment_results:'+ str(username_data) + "\n")
 
             code = username_data["code"]
             if code not in range(200, 300):
@@ -123,19 +123,19 @@ def registerCustomer(data):
         "customer_mobile": data['mobile'], 
         "customer_teleID": data['teleID']
     }
-    print(customer_data)
-    print(type(customer_data))
+    # print(customer_data)
+    # print(type(customer_data))
     # Invoke the Customer Microservice (/customer)
     print('\n-----Invoking Customer microservice-----')
     customer_data = invoke_http(customer_URL, method='POST', json=customer_data)
-    print('customer_results:' + str(customer_data) + "\n")
+    # print('customer_results:' + str(customer_data) + "\n")
 
     code = customer_data["code"]
     if code not in range(200, 300):
         error_message = {
                 "code": 501,
                 "data": {"customer_data": customer_data},
-                "message": "Failed to create customer profile using Customer Microservice (POST), sent for error handling."
+                "message": "Failed to create customer profile using Customer MS, sent for error handling."
             }
         print('\n\n-----Publishing the (login error) message with routing_key=login.error-----')
         message=json.dumps(error_message)
@@ -160,7 +160,7 @@ def registerDriver(data):
     # Invoke the driver Microservice (/driver)
     print('\n-----Invoking Driver microservice-----')
     driver_data = invoke_http(driver_URL, method='POST', json=driver_data)
-    print('driver_results:' + str(driver_data) + "\n")
+    # print('driver_results:' + str(driver_data) + "\n")
 
     code = driver_data["code"]
     if code not in range(200, 300):
