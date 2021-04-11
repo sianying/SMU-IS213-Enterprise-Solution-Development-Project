@@ -270,6 +270,27 @@
                 if(this.delivery_status == 'NEW'){
                     this.delivery_status = "In Progress";
                     this.update_delivery_status = "Update to Completed";
+                    const details = {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            "delivery_status": this.delivery_status
+                        })
+                    };
+
+                    fetch(update_status_url + "/" + delivery_id, details)
+                        .then(response => response.json())
+                        // console.log(response)
+                        .then(data => {
+                            // console.log(response)
+                            console.log(data)
+                            // this.successfulPayment = true
+                        })
+                        .catch(error=>{
+                            console.log("Error:", error);
+                    })
                 }   else if(this.delivery_status == 'In Progress'){
                     this.delivery_status = "Completed!";
                     this.update_delivery_status = "";
@@ -301,27 +322,7 @@
 
                                             });
                 }   
-                const details = {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        "delivery_status": this.delivery_status
-                    })
-                };
-
-                fetch(update_status_url + "/" + delivery_id, details)
-                    .then(response => response.json())
-                    // console.log(response)
-                    .then(data => {
-                        // console.log(response)
-                        console.log(data)
-                        // this.successfulPayment = true
-                    })
-                    .catch(error=>{
-                        console.log("Error:", error);
-                    })
+                
             }
         }})
 
