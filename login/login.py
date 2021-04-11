@@ -154,7 +154,6 @@ def register_user(username):
     print(data)
     account_type = data['account_type']
     password = data['password']
-    #hash the password using bcrypt
     hashed = create_hash_password(password.encode('utf-8'))
     #decode hashed password for db storage
     hashed_string = hashed.decode('utf-8')

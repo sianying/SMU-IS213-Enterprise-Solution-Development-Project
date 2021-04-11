@@ -23,8 +23,8 @@ import json
 app = Flask(__name__)
 CORS(app)
 
-deliveryURL=environ.get('deliveryURL') or "http://localhost:5000/delivery"
-driverURL=environ.get('driverURL') or "http://localhost:5001/driver"
+deliveryURL=environ.get('deliveryURL') or "http://127.0.0.1:5000/delivery"
+driverURL=environ.get('driverURL') or "http://127.0.0.1:5001/driver"
 
 # Main function that calls other functions
 @app.route("/customer_view_details/<int:customer_ID>", methods=['GET'])
@@ -50,7 +50,7 @@ def customer_view_details(customer_ID):
 
         for delivery in list_of_deliveries:
             driver_id=delivery['driver_ID']
-            print(driver_id)
+            # print(driver_id)
             for driver in list_of_drivers:
                 if driver_id==driver['driver_ID']:
                     delivery['driver_name']=driver['driver_name']
@@ -85,7 +85,7 @@ def retrieve_all_deliveries(customer_ID):
     # 2. Invoke the delivery microservice
     #print('\n-----Invoking delivery microservice-----')
     delivery_result = invoke_http(deliveryURL+ "/customer/" + str(customer_ID), method='GET')
-    print('delivery_result:', delivery_result)
+    # print('delivery_result:', delivery_result)
 
     # 3. Check the delivery result; if a failure, send it to the error microservice.
     code = delivery_result["code"]
