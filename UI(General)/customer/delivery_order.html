@@ -179,7 +179,7 @@
                             <label for="time">Schedule</label>
                             <select id="time" class="form-control">
                                 <option selected disabled hidden>Please select a timing</option>
-                                <option selected v-if='error'>No available timings!</option>
+                                <option selected v-if='!availableSchedules'>No available timings!</option>
                                 <option selected value='8_to_10' v-if='t_8_to_10'>8 am to 10 am</option>
                                 <option value='10_to_12' v-if='t_10_to_12'>10 am to 12pm</option>
                                 <option value='12_to_2' v-if='t_12_to_2'>12pm to 2pm</option>
@@ -189,56 +189,15 @@
                         </div> 
                     </div> 
                 </div>
-                <div style='color:red;' v-if = "error"> {{ error }} </div>
+                <div>
+                    <!-- {{ error }}  -->
+                    <li style='color:red; list-style:none;' v-for='err in error'>{{err}}</li>
+                </div>
 
                 <br>
                 <button type="button" class="btn btn-primary mb-3" @click='checkout' id="checkout-button">Checkout</button>
-            </form>
-                
+            </form>  
             </div>
-
-
-
-            <!-- <div class="form-group">
-                <label for="deliveryItem">Delivery Item</label>
-                <input type="text" class="form-control" id="deliveryItem" placeholder="Enter Delivery Item" value="">
-            </div>
-            <div class="form-group">
-                <label for="description">Description</label>
-                <input type="text" class="form-control" id="description" placeholder="Delivery Item Description" value="">
-            </div>
-            <div class="form-group ">
-                <label for="size">Size</label>
-                <select id="size" class="form-control">
-                    <option selected>Small</option>
-                    <option>Medium</option>
-                    <option>Large</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="weight">Product weight</label>
-                <div class="input-group mb-3">
-                    <input type="number" class="form-control" id="weight" placeholder="Please input the product weight" value="">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="kg">kg</span>
-                    </div>
-                </div>
-            </div> 
-
-            <div class="form-group">
-                <label for="weight">Origin Address</label>
-                <div class="input-group mb-3">
-                    <input type="number" class="form-control" id="weight" placeholder="Please input the product weight" value="">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="kg">kg</span>
-                    </div>
-                </div>
-            </div>  -->
-            <!-- <button type="submit" class="btn btn-primary">Checkout</button> -->
-        
-        <!-- <button type="button" class="btn btn-primary" id="checkout-button">Checkout</button>
-        </form> -->
     </div>
 
 
@@ -248,13 +207,13 @@
     var app = new Vue({
         el: "#app",
         data: {
-            error: false,
+            error: [],
             t_2_to_4: false,
             t_4_to_6: false,
             t_8_to_10: false,
             t_10_to_12: false,
             t_12_to_2: false,
-            // availableSchedule: false
+            availableSchedules: false
         },
         methods: {
             checkSchedule: function() {
@@ -272,7 +231,7 @@
                                     console.log(data);
                                     if (data.code === 404) {
                                         // no book in db
-                                        this.error = data.message;
+                                        this.availableSchedules = false;
                                         // console.log(this.error)
                                         // console.log(data.message);
                                         this.t_8_to_10 = false;
@@ -282,7 +241,7 @@
                                         this.t_4_to_6 = false;
                                     }
                                     else {
-                                        this.error = false;
+                                        this.availableSchedules = true;
                                         data.data.schedules.forEach(element => {
                                             // console.log(element);
                                             var count_t_8_to_10 = 0;
@@ -330,62 +289,111 @@
                                 })
             },
             checkout: function(){
+                this.error = [];
+                var deliveryItem = $("#deliveryItem").val();
+                var description = $("#description").val();
+                var size = $("#size").val();
+                var weight = $("#weight").val();
+                var pickup = $("#pickup").val();
+                var pickupPostalCode = $("#pickupPostalCode").val();
+                var destination = $("#destination").val();
+                var destinationPostalCode = $("#destinationPostalCode").val();
+                var receiver_name = $("#receiver_name").val();
+                var date = $("#date").val();
+                var time = $("#time").val();
+
+                if(deliveryItem == ""){
+                    this.error.push("Please enter a name for the item!");
+                }
+                if(description == ""){
+                    this.error.push("Please enter a description for the item!");
+                }
+                if(size == ""){
+                    this.error.push("Please the size of the item!");
+                }
+
+                if(pickup == ""){
+                    this.error.push("Please enter a pickup location for the item!");
+                } 
+                if(pickup.includes('Singapore') || pickup.includes('singapore')){
+                    this.error.push("Please include the pickup postal code in the postal code field instead!");
+                }
+                if(pickupPostalCode == ""){
+                    this.error.push("Please enter the pickup postal code!");
+                }
+
+                if(destination.includes('Singapore') || destination.includes('singapore')){
+                    this.error.push("Please include the destination postal code in the postal code field instead!");
+                }
+                if(destinationPostalCode == ""){
+                    this.error.push("Please enter the destination postal code!");
+                }
+                if(destination == ""){
+                    this.error.push("Please enter a destination address for the item!");
+                } 
+                if(receiver_name == ""){
+                    this.error.push("Please enter the name of the receiver!");
+                }
+                if(date == ""){
+                    this.error.push("Please enter a date!");
+                }
+                if(time == "No available timings!"){
+                    this.error.push("Please select a day with available timings!");
+                }
+                
+                
                 var stripe = Stripe('pk_test_51IX1pfEh2v7rRS8AqOB3PG6BLj1qQh8g4V0oI5GLProGPMmJRG60qzCXGH0297oQKyRIblMPKhFPlQEshp993pBN00CvpCrI7z');
     
                 
                 // var checkoutButton = document.getElementById("checkout-button");
                 // checkoutButton.addEventListener("click", function () {
 
-                    if(!this.error){
-                        // console.log(this.error)
-                        var deliveryItem = $("#deliveryItem").val();
-                        var size = $("#size").val();
-                        var weight = $("#weight").val();
+                if(this.error.length === 0){
+                    // console.log(this.error)
+                    // var deliveryItem = $("#deliveryItem").val();
+                    // var size = $("#size").val();
+                    // var weight = $("#weight").val();
 
-                        fetch("http://localhost:5003/create-checkout-session", {
-                            method: "POST",
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                // "price_data": {"currency": "sgd", "product_data": {"name": deliveryItem}, "unit_amount": 100},
-                                // "quantity": 1,
-                                // "metadata": {
-                                //     "description": description,
-                                //     "size": size,
-                                //     "weight": weight
-                                // },
-                    
-                                "deliveryItem": deliveryItem,
-                                "description": description,
-                                "size": size,
-                                "weight": weight
-                            }),
-                        })
-                        .then(function (response) {
-                            return response.json();
-                        })
-                        .then(function (session) {
-                            return stripe.redirectToCheckout({ sessionId: session.id });
-                        })
-                        .then(function (result) {
-                        // If redirectToCheckout fails due to a browser or network
-                        // error, you should display the localized error message to your
-                        // customer using error.message.
-                            if (result.error) {
-                                alert(result.error.message);
-                            }
-                        })
-                        .catch(function (error) {
-                            console.error("Error:", error);
-                        });
-                    }
-
-                    else{
-                        alert('Please select an available timeslot instead!');
-                    }
-                    
-                    }
+                    fetch("http://localhost:5003/create-checkout-session", {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            // "price_data": {"currency": "sgd", "product_data": {"name": deliveryItem}, "unit_amount": 100},
+                            // "quantity": 1,
+                            // "metadata": {
+                            //     "description": description,
+                            //     "size": size,
+                            //     "weight": weight
+                            // },
+                
+                            "deliveryItem": deliveryItem,
+                            "description": description,
+                            "size": size,
+                            "weight": weight
+                        }),
+                    })
+                    .then(function (response) {
+                        return response.json();
+                    })
+                    .then(function (session) {
+                        return stripe.redirectToCheckout({ sessionId: session.id });
+                    })
+                    .then(function (result) {
+                    // If redirectToCheckout fails due to a browser or network
+                    // error, you should display the localized error message to your
+                    // customer using error.message.
+                        if (result.error) {
+                            alert(result.error.message);
+                        }
+                    })
+                    .catch(function (error) {
+                        console.error("Error:", error);
+                    });
+                }
+                
+                }
 
                 }
 
