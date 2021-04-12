@@ -163,7 +163,7 @@ def delete_customer(customer_ID):
                 "data": {
                     "customer_ID": customer_ID
                 },
-                "message": "An error occurred creating the customer."
+                "message": "An error occurred deleting the customer."
             }
         ), 500
     
