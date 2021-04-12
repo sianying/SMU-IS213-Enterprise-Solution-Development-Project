@@ -2,9 +2,15 @@ version: "3.8"
 
 volumes:
     rabbitmq_data:
+    pgdata:
+    kongadata:
+    
+# networks:
+#     kong-net:
+#         driver: bridge
  
 services:
-    # 6 simple microservices
+    # 6 simple microservices (HTTP)
 
     #port 5000
     delivery:
@@ -16,7 +22,8 @@ services:
       ports:
         - "5000:5000"
       environment:
-        dbURL: mysql+mysqlconnector://admin:Password123@database-1.c8zsr5fmweqm.us-east-1.rds.amazonaws.com/cheetah_db
+        #dbURL: mysql+mysqlconnector://admin:Password123@database-1.c8zsr5fmweqm.us-east-1.rds.amazonaws.com/cheetah_db
+        dbURL: mysql+mysqlconnector://admin:Password123@esd-database.cg2v6ek4an29.us-east-1.rds.amazonaws.com/cheetah_db
         PYTHONUNBUFFERED: 1
 
 
@@ -30,7 +37,8 @@ services:
         ports:
             - "5001:5001"
         environment:
-            dbURL: mysql+mysqlconnector://admin:Password123@database-1.c8zsr5fmweqm.us-east-1.rds.amazonaws.com/cheetah_db
+            #dbURL: mysql+mysqlconnector://admin:Password123@database-1.c8zsr5fmweqm.us-east-1.rds.amazonaws.com/cheetah_db
+            dbURL: mysql+mysqlconnector://admin:Password123@esd-database.cg2v6ek4an29.us-east-1.rds.amazonaws.com/cheetah_db
             PYTHONUNBUFFERED: 1
 
 
@@ -44,7 +52,8 @@ services:
         ports:
             - "5002:5002"
         environment:
-            dbURL: mysql+mysqlconnector://admin:Password123@database-1.c8zsr5fmweqm.us-east-1.rds.amazonaws.com/cheetah_db
+            #dbURL: mysql+mysqlconnector://admin:Password123@database-1.c8zsr5fmweqm.us-east-1.rds.amazonaws.com/cheetah_db
+            dbURL: mysql+mysqlconnector://admin:Password123@esd-database.cg2v6ek4an29.us-east-1.rds.amazonaws.com/cheetah_db
             PYTHONUNBUFFERED: 1
 
 
@@ -71,7 +80,8 @@ services:
         ports:
             - "5004:5004"
         environment:
-            dbURL: mysql+mysqlconnector://admin:Password123@database-1.c8zsr5fmweqm.us-east-1.rds.amazonaws.com/cheetah_db
+            #dbURL: mysql+mysqlconnector://admin:Password123@database-1.c8zsr5fmweqm.us-east-1.rds.amazonaws.com/cheetah_db
+            dbURL: mysql+mysqlconnector://admin:Password123@esd-database.cg2v6ek4an29.us-east-1.rds.amazonaws.com/cheetah_db
             PYTHONUNBUFFERED: 1
             
     
@@ -85,7 +95,8 @@ services:
         ports:
             - "5005:5005"
         environment:
-            dbURL: mysql+mysqlconnector://admin:Password123@database-1.c8zsr5fmweqm.us-east-1.rds.amazonaws.com/cheetah_db
+            #dbURL: mysql+mysqlconnector://admin:Password123@database-1.c8zsr5fmweqm.us-east-1.rds.amazonaws.com/cheetah_db
+            dbURL: mysql+mysqlconnector://admin:Password123@esd-database.cg2v6ek4an29.us-east-1.rds.amazonaws.com/cheetah_db
             PYTHONUNBUFFERED: 1
 
 
@@ -281,96 +292,80 @@ services:
         ports:
             - "5105:5105"
 
+    # API GATEWAY
+    
+    #Postgres: The database used by Kong
+    kong-database:
+        image: postgres:9.6
+        restart: always
+        # networks:
+        #     - kong-net
+        environment:
+            POSTGRES_DB: kong
+            POSTGRES_USER: kong
+            POSTGRES_PASSWORD: password
+        ports:
+            - "5432:5432"
+        healthcheck:
+            test: ["CMD", "pg_isready", "-U", "kong"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+        volumes:
+            - pgdata:/var/lib/postgresql/data
 
-# #KONGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
-# #version: "3"
-
-# volumes:
-#     pgdata: 
-#     kongadata:
-  
-# networks:
-#     kong-net:
-#         driver: bridge
-  
-# services:
-
-#######################################
-# Postgres: The database used by Kong
-#######################################
-    # kong-database:
-    #     image: postgres:9.6
-    #     restart: always
-    #     networks:
-    #     - kong-net
-    #     environment:
-    #     POSTGRES_DB: kong
-    #     POSTGRES_USER: kong
-    #     POSTGRES_PASSWORD: password
-    #     ports:
-    #     - "5432:5432"
-    #     healthcheck:
-    #     test: ["CMD", "pg_isready", "-U", "kong"]
-    #     interval: 10s
-    #     timeout: 5s
-    #     retries: 5
-    #     volumes:
-    #     - pgdata:/var/lib/postgresql/data
-
-    # #######################################
-    # # Kong database migration
-    # #######################################
-    # kong-migration:
-    #     image: kong:2.0.4
-    #     command: "kong migrations bootstrap"
-    #     restart: on-failure
-    #     networks:
-    #     - kong-net
-    #     environment:
-    #     KONG_DATABASE: postgres
-    #     KONG_PG_HOST: kong-database
-    #     KONG_PG_USER: kong
-    #     KONG_PG_PASSWORD: password
-    #     depends_on:
-    #     - kong-database
-
-    # #######################################
-    # # Kong: The API Gateway
-    # #######################################
-    # kong:
-    #     image: kong:2.0.4
-    #     restart: always
-    #     networks:
-    #     - kong-net
-    #     environment:
-    #     KONG_DATABASE: postgres
-    #     KONG_PG_HOST: kong-database
-    #     KONG_PG_USER: kong
-    #     KONG_PG_PASSWORD: password
-    #     KONG_PROXY_LISTEN: 0.0.0.0:8000
-    #     KONG_ADMIN_LISTEN: 0.0.0.0:8001
-    #     depends_on:
-    #     - kong-migration
-    #     ports:
-    #     - "8000:8000"
-
-    # #######################################
-    # # Konga: Kong GUI
-    # #######################################
-    # konga:
-    #     image: pantsel/konga
-    #     restart: always
-    #     networks:
-    #         - kong-net
-    #     environment:
-    #     DB_ADAPTER: postgres
-    #     DB_HOST: kong-database
-    #     DB_USER: kong
-    #     DB_PASSWORD: password
-    #     DB_DATABASE: konga_db
-    #     depends_on:
-    #     - kong
-    #     ports:
-    #     - "1337:1337"
-    #     volumes:
-    #     - kongadata:/app/kongadata
+    
+    # Kong database migration
+    kong-migration:
+        image: kong:2.0.4
+        command: "kong migrations bootstrap"
+        restart: on-failure
+        # networks:
+        #     - kong-net
+        environment:
+            KONG_DATABASE: postgres
+            KONG_PG_HOST: kong-database
+            KONG_PG_USER: kong
+            KONG_PG_PASSWORD: password
+        depends_on:
+            - kong-database
+            
+    
+    # Kong: The API Gateway
+    kong:
+        image: kong:2.0.4
+        restart: always
+        # networks:
+        #     - kong-net
+        environment:
+            KONG_DATABASE: postgres
+            KONG_PG_HOST: kong-database
+            KONG_PG_USER: kong
+            KONG_PG_PASSWORD: password
+            KONG_PROXY_LISTEN: 0.0.0.0:8000
+            KONG_ADMIN_LISTEN: 0.0.0.0:8001
+        depends_on:
+            - kong-migration
+        ports:
+            - "8000:8000"
+    
+        
+    # Konga: Kong GUI
+    konga:
+        image: pantsel/konga
+        restart: always
+        # networks:
+        #     - kong-net
+        environment:
+            DB_ADAPTER: postgres
+            DB_HOST: kong-database
+            DB_USER: kong
+            DB_PASSWORD: password
+            DB_DATABASE: konga_db
+        depends_on:
+            - kong
+        ports:
+            - "1337:1337"
+        volumes:
+            - kongadata:/app/kongadata
+            
