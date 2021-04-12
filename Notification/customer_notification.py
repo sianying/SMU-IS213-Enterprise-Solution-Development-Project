@@ -35,8 +35,9 @@ def processOrderLog(order):
 def send_telemessage(message):
     print("sending telegram message")
     customer_message = message['customer_message']
+    customer_tele_chat_ID = message['customer_tele_chat_ID']
     # print(customer_message)
-    invoke_http('https://api.telegram.org/bot1771827825:AAHVkbX5b9YpUWE78cTcBjz0SwkHqhrPbFA/sendMessage?chat_id=230470702&text=' + customer_message, method='GET')
+    invoke_http('https://api.telegram.org/bot1672787508:AAF_XDgmu6-xl0YWsrFzTL4i6Jw5fBNymqo/sendMessage?chat_id=' + customer_tele_chat_ID + '&text=' + customer_message, method='GET')
 
 
 if __name__ == "__main__":  # execute this program only if it is run as a script (not by 'import')

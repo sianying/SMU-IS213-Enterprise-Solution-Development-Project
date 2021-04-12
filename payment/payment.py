@@ -10,7 +10,7 @@ from flask_cors import CORS
 stripe.api_key = 'sk_test_51IX1pfEh2v7rRS8AcPlo5xnom5URyB0pGOpVahhgBjIUWLThrnp864myMWWOj4Hbr6hxVJaDBiRI657dnwFOshmS008gjCP4fb'
 
 HOST = "0.0.0.0"
-PORT = 5003
+PORT = 4242
 
 app = Flask(__name__)
 CORS(app)

@@ -96,7 +96,7 @@
             <nav>
                 <ul class="nav__links">
                     <li><a href="customer/customer_home.html">Home</a></li>
-                    <li><a href="view_delivery.html">View Deliveries</a></li>
+                    <li><a href="./customer_view_delivery_details.html">View Deliveries</a></li>
                     <li><a href="customer/delivery_order.html">Add New Delivery</a></li>
                     <li><a href="customer/profile.html">Profile</a></li>
                 </ul>
@@ -164,7 +164,7 @@
         <script>
             var session = JSON.parse(sessionStorage.getItem("account_details"));
             var customer_ID = session.customer_ID;
-            var get_details_url = "http://localhost:5102/customer_view_details/" + customer_ID;
+            var get_details_url = "http://127.0.0.1:5102/customer_view_details/" + customer_ID;
             var app = new Vue({
                 el: "#app",
                 data:{
@@ -183,12 +183,12 @@
                                 console.log(response);
                                 // console.log("hello")
                                 console.log(data);
-                                // if (data.code === 404) {
-                                //     // no book in db
-                                //     this.message = data.message;
-                                // } else {
-                                //     this.books = data.data.books;
-                                // }
+                                if (data.code === 404) {
+                                    // no book in db
+                                    this.error = data.message;
+                                } else {
+                                    this.books = data.data.books;
+                                }
                                 if (data.code == 202){
                                     this.hasDeliveries = true
                                     this.deliveries = data.data.customer_view_details

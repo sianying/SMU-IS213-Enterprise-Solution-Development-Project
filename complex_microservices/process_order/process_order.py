@@ -32,8 +32,10 @@ CORS(app)
 # and Driver subscriber MS (to inform of new Job)
 ##############################################################################################################
 
-payment_URL = environ.get('paymentURL') or "http://127.0.0.1:5003/checkout_session"
+payment_URL = environ.get('paymentURL') or "http://127.0.0.1:4242/checkout_session"
 delivery_URL = environ.get('deliveryURL') or "http://127.0.0.1:5000/delivery"
+driver_URL = environ.get('driverURL') or "http://127.0.0.1:5001/driver"
+customer_URL = environ.get('customerURL') or "http://127.0.0.1:5002/customer"
 schedule_URL = environ.get('scheduleURL') or "http://127.0.0.1:5004/schedule"
 schedule_driver_URL = environ.get('ScheduleDriverURL') or "http://127.0.0.1:5104/schedule_driver"
 
@@ -120,7 +122,7 @@ def processOrderCreation(session_id, delivery_data, customer_ID):
 
     print('\n-----Invoking schedule_driver microservice-----')
     selected_driver = invoke_http(schedule_driver_URL + "/" + str(date) + "/" + str(time), method='GET')
-    # print('Selected_driver: ' + str(selected_driver) + "\n")
+    print('Selected_driver: ' + str(selected_driver) + "\n")
 
     # check the schedule_driver results: if failure send to error microservice for logging
     code = selected_driver['code']
@@ -162,28 +164,6 @@ def processOrderCreation(session_id, delivery_data, customer_ID):
         message=json.dumps(error_message)
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="schedule.error", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2))
-    
-    #7. Invoke the Driver Microservice to get the details of the allocated driver
-    # print('\n-----Invoking Driver Microservice-----')
-    # driver_data = invoke_http(driver_URL + "/" + str(selected_driver_ID))
-    # print("Updated Driver's schedule"+ str(driver_data) + "\n")
-
-    # #check the driver's data: if failure send to error microservice for logging
-    # code = driver_schedule_updated['code']
-    # if code not in range(200, 300):
-    #     #send over to error microservice for logging
-    #     return
-    
-    #8. Invoke the Customer Microservice to get the details of the customer
-    # print('\n-----Invoking Customer Microservice-----')
-    # customer_data = invoke_http(customer_URL + "/" + customer_ID)
-    # print("Customer's information: "+ str(customer_data) + "\n")
-
-    # #check the customer's data: if failure send to error microservice for logging
-    # code = customer_data['code']
-    # if code not in range(200, 300):
-    #     #send over to error microservice for logging
-    #     return
 
     #9. Invoke Delivery Microservice to create new Delivery order using POST
     #create the POST data
@@ -224,9 +204,53 @@ def processOrderCreation(session_id, delivery_data, customer_ID):
 
 
 def send_notification(order):
+    print(order)
+    driver_ID = order['data']['driver_ID']
+    customer_ID = order['data']['customer_ID']
+    delivery_ID = order['data']['delivery_ID']
+
+    #1. Invoke the Driver Microservice to get the chat ID of the allocated driver
+    print('\n-----Invoking Driver Microservice-----')
+    driver_data = invoke_http(driver_URL + "/" + str(driver_ID))
+    # print("Updated Driver's schedule"+ str(driver_data) + "\n")
+
+    # #check the driver's data: if failure send to error microservice for logging
+    code = driver_data['code']
+    if code not in range(200, 300):
+        error_message = {
+            "code": 501,
+            "data": {"driver_data": driver_data},
+            "message": "Failed to retrieve Driver from Driver Microservice (GET), sent for error handling."
+        }
+        print('\n\n-----Publishing the (driver error) message with routing_key=driver.error-----')
+        message=json.dumps(error_message)
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="driver.error", 
+            body=message, properties=pika.BasicProperties(delivery_mode = 2))
+    
+    #2. Invoke the Customer Microservice to get the chat ID of the customer
+    print('\n-----Invoking Customer Microservice-----')
+    customer_data = invoke_http(customer_URL + "/" + str(customer_ID))
+    # print("Customer's information: "+ str(customer_data) + "\n")
+
+    # #check the customer's data: if failure send to error microservice for logging
+    code = customer_data['code']
+    if code not in range(200, 300):
+        error_message = {
+            "code": 501,
+            "data": {"customer_data": customer_data},
+            "message": "Failed to retrieve Customer from Customer Microservice (GET), sent for error handling."
+        }
+        print('\n\n-----Publishing the (driver error) message with routing_key=customer.error-----')
+        message=json.dumps(error_message)
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="customer.error", 
+            body=message, properties=pika.BasicProperties(delivery_mode = 2))
+
     #invoke the notification AMQP to inform customer of new delivery order
     # print('\n\n-----Invoking customer_notification microservice-----')
-    delivery_ID = order['data']['delivery_ID']
+
+    driver_tele_chat_ID = driver_data['data']['tele_chat_ID']
+    customer_tele_chat_ID = customer_data['data']['tele_chat_ID']
+
     receiver_name = order['data']['receiver_name']
     created = order['data']['created']
 
@@ -235,7 +259,9 @@ def send_notification(order):
 
     messages = json.dumps({
             "customer_message": customer_message,
-            "driver_message": driver_message          
+            "customer_tele_chat_ID": customer_tele_chat_ID,
+            "driver_message": driver_message,
+            "driver_tele_chat_ID": driver_tele_chat_ID
     })
 
     print('\n\n-----Publishing the (customer) message with routing_key=customer.order-----')

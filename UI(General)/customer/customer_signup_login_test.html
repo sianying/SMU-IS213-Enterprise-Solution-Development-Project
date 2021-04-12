@@ -268,7 +268,7 @@
                                 <div class="g-recaptcha" style="margin-top: 10%;" data-sitekey="6Lf2x-IZAAAAALMzDGQ3989jbM0-iRozvWHqGvb9"></div>
                                 <br/>
                                 <div id = 'errorLI'></div>
-                                <button type = 'button' id='login-button' class="form-btn text-center" style="margin-left: 20%;" onclick='logInValidate()'>Log In</button>
+                                <button type = 'button' id='login-button' class="form-btn text-center" href="./delivery_order.html" style ="margin-left: 20%;" onclick='logInValidate()'>Log In</button>
                                 </form>
                             </div>
                         </div>
@@ -289,36 +289,36 @@
     </div>
     <script>
 
-    // function signUpValidate(){
-        // document.getElementById("errorSU").innerHTML = '';
-        // var fullnameSU = document.getElementById("fullnameSU").value;
-        // var usernameSU = document.getElementById("UsernameSU").value;
-        // var emailSU = document.getElementById("emailSU").value;
-        // var passwordSU = document.getElementById("passwordSU").value;
-        // var teleSU = document.getElementById('teleSU').value;
-        // var contactSU = document.getElementById('contactSU').value;
-        // var confirmpasswordSU = document.getElementById('confirmpasswordSU').value;
-        // var errors = [];
+    function signUpValidate(){
+        document.getElementById("errorSU").innerHTML = '';
+        var fullnameSU = document.getElementById("fullnameSU").value;
+        var usernameSU = document.getElementById("UsernameSU").value;
+        var emailSU = document.getElementById("emailSU").value;
+        var passwordSU = document.getElementById("passwordSU").value;
+        var teleSU = document.getElementById('teleSU').value;
+        var contactSU = document.getElementById('contactSU').value;
+        var confirmpasswordSU = document.getElementById('confirmpasswordSU').value;
+        var errors = [];
 
-        //     if (fullnameSU === "" || usernameSU === "" || emailSU === "" || passwordSU === "" || teleSU === '' || contactSU === ''){
-        //         event.preventDefault();
-        //         errors.push('None of your fields can be empty.');
-        //     };
+            if (fullnameSU === "" || usernameSU === "" || emailSU === "" || passwordSU === "" || teleSU === '' || contactSU === ''){
+                event.preventDefault();
+                errors.push('None of your fields can be empty.');
+            };
 
-        //     if (!emailSU.includes('@') || !emailSU.includes('.com')){
-        //         event.preventDefault();
-        //         errors.push('Please enter a valid email.');
-        //     };
+            if (!emailSU.includes('@') || !emailSU.includes('.com')){
+                event.preventDefault();
+                errors.push('Please enter a valid email.');
+            };
 
-        //     if (passwordSU !== confirmpasswordSU){
-        //         event.preventDefault();
-        //         errors.push('Password and confirm password does not match.');
-        //     };
+            if (passwordSU !== confirmpasswordSU){
+                event.preventDefault();
+                errors.push('Password and confirm password does not match.');
+            };
 
-        //     for (error of errors){
-        //         document.getElementById("errorSU").innerHTML += `<p style = 'margin: 2px; font-size: 10px; color:red; text-align:center;'>${error}</p>`;
-        //     }
-        // };
+            for (error of errors){
+                document.getElementById("errorSU").innerHTML += `<p style = 'margin: 2px; font-size: 10px; color:red; text-align:center;'>${error}</p>`;
+            }
+        };
 
     function logInValidate(){
         var username = document.getElementById("usernameLI").value;
@@ -398,7 +398,6 @@
             else{
                 var message = "Verification not completed or verification failed."
                 console.log(message);
-                document.getElementById("errorLI").innerHTML = "<p style = 'margin: 2px; font-size: 15px; color:red;text-align:center;'>"+ message + "</p>";
                 return message
             }
         })
@@ -412,96 +411,60 @@
     // var validate = signUpValidate();
     // if (validate == false):
     //     return "Login not validated!"
-        document.getElementById("errorSU").innerHTML = '';
-        var fullnameSU = document.getElementById("fullnameSU").value;
-        var usernameSU = document.getElementById("UsernameSU").value;
-        var emailSU = document.getElementById("emailSU").value;
-        var passwordSU = document.getElementById("passwordSU").value;
-        var teleSU = document.getElementById('teleSU').value;
-        var contactSU = document.getElementById('contactSU').value;
-        var confirmpasswordSU = document.getElementById('confirmpasswordSU').value;
-        var account_type = "customer";
-        var errors = [];    
+        var username = $("#UsernameSU").val();
+        var name = $("#fullnameSU").val();
+        var email = $("#emailSU").val();
+        var password = $("#passwordSU").val();
+        var teleID = $("#teleSU").val();
+        var mobile = $("#contactSU").val();
+        var account_type = "customer"
 
-            if (fullnameSU === "" || usernameSU === "" || emailSU === "" || passwordSU === "" || teleSU === '' || contactSU === ''){
-                event.preventDefault();
-                errors.push('None of your fields can be empty.');
-            };
-
-            if (!emailSU.includes('@') || !emailSU.includes('.com')){
-                event.preventDefault();
-                errors.push('Please enter a valid email.');
-            };
-
-            if (passwordSU !== confirmpasswordSU){
-                event.preventDefault();
-                errors.push('Password and confirm password does not match.');
-            };
-
-            for (error of errors){
-                document.getElementById("errorSU").innerHTML += `<p style = 'margin: 2px; font-size: 10px; color:red; text-align:center;'>${error}</p>`;
-            }
-        // var username = $("#UsernameSU").val();
-        // var name = $("#fullnameSU").val();
-        // var email = $("#emailSU").val();
-        // var password = $("#passwordSU").val();
-        // var teleID = $("#teleSU").val();
-        // var mobile = $("#contactSU").val();
-        
         // console.log(account_type);
-        if(errors.length == 0){
-            serviceURL = "http://localhost:5105/register_user/" + usernameSU;
-            fetch(serviceURL, {
+        serviceURL = "http://localhost:5105/register_user/" + username;
+
+        fetch(serviceURL, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                "password": passwordSU,
-                "name": fullnameSU,
-                "email": emailSU,
-                "teleID": teleSU,
-                "mobile": contactSU,
+                "password": password,
+                "name": name,
+                "email": email,
+                "teleID": teleID,
+                "mobile": mobile,
                 "account_type": "customer"
             })
-            })
-            .then(function (response) {
-                data = response.json();
-                console.log(data);
-                return data
-                // return response.json();
-            })
-            .then(function (result) {
-                console.log(result)
-                if (result.code == 201){
-                    json = JSON.stringify({
-                        "username": result.data.username,
-                        "customer_ID": result.data.customer_ID,
-                        "account_type": "customer"
-                        });
-                    console.log(result);
-                    sessionStorage.setItem("account_details", json);
-                    // location.replace("../customer/delivery_order.html");
-                    alert("You have successfully registered, please click 'ok' to register with our bot to receive updates.")
-                    // window.open("http://t.me/Testing_jww_bot", "_blank");
-                    location.replace("../customer/delivery_order.html");
-                }
-                else{
-                    var message = "Verification not completed or verification failed."
-                    console.log(message);
-                    $("#errorSU").html(`<p style = 'margin: 2px; font-size: 10px; color:red;'>
-                                            The username is taken or the account exists
-                                        </p>`);
-                    return message
-                }
-            })
-            .catch(function (error) {
-                console.log("Error:", error);
-            });
+        })
+        .then(function (response) {
+            data = response.json();
+            console.log(data);
+            return data
+            // return response.json();
+        })
+        .then(function (result) {
+            if (result.code == 201){
+                json = JSON.stringify({
+                    "username": result.data.username,
+                    "customer_ID": result.data.customer_ID,
+                    "account_type": "customer"
+                    });
+                console.log(json);
+                sessionStorage.setItem("account_details", json);
+                location.replace("../customer/delivery_order.html");
             }
-            
-
-        
+            else{
+                var message = "Verification not completed or verification failed."
+                console.log(message);
+                $("#errorSU").html(`<p style = 'margin: 2px; font-size: 10px; color:red;'>
+                                        The username is taken or the account exists
+                                    </p>`);
+                return message
+            }
+        })
+        .catch(function (error) {
+            console.log("Error:", error);
+        });
 
     });
 

@@ -22,6 +22,7 @@ CORS(app)
 
 deliveryURL=environ.get('deliveryURL') or 'http://127.0.0.1:5000/delivery'
 driverURL= environ.get('driverURL') or 'http://127.0.0.1:5001/driver'
+customerURL= environ.get('customerURL') or 'http://127.0.0.1:5002/customer'
 
 # deliveryURL=environ.get('deliveryURL')
 # driverURL= environ.get('driverURL')
@@ -80,6 +81,7 @@ def update_delivery_status(delivery, delivery_ID):
             "message": "Failed to retrieve delivery data, sent for error handling."
         }
 
+
     # 5. invoke the driver microservice
     #driver_result = invoke_http("http://localhost:5001/driver" + '/' + str(delivery_result['data']['driver_ID']), method='GET')
     driver_result = invoke_http(driverURL + '/' + str(delivery_result['data']['driver_ID']), method='GET')
@@ -101,16 +103,35 @@ def update_delivery_status(delivery, delivery_ID):
             "message": "Failed to retrieve driver data, sent for error handling."
         }
 
-    delivery_driver = driver_result['data']['driver_name']   
-    # print(delivery_driver)
+    delivery_driver = driver_result['data']['driver_name'] 
+    driver_tele_chat_ID = driver_result['data']['tele_chat_ID']
 
+    customer_ID = delivery_result['data']['customer_ID']
+    #7. Invoke customer to retrieve the customer tele_chat_ID
+    customer_data = invoke_http(customerURL + "/" + str(customer_ID), method='GET')
+    if code not in range(200, 300):
+        print('\n\n-----Publishing the (customer error) message with routing_key=DriverCompleteDelivery.customer.error-----')
+        message=json.dumps(delivery_result)
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="DriverCompleteDelivery.customer.error", 
+            body=message, properties=pika.BasicProperties(delivery_mode = 2))
+
+        print("\nDelivery MS call status ({:d}) published to the RabbitMQ Exchange:".format(code), customer_data)
+
+        return {
+            "code": 502,
+            "data": {"customer_data": customer_data},
+            "message": "Failed to retrieve customer data, sent for error handling."
+        }
+    customer_tele_chat_ID = customer_data['data']['tele_chat_ID']
 
     #6. Invoke Customer Notification AMQP
     customer_and_driver_msg = "Delivery Completed! \n\n" + "Delivery Order ID: " + str(delivery_result['data']['delivery_ID']) + " was delivered by " + str(delivery_driver) + " to " + str(delivery_result['data']['receiver_name']) + " on " + str(delivery_result['data']['last_updated'])
 
     messages = json.dumps({
-            "customer_message": customer_and_driver_msg,        
-            "driver_message": customer_and_driver_msg      
+            "customer_message": customer_and_driver_msg,
+            "customer_tele_chat_ID": customer_tele_chat_ID,
+            "driver_message": customer_and_driver_msg,
+            "driver_tele_chat_ID": driver_tele_chat_ID 
         })
 
     print('\n\n-----Publishing the (customer) message with routing_key=customer.order-----')

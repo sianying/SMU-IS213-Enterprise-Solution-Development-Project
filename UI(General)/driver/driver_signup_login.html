@@ -451,9 +451,13 @@
                     "driver_ID": result.data.driver_ID,
                     "account_type": "driver"
                     });
-                console.log(json);
+                console.log(json);  
                 sessionStorage.setItem("account_details", json);
-                location.replace("./driver_home.html");
+                // location.replace("./driver_home.html");
+                // alert("You have successfully registered, please click this" + "<a href='t.me/Testing_jww_bot'> link </a> to register as a driver!")
+                alert("You have successfully registered, please click 'ok' to register with our bot to receive updates.")
+                    // window.open("http://t.me/Testing_jww_bot", "_blank");
+                location.replace("../driver/driver_home.html");
             }
             else{
                 var message = "Verification not completed or verification failed."

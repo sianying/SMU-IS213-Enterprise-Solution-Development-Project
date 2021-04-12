@@ -25,15 +25,15 @@
 from flask import Flask, request
 from flask_cors import CORS
 import telegram
-# from telebot.credentials import TOKEN, USERNAME, URL
+from credentials import TOKEN, USERNAME, URL
 # from telebot.mastermind import get_response
 
 HOST = "0.0.0.0"
 PORT = 5006
 
-TOKEN = "1672787508:AAF_XDgmu6-xl0YWsrFzTL4i6Jw5fBNymqo"
-USERNAME = "Testing_jww_bot"
-URL = "https://api.telegram.org/bot{}/".format(TOKEN)
+# TOKEN = "1672787508:AAF_XDgmu6-xl0YWsrFzTL4i6Jw5fBNymqo"
+# USERNAME = "Testing_jww_bot"
+# URL = "https://api.telegram.org/bot{}/".format(TOKEN)
 
 global bot
 bot = telegram.Bot(token=TOKEN)

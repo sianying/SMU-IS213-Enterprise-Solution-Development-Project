@@ -38,7 +38,7 @@
         <nav>
             <ul class="nav__links">
                 <li><a href="../customer/customer_home.html">Home</a></li>
-                <li><a href="../view_delivery.html">View Deliveries</a></li>
+                <li><a href="../customer_view_delivery_details.html">View Deliveries</a></li>
                 <li><a href="delivery_order.html">Add New Delivery</a></li>
                 <li><a href="../customer/profile.html">Profile</a></li>
             </ul>
@@ -170,7 +170,7 @@
                                 <!-- <div class="input-group-prepend">
                                     <span class="input-group-text" id="destination">Address Line</span>
                                 </div> -->
-                                <input type="date" class="form-control" @change = "checkSchedule" id="date" placeholder="" value="">
+                                <input type="date" class="form-control" @change = "checkSchedule" id="date" min='2021-04-17' value='2021-04-17' max='2021-04-30' placeholder="" value="">
                             </div>
                         </div> 
                     </div> 
@@ -353,8 +353,20 @@
                     // var deliveryItem = $("#deliveryItem").val();
                     // var size = $("#size").val();
                     // var weight = $("#weight").val();
-
-                    fetch("http://localhost:5003/create-checkout-session", {
+                    json = JSON.stringify({
+                        "delivery_item": deliveryItem,
+                        "description": description,
+                        "pickup": pickup,
+                        "pickupPostalCode": pickupPostalCode,
+                        "destination": destination,
+                        "destinationPostalCode": destinationPostalCode,
+                        "receiver_name": receiver_name,
+                        "date": date,
+                        "time": time
+                    });
+                    console.log(json);
+                    sessionStorage.setItem("delivery_data", json);
+                    fetch("http://localhost:4242/create-checkout-session", {
                         method: "POST",
                         headers: {
                             'Content-Type': 'application/json',
@@ -398,30 +410,30 @@
                 }
 
         })
-    $("#checkout-button").click(function() {
-        var deliveryItem = $("#deliveryItem").val();
-        var description = $("#description").val();
-        var pickup = $("#pickup").val();
-        var pickupPostalCode = $("#pickupPostalCode").val();
-        var destination = $("#destination").val();
-        var destinationPostalCode = $("#destinationPostalCode").val();
-        var receiver_name = $("#receiver_name").val();
-        var date = $("#date").val();
-        var time = $("#time").val();
-        json = JSON.stringify({
-            "delivery_item": deliveryItem,
-            "description": description,
-            "pickup": pickup,
-            "pickupPostalCode": pickupPostalCode,
-            "destination": destination,
-            "destinationPostalCode": destinationPostalCode,
-            "receiver_name": receiver_name,
-            "date": date,
-            "time": time
-        });
-        console.log(json);
-        sessionStorage.setItem("delivery_data", json);
-    });
+    // $("#checkout-button").click(function() {
+    //     var deliveryItem = $("#deliveryItem").val();
+    //     var description = $("#description").val();
+    //     var pickup = $("#pickup").val();
+    //     var pickupPostalCode = $("#pickupPostalCode").val();
+    //     var destination = $("#destination").val();
+    //     var destinationPostalCode = $("#destinationPostalCode").val();
+    //     var receiver_name = $("#receiver_name").val();
+    //     var date = $("#date").val();
+    //     var time = $("#time").val();
+    //     json = JSON.stringify({
+    //         "delivery_item": deliveryItem,
+    //         "description": description,
+    //         "pickup": pickup,
+    //         "pickupPostalCode": pickupPostalCode,
+    //         "destination": destination,
+    //         "destinationPostalCode": destinationPostalCode,
+    //         "receiver_name": receiver_name,
+    //         "date": date,
+    //         "time": time
+    //     });
+    //     console.log(json);
+    //     sessionStorage.setItem("delivery_data", json);
+    // });
 
     
     

@@ -27,14 +27,17 @@ class Driver(db.Model):
     driver_mobile = db.Column(db.Integer, nullable=False)
     driver_teleID = db.Column(db.String(20), nullable=True)
     vehicle_no = db.Column(db.String(8), nullable=False)
+    tele_chat_ID = db.Column(db.String(15), nullable=True)
 
-    def __init__(self, driver_ID, driver_name, driver_email, driver_mobile, driver_teleID, vehicle_no):
+    def __init__(self, driver_ID, driver_name, driver_email, driver_mobile, driver_teleID, vehicle_no, tele_chat_ID):
         self.driver_ID = driver_ID
         self.driver_name = driver_name
         self.driver_email = driver_email
         self.driver_mobile = driver_mobile
         self.driver_teleID = driver_teleID
         self.vehicle_no = vehicle_no
+        self.tele_chat_ID = tele_chat_ID
+
 
     def json(self):
         return {
@@ -43,7 +46,8 @@ class Driver(db.Model):
             "driver_email": self.driver_email, 
             "driver_mobile": self.driver_mobile, 
             "driver_teleID": self.driver_teleID, 
-            "vehicle_no": self.vehicle_no
+            "vehicle_no": self.vehicle_no,
+            "tele_chat_ID": self.tele_chat_ID
         }
 
 #return all drivers
@@ -200,11 +204,13 @@ def update_driver(driver_ID):
         # old_driver.DTeleID = new_driver.DTeleID
         # old_driver.vehicle_no = new_driver.vehicle_no
 
+        #cannot amend the chat ID
         old_driver.DName = new_driver['DName']
         old_driver.DEmail = new_driver['DEmail']
         old_driver.DMobile = new_driver['DMobile']
         old_driver.DTeleID = new_driver['DTeleID']
         old_driver.vehicle_no = new_driver['vehicle_no']
+        # old_driver.tele_chat_ID = new_driver['tele_chat_ID']
         db.session.commit()
 
     except:

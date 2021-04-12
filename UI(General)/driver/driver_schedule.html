@@ -179,7 +179,7 @@
                   title = deli.destination;
                   description = 'To: ' + deli.pickup_location + ' From: ' + deli.destination;
                   // console.log(description)
-                  url = '../driver/schedule2.html?delivery_ID=' + String(deli.delivery_ID);
+                  url = '../driver/driver_view_delivery_details.html?delivery_ID=' + String(deli.delivery_ID);
                   timing = deli.timeslot.split("_");
                   for (timeslots in timing){
                     if (timing[0] == '8'){

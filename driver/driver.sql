@@ -38,28 +38,20 @@ CREATE TABLE IF NOT EXISTS `driver` (
   `driver_mobile` int(8) NOT NULL,
   `driver_teleID` varchar(20) DEFAULT NULL,
   `vehicle_no` varchar(8) NOT NULL,
+  `tele_chat_ID` varchar(15) DEFAULT NULL,
   PRIMARY KEY (`driver_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `driver
 
-INSERT INTO `driver` (`driver_ID`, `driver_name`, `driver_email`, `driver_mobile`, `driver_teleID`, `vehicle_no`) VALUES
-(23, 'Tom Smith ', 'tomsmith@hotmail.com', 98765432, 'TS', 'SJD1234A'),
-(17, 'SSL Monster', 'sslmonster@hotmail.com', 12345678, 'SSLM', 'SJW1234F'),
-(54, 'Hong Seng', 'hs@hotmail.com', 10293847, 'nobluetooth', 'SBS1234A'),
-(66, 'Yew Teng', 'yt@hotmail.com', 10000000, 'bestman', 'SBS5678A');
--- ('Understanding People', '9781349471231', '99.40', 25),
--- ('Happy in Workplace', '9781434474234', '94.00', 1),
--- ('PHP Soup', '9781442374221', '20.50', 2),
--- ('Brief History of Time', '9781449474211', '20.00', 23),
--- ('It', '9781449474212', '1.00', 2),
--- ('Founder of Php', '9781449474221', '34.00', 1),
--- ('Albert Enstein\'s Works', '9781449474223', '18.00', 7),
--- ('Interstellar', '9781449474254', '10.00', 4),
--- ('Milk and Honey', '9781449474256', '25.00', 18),
--- ('Cooking Book', '9781449474323', '99.90', 4),
--- ('The Gathering', '9781449474342', '20.00', 50);
+INSERT INTO `driver` (`driver_ID`, `driver_name`, `driver_email`, `driver_mobile`, `driver_teleID`, `vehicle_no`, `tele_chat_ID`) VALUES
+(6, 'Don', 'don@hotmail.com', 98765432, 'dontan', 'SJD1234A', "NULL"),
+(7, 'Sandy', 'sandy@hotmail.com', 82345678, 'sandy', 'SJW1234F', "NULL"),
+(8, 'Tom Smith', 'tomsmith@hotmail.com', 90293847, 'tommy', 'SBS1234A', "NULL"),
+(9, 'Ubuntu', 'ubuntu@hotmail.com', 87246785, 'ubuntu', 'SBS5678A', "NULL"),
+(10, 'yewteng', 'yewteng@hotmail.com', 90124289, 'YewTeng', 'SBS5678Y', 70827542);
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

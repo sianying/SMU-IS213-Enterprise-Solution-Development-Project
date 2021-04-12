@@ -27,13 +27,15 @@ class Customer(db.Model):
     customer_email = db.Column(db.String(128), nullable=False)
     customer_mobile = db.Column(db.Integer, nullable=False)
     customer_teleID = db.Column(db.String(20), nullable=True)
+    tele_chat_ID = db.Column(db.String(15), nullable=True)
 
-    def __init__(self, customer_ID, customer_name, customer_email, customer_mobile, customer_teleID):
+    def __init__(self, customer_ID, customer_name, customer_email, customer_mobile, customer_teleID, tele_chat_ID):
         self.customer_ID = customer_ID
         self.customer_name = customer_name
         self.customer_email = customer_email
         self.customer_mobile = customer_mobile
         self.customer_teleID = customer_teleID
+        self.tele_chat_ID = tele_chat_ID
 
     def json(self):
         return {
@@ -41,8 +43,10 @@ class Customer(db.Model):
             "customer_name": self.customer_name, 
             "customer_email": self.customer_email, 
             "customer_mobile": self.customer_mobile, 
-            "customer_teleID": self.customer_teleID
+            "customer_teleID": self.customer_teleID,
+            "tele_chat_ID": self.tele_chat_ID
         }
+        
 
 #return all customers
 @app.route("/customer")
@@ -194,10 +198,12 @@ def update_customer(customer_ID):
         # for key in key_list:
         #     old_customer[key] = new_customer[key]
 
+        #cannot amend the chat ID
         old_customer.customer_name = new_customer.customer_name
         old_customer.customer_email = new_customer.customer_email
         old_customer.customer_mobile = new_customer.customer_mobile
         old_customer.customer_teleID = new_customer.customer_teleID
+        # old_customer.tele_chat_ID = new_customer.tele_chat_ID
         db.session.commit()
     except:
         return jsonify(
