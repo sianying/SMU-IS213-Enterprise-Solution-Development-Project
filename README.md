@@ -4,3 +4,7 @@ Our simple microservices are tied to their respective databases on an external A
 
 Since we are using free tier for RDS, there are limitations in storage space. As such, we only created schedules in the month of April 2021 to avoid taking up too much storage space.
 
+Have to replace the success html in payment.py to the success html file which can be found in the payment folder as we are using absolute link as Stripe requires absolute link to be used.
+
+To test the telegram notification, sign up as a customer/driver using our bot.
+
