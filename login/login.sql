@@ -43,16 +43,18 @@ CREATE TABLE IF NOT EXISTS `login` (
 --
 -- Dumping data for table `customer
 
-INSERT INTO `login` (`username`, `password`, `account_type`, `customer_ID`, `driver_ID`) VALUES
-('jwjw', 'password', 'customer', 12312312, null),
-('sysy', 'password123', 'customer', 23456789, null),
-('liyin', 'liyin', 'customer', 11112222, null),
-('SSLMonsta', 'security', 'driver', null, 17),
-('tomsmith80', 'password', 'driver', null, 23),
-('hongsengcurryrice', 'curryrice', 'driver', null, 54),
-('yewteng', 'bestman', 'driver', null, 66);
+-- INSERT INTO `login` (`username`, `password`, `account_type`, `customer_ID`, `driver_ID`) VALUES
+-- ('jwjw', 'password', 'customer', 12312312, null),
+-- ('sysy', 'password123', 'customer', 23456789, null),
+-- ('liyin', 'liyin', 'customer', 11112222, null),
+-- ('SSLMonsta', 'security', 'driver', null, 17),
+-- ('tomsmith80', 'password', 'driver', null, 23),
+-- ('hongsengcurryrice', 'curryrice', 'driver', null, 54),
+-- ('yewteng', 'bestman', 'driver', null, 66);
 
-COMMIT;
+-- COMMIT;
+
+select * from login;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
