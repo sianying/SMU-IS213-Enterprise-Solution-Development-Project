@@ -305,6 +305,45 @@ def update_schedule(SID):
     ), 202
 
 
+# 8. create schedules for an entire month, for the driver that was newly added
+@app.route("/schedule/new_driver/<int:driver_ID>", methods=['POST'])
+def add_schedules_for_month(driver_ID):
+    year_and_month='2021-04-'
+    schedule = Schedule.query.order_by(Schedule.SID.desc()).first()
+    SID= schedule.SID + 1
+    data=request.get_json()
+
+    schedule_list=[]
+
+    for i in range (17,31):
+        current_date=str(i)    #date of submission: 17 April, can pick until 30 April
+        delivery_date = year_and_month + current_date
+        schedule= Schedule(SID, driver_ID, delivery_date, **data)
+
+        try:
+            db.session.add(schedule)
+            db.session.commit()
+            schedule_list.append(schedule)
+            SID+=1
+
+        except:
+            return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "SID": SID
+                },
+                "message": "An error occurred creating the schedule."
+            }
+        ), 500
+    
+    return jsonify(
+        {
+            "code": 201,
+            'data': [schedule.json() for schedule in schedule_list]
+        }
+    ), 201
+
 if __name__ =='__main__':
     app.run(host=HOST, port=PORT, debug=True)
     print(f'App running on {HOST}:{PORT}')
