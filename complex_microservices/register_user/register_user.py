@@ -121,7 +121,8 @@ def registerCustomer(data):
         "customer_name": data['name'],
         "customer_email": data['email'], 
         "customer_mobile": data['mobile'], 
-        "customer_teleID": data['teleID']
+        "customer_teleID": data['teleID'],
+        "tele_chat_ID": "NULL"
     }
     # print(customer_data)
     # print(type(customer_data))
@@ -155,7 +156,8 @@ def registerDriver(data):
         "driver_email": data['email'], 
         "driver_mobile": data['mobile'], 
         "driver_teleID": data['teleID'],
-        "vehicle_no": data['vehicle_no']
+        "vehicle_no": data['vehicle_no'],
+        "tele_chat_ID": "NULL"
     }
     # Invoke the driver Microservice (/driver)
     print('\n-----Invoking Driver microservice-----')

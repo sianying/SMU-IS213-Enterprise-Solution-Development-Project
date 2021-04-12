@@ -96,7 +96,7 @@
         <nav>
             <ul class="nav__links">
                 <li><a href="customer/customer_home.html">Home</a></li>
-                <li><a href="../view_delivery.html">View Deliveries</a></li>
+                <li><a href="../customer_view_delivery_details.html">View Deliveries</a></li>
                 <li><a href="customer/delivery_order.html">Add New Delivery</a></li>
                 <li><a href="customer/profile.html">Profile</a></li>
             </ul>
@@ -108,12 +108,12 @@
         <!-- <div class="alert alert-success" role="alert">
             The payment made was successful!
         </div> -->
-        <div id='app'>
-            <div class='container' v-if='!successfulPayment'>
+        <div>
+            <div class='container'>
                 <div class='row'>
                     <!-- <div class='col'></div> -->
                     <h3 v-if='error' style='color:#CEA68C; font-family: "Patua One", cursive;' class='col d-flex justify-content-center animate__animated animate__backInUp pt-4'>{{error}}</h3>
-                    <div v-else class='col'><h3 class='pt-3' style='color:#CEA68C; font-family: "Patua One", cursive;'>Thank you for choosing Cheetah Express. Please hold on while we process your order.</h3></div>
+                    <!-- <div v-else class='col'><h3 class='pt-3' style='color:#CEA68C; font-family: "Patua One", cursive;'>Thank you for choosing Cheetah Express. Please hold on while we process your order.</h3></div> -->
                     <!-- <div class='col'></div> -->
                 </div>
 
@@ -138,29 +138,26 @@
                     <!-- <div class='col mx-auto'></div> -->
                 </div>
             </div>      
+        </div>
     </div>
 
 <script>
     // access sessionStorage to get the delivery data
-    delivery_data = JSON.parse(sessionStorage.getItem("delivery_data"));
-    // retrieve the Customer ID 
-    account_details = JSON.parse(sessionStorage.getItem("account_details"));
-    if (account_details.account_type == "customer"){
-        customer_ID = account_details.customer_ID;
-    }
-    else {
-        console.log("Delivery order failed to be created.")
-    }
+    // delivery_data = JSON.parse(sessionStorage.getItem("delivery_data"));
+    // // retrieve the Customer ID 
+    // account_details = JSON.parse(sessionStorage.getItem("account_details"));
+    // if (account_details.account_type == "customer"){
+    //     customer_ID = account_details.customer_ID;
+    // }
+    // else {
+    //     console.log("Delivery order failed to be created.")
+    // }
 
-    // retreives the session ID from the URL
-    let params = new URLSearchParams(location.search);
-    let session_id = params.get('session_id');
-    console.log(session_id);
 
     // var serviceURL = "http://localhost:4242/checkout_session/" + session_id;
     
     // processOrder as the serviceURL, temporary port: 5100
-    var serviceURL = "http://localhost:5100/process_order";
+    
     // console.log(serviceURL);
     var app = new Vue({
         el: '#app',
@@ -176,6 +173,25 @@
         
         methods:{
             placeOrder: function(){
+
+                // retreives the session ID from the URL
+                let params = new URLSearchParams(location.search);
+                let session_id = params.get('session_id');
+                console.log(session_id);
+
+                delivery_data = JSON.parse(sessionStorage.getItem("delivery_data"));
+                // retrieve the Customer ID 
+                account_details = JSON.parse(sessionStorage.getItem("account_details"));
+                // console.log(account_details)
+                if (account_details.account_type == "customer"){
+                    customer_ID = account_details.customer_ID;
+                }
+                else {
+                    console.log("Delivery order failed to be created.")
+                }
+
+
+                var serviceURL = "http://localhost:5100/process_order";
                 const details = {
                     method: "POST",
                     headers: {
@@ -195,10 +211,11 @@
                         console.log(data)
                         if(data.code >= 500){
                             this.error = "An error has occurred while processing your order. Please try again.";
-                            this.loading = false
+                            this.loading = false;
                             
                         } else {
                             this.successfulPayment = true;
+                            this.loading = false;
                         }
                             // console.log("hello")
                         

@@ -165,11 +165,12 @@ def retrieve_all_deliveries(customer_ID):
 
 def add_driver_details(delivery):
     driver_ID=delivery['driver_ID']
+    print(driver_ID)
 
     # 2. Invoke the driver microservice
     print('\n-----Invoking driver microservice-----')
     driver_result = invoke_http(driver_ID + "/" + str(driver_ID), method='GET')
-    print('driver_result:', driver_result)
+    # print('driver_result:', driver_result)
 
     # 3. Check the delivery result; if a failure, send it to the error microservice.
     code = driver_result["code"]
