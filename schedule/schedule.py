@@ -245,7 +245,7 @@ def delete_schedule(SID):
                 "data": {
                     "SID": SID
                 },
-                "message": "An error occurred creating the schedule."
+                "message": "An error occurred deleting the schedule."
             }
         ), 500
     
