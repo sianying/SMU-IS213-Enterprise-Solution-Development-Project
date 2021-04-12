@@ -232,6 +232,54 @@ def update_driver(driver_ID):
         }
     ), 202
 
+#update chat_ID using tele_ID
+#input data: driver_tele_ID in URL
+# {
+#     "tele_chat_ID": tele_chat_ID
+# }
+@app.route("/driver/<string:driver_teleID>", methods=['PUT'])
+def update_driver_chatID(driver_teleID):
+    driver = Driver.query.filter_by(driver_teleID=driver_teleID).first()
+    if not (driver):
+        return jsonify({
+                "code": 404,
+                "data": {
+                    "driver_teleID": driver_teleID
+                },
+                "message": "Driver does not exist."
+            }), 404
+
+    data = request.get_json()
+    #chat_ID is stored as varchar/string in db, hence, convert the incoming to str for comparison
+    input_tele_chat_ID = str(data['tele_chat_ID'])
+
+    if driver.tele_chat_ID == input_tele_chat_ID:
+        return jsonify({
+            "code": 400,
+                "data": {
+                    "driver_teleID": driver_teleID
+                },
+            "message": "Driver has already registered his chat_ID."
+        }), 400
+
+    try:
+        driver.tele_chat_ID = input_tele_chat_ID
+        db.session.commit()
+
+    except:
+        return jsonify({
+                "code": 500,
+                "data": {
+                    "driver_teleID": driver_teleID
+                },
+                "message": "An error occurred updating the driver."
+            }), 500
+    
+    return jsonify({
+            "code": 202,
+            'data': driver.json(),
+            "message": "Driver chat_ID has successfully been updated."
+        }), 202
 
 if __name__ =='__main__':
     print("This is flask " + os.path.basename(__file__) + " for Driver details...")

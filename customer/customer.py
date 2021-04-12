@@ -224,6 +224,54 @@ def update_customer(customer_ID):
         }
     ), 202
 
+#update chat_ID using tele_ID
+#input data: customer_tele_ID in URL
+# {
+#     "tele_chat_ID": tele_chat_ID
+# }
+@app.route("/customer/<string:customer_teleID>", methods=['PUT'])
+def update_customer_chatID(customer_teleID):
+    customer = Customer.query.filter_by(customer_teleID=customer_teleID).first()
+    if not (customer):
+        return jsonify({
+                "code": 404,
+                "data": {
+                    "customer_teleID": customer_teleID
+                },
+                "message": "Customer does not exist."
+            }), 404
+
+    data = request.get_json()
+    #chat_ID is stored as varchar/string in db, hence, convert the incoming to str for comparison
+    input_tele_chat_ID = str(data['tele_chat_ID'])
+
+    if customer.tele_chat_ID == input_tele_chat_ID:
+        return jsonify({
+            "code": 400,
+                "data": {
+                    "customer_teleID": customer_teleID
+                },
+            "message": "Customer has already registered his chat_ID."
+        }), 400
+
+    try:
+        customer.tele_chat_ID = input_tele_chat_ID
+        db.session.commit()
+
+    except:
+        return jsonify({
+                "code": 500,
+                "data": {
+                    "customer_teleID": customer_teleID
+                },
+                "message": "An error occurred updating the customer."
+            }), 500
+    
+    return jsonify({
+            "code": 202,
+            'data': customer.json(),
+            "message": "Customer chat_ID has successfully been updated."
+        }), 202
 
 if __name__ == '__main__':
     print("This is flask " + os.path.basename(__file__) + " for Customer details...")
