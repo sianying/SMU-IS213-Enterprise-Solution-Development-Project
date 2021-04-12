@@ -178,7 +178,7 @@
                         <div class="form-group ">
                             <label for="time">Schedule</label>
                             <select id="time" class="form-control">
-                                <option selected disabled hidden>Please select a timing</option>
+                                <option selected disabled>Please select a timing</option>
                                 <option selected v-if='!availableSchedules'>No available timings!</option>
                                 <option selected value='8_to_10' v-if='t_8_to_10'>8 am to 10 am</option>
                                 <option value='10_to_12' v-if='t_10_to_12'>10 am to 12pm</option>
@@ -190,7 +190,6 @@
                     </div> 
                 </div>
                 <div>
-                    <!-- {{ error }}  -->
                     <li style='color:red; list-style:none;' v-for='err in error'>{{err}}</li>
                 </div>
 
@@ -202,7 +201,6 @@
 
 
 <script>
-
 
     var app = new Vue({
         el: "#app",
@@ -218,10 +216,10 @@
         methods: {
             checkSchedule: function() {
             var date = $("#date").val();
-            var time = $('#time').val()
-            // var get_all_schedule = "http://localhost:5004/schedule/date/" + date + "/" + time;
+            var time = $('#time').val();
+
+            //getting all schedules on selected date
             var get_Schedule = "http://localhost:5004/schedule/date/" + date;
-            // console.log(date);
             const response =
                             // fetch(get_all_schedule)
                             fetch(get_Schedule)
@@ -230,10 +228,8 @@
                                     console.log(response);
                                     console.log(data);
                                     if (data.code === 404) {
-                                        // no book in db
+                                        // no available time slot for the day
                                         this.availableSchedules = false;
-                                        // console.log(this.error)
-                                        // console.log(data.message);
                                         this.t_8_to_10 = false;
                                         this.t_10_to_12 = false;
                                         this.t_12_to_2 = false;
@@ -241,18 +237,16 @@
                                         this.t_4_to_6 = false;
                                     }
                                     else {
+                                        // there are available time slots for day selected
                                         this.availableSchedules = true;
                                         data.data.schedules.forEach(element => {
-                                            // console.log(element);
                                             var count_t_8_to_10 = 0;
                                             var count_t_10_to_12 = 0;
                                             var count_t_12_to_2 = 0;
                                             var count_t_2_to_4 = 0;
                                             var count_t_4_to_6 = 0;
                                             for (const time in element){
-                                                // console.log(element[time])
                                                 if(time == "t_8_to_10" && element[time] === false){
-                                                    // console.log("hello")
                                                     count_t_8_to_10 += 1;
                                                 }
                                                 if(time == "t_10_to_12" && element[time] === false){
@@ -269,6 +263,7 @@
                                                 }
                                             }
 
+                                            // if available count for a time slot is > 0, we set the time slot as true
                                             if(count_t_8_to_10 > 0){
                                                 this.t_8_to_10 = true;
                                             }
@@ -289,7 +284,7 @@
                                 })
             },
             checkout: function(){
-                this.error = [];
+                this.error = []; // resetting the error array for each click on the checkout button
                 var deliveryItem = $("#deliveryItem").val();
                 var description = $("#description").val();
                 var size = $("#size").val();
@@ -302,6 +297,7 @@
                 var date = $("#date").val();
                 var time = $("#time").val();
 
+                //form validation for the delivery form
                 if(deliveryItem == ""){
                     this.error.push("Please enter a name for the item!");
                 }
@@ -341,12 +337,7 @@
                     this.error.push("Please select a day with available timings!");
                 }
                 
-                
                 var stripe = Stripe('pk_test_51IX1pfEh2v7rRS8AqOB3PG6BLj1qQh8g4V0oI5GLProGPMmJRG60qzCXGH0297oQKyRIblMPKhFPlQEshp993pBN00CvpCrI7z');
-    
-                
-                // var checkoutButton = document.getElementById("checkout-button");
-                // checkoutButton.addEventListener("click", function () {
 
                 if(this.error.length === 0){
                     // console.log(this.error)
@@ -366,6 +357,8 @@
                     });
                     console.log(json);
                     sessionStorage.setItem("delivery_data", json);
+
+                    //invoking payment microservice
                     fetch("http://localhost:4242/create-checkout-session", {
                         method: "POST",
                         headers: {
@@ -404,46 +397,12 @@
                         console.error("Error:", error);
                     });
                 }
-                
-                }
-
-                }
-
-        })
-    // $("#checkout-button").click(function() {
-    //     var deliveryItem = $("#deliveryItem").val();
-    //     var description = $("#description").val();
-    //     var pickup = $("#pickup").val();
-    //     var pickupPostalCode = $("#pickupPostalCode").val();
-    //     var destination = $("#destination").val();
-    //     var destinationPostalCode = $("#destinationPostalCode").val();
-    //     var receiver_name = $("#receiver_name").val();
-    //     var date = $("#date").val();
-    //     var time = $("#time").val();
-    //     json = JSON.stringify({
-    //         "delivery_item": deliveryItem,
-    //         "description": description,
-    //         "pickup": pickup,
-    //         "pickupPostalCode": pickupPostalCode,
-    //         "destination": destination,
-    //         "destinationPostalCode": destinationPostalCode,
-    //         "receiver_name": receiver_name,
-    //         "date": date,
-    //         "time": time
-    //     });
-    //     console.log(json);
-    //     sessionStorage.setItem("delivery_data", json);
-    // });
-
-    
-    
-
-    
-
+            }
+        }
+    });
 
 </script>
-
-
+    
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>

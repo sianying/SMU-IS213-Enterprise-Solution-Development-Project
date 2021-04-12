@@ -252,7 +252,7 @@
                                 <input type="text" name="email" id = 'emailSU' placeholder="Email"><i class="fa fa-envelope-o"></i></input>
                                 <input type="password" name="password" id='passwordSU' placeholder="Password"><i class="fa fa-lock"></i></input>
                                 <input type="password" name="confirmpassword" id='confirmpasswordSU' placeholder="Confirm Password"><i class="fa fa-lock"></i></input>
-                                <button type="button" id="signup-button" class="form-btn " style="margin-left: 10%;" onclick = "signUpValidate()" >Sign Up</button>
+                                <button type="button" id="signup-button" class="form-btn " style="margin-left: 10%;" >Sign Up</button>
                                 <div id = "errorSU"></div>
                             </form>
                         </div>
@@ -260,33 +260,24 @@
                             <div class="login hide ">
                                 <!-- <form method="post"  action="../Main/process_login.php" > -->
                                 <form method="get">
-                                <h2 class="form-header">Log In</h2>  
-                                <input type="text" name="username" id = 'usernameLI' placeholder="Username"><i class="fa fa-envelope-o"></i></input>
+                                    <h2 class="form-header">Log In</h2>  
+                                    <input type="text" name="username" id = 'usernameLI' placeholder="Username"><i class="fa fa-envelope-o"></i></input>
+                                    
+                                    <input type="password" name="password" id = 'passwordLI' placeholder="Password"><i class="fa fa-lock"></i></input>
                                 
-                                <input type="password" name="password" id = 'passwordLI' placeholder="Password"><i class="fa fa-lock"></i></input>
-                            
-                                <div class="g-recaptcha" style="margin-top: 10%;" data-sitekey="6Lf2x-IZAAAAALMzDGQ3989jbM0-iRozvWHqGvb9"></div>
-                                <br/>
-                                <div id = 'errorLI'></div>
-                                <button type = 'button' id='login-button' class="form-btn text-center" style="margin-left: 20%;" onclick='logInValidate()'>Log In</button>
+                                    <div class="g-recaptcha" style="margin-top: 10%;" data-sitekey="6Lf2x-IZAAAAALMzDGQ3989jbM0-iRozvWHqGvb9"></div>
+                                    <br/>
+                                    <div id = 'errorLI'></div>
+                                    <button type = 'button' id='login-button' class="form-btn text-center" style="margin-left: 20%;">Log In</button>
                                 </form>
                             </div>
                         </div>
                     </div>
                 </div>
-                </div>
-                <!-- <div class='col-sm-4' style='left: 60%; font-family: Patua One;font-style: normal; font-weight: normal; font-size: 60px; line-height: 73px; text-align: center; color:#CEA68C;'>
-                    "Greatness meets Speed"
-                </div> -->
-                <!-- <div class="col-sm-4" style='position: absolute; top: 25%; left:60%; width: 200px;  font-family: Patua One;font-style: normal; font-weight: normal; font-size: 60px; line-height: 73px; text-align: center; color:#CEA68C;'>
-                <div>"Greatness meets Speed"</div>
-                </div>
-                <div class='col-sm-2'>
-                    <img src="images/lines.jpg" style=' position:absolute; width: 177px; height: 300px; left: 83%; top: 39.5%; z-index:-1;'>
-                </div>
-            </div> -->
+            </div>
         </div>
     </div>
+    
     <script>
 
     // function signUpValidate(){
@@ -320,18 +311,9 @@
         //     }
         // };
 
-    function logInValidate(){
-        var username = document.getElementById("usernameLI").value;
-        var passwordLI = document.getElementById("passwordLI").value;
-
-        if (username === "" || passwordLI === ""){
-            document.getElementById("errorLI").innerHTML = `<p style = 'margin: 2px; font-size: 10px; color:red;text-align:center;'>None of your fields can be empty</p>`;
-
-        };
-    };
-
-
-
+    // function logInValidate(){
+        
+    // };
         $(document).ready(function() {
             var signUp = $('.signup-but');
             var logIn = $('.login-but');
@@ -356,155 +338,215 @@
             });
         });
 
-
-    $("#login-button").click(function() {
-    // var validate = signUpValidate();
-    // if (validate == false):
-    //     return "Login not validated!"
-        var username = $("#usernameLI").val();
-        var password = $("#passwordLI").val();
-        var account_type = "customer"
-        // console.log(account_type);
-        serviceURL = "http://localhost:5005/authenticate";
-
-        fetch(serviceURL, {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                "username": username,
-                "password": password,
-                "account_type": "customer"
-            })
-        })
-        .then(function (response) {
-            data = response.json();
-            console.log(data);
-            return data
-            // return response.json();
-        })
-        .then(function (result) {
-            if (result.code == 200){
-                json = JSON.stringify({
-                "username": result.data.username,
-                "customer_ID": result.data.customer_ID,
-                "account_type": "customer"
-            });
-            console.log(json);
-            sessionStorage.setItem("account_details", json);
-            location.replace("../customer/delivery_order.html");
-            }
-            else{
-                var message = "Verification not completed or verification failed."
-                console.log(message);
-                document.getElementById("errorLI").innerHTML = "<p style = 'margin: 2px; font-size: 15px; color:red;text-align:center;'>"+ message + "</p>";
-                return message
-            }
-        })
-        .catch(function (error) {
-            console.log("Error:", error);
-            });
-        });
-
-
-    $("#signup-button").click(function() {
-    // var validate = signUpValidate();
-    // if (validate == false):
-    //     return "Login not validated!"
-        document.getElementById("errorSU").innerHTML = '';
-        var fullnameSU = document.getElementById("fullnameSU").value;
-        var usernameSU = document.getElementById("UsernameSU").value;
-        var emailSU = document.getElementById("emailSU").value;
-        var passwordSU = document.getElementById("passwordSU").value;
-        var teleSU = document.getElementById('teleSU').value;
-        var contactSU = document.getElementById('contactSU').value;
-        var confirmpasswordSU = document.getElementById('confirmpasswordSU').value;
-        var account_type = "customer";
-        var errors = [];    
+        $("#signup-button").click(function() {
+        // var validate = signUpValidate();
+        // if (validate == false):
+        //     return "Login not validated!"
+            document.getElementById("errorSU").innerHTML = '';
+            var fullnameSU = document.getElementById("fullnameSU").value;
+            var usernameSU = document.getElementById("UsernameSU").value;
+            var emailSU = document.getElementById("emailSU").value;
+            var passwordSU = document.getElementById("passwordSU").value;
+            var teleSU = document.getElementById('teleSU').value;
+            var contactSU = document.getElementById('contactSU').value;
+            var confirmpasswordSU = document.getElementById('confirmpasswordSU').value;
+            var account_type = "customer";
+            var errors = [];    
 
             if (fullnameSU === "" || usernameSU === "" || emailSU === "" || passwordSU === "" || teleSU === '' || contactSU === ''){
-                event.preventDefault();
+                // event.preventDefault();
                 errors.push('None of your fields can be empty.');
             };
 
-            if (!emailSU.includes('@') || !emailSU.includes('.com')){
-                event.preventDefault();
+            if (!emailSU.includes('@')){
+                // event.preventDefault();
                 errors.push('Please enter a valid email.');
             };
 
             if (passwordSU !== confirmpasswordSU){
-                event.preventDefault();
+                // event.preventDefault();
                 errors.push('Password and confirm password does not match.');
             };
 
             for (error of errors){
                 document.getElementById("errorSU").innerHTML += `<p style = 'margin: 2px; font-size: 10px; color:red; text-align:center;'>${error}</p>`;
             }
-        // var username = $("#UsernameSU").val();
-        // var name = $("#fullnameSU").val();
-        // var email = $("#emailSU").val();
-        // var password = $("#passwordSU").val();
-        // var teleID = $("#teleSU").val();
-        // var mobile = $("#contactSU").val();
-        
-        // console.log(account_type);
-        if(errors.length == 0){
-            serviceURL = "http://localhost:5105/register_user/" + usernameSU;
-            fetch(serviceURL, {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                "password": passwordSU,
-                "name": fullnameSU,
-                "email": emailSU,
-                "teleID": teleSU,
-                "mobile": contactSU,
-                "account_type": "customer"
-            })
-            })
-            .then(function (response) {
-                data = response.json();
-                console.log(data);
-                return data
-                // return response.json();
-            })
-            .then(function (result) {
-                console.log(result)
-                if (result.code == 201){
-                    json = JSON.stringify({
-                        "username": result.data.username,
-                        "customer_ID": result.data.customer_ID,
+            // var username = $("#UsernameSU").val();
+            // var name = $("#fullnameSU").val();
+            // var email = $("#emailSU").val();
+            // var password = $("#passwordSU").val();
+            // var teleID = $("#teleSU").val();
+            // var mobile = $("#contactSU").val();
+            
+            // console.log(account_type);
+            if(errors.length == 0){
+                serviceURL = "http://localhost:5105/register_user/" + usernameSU;
+                const details = {
+                    "method": "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        "password": passwordSU,
+                        "name": fullnameSU,
+                        "email": emailSU,
+                        "teleID": teleSU,
+                        "mobile": contactSU,
                         "account_type": "customer"
+                    })
+                }
+                // fetch(serviceURL, {
+                //     method: "POST",
+                //     headers: {
+                //         'Content-Type': 'application/json',
+                //     },
+                //     body: JSON.stringify({
+                //         "password": passwordSU,
+                //         "name": fullnameSU,
+                //         "email": emailSU,
+                //         "teleID": teleSU,
+                //         "mobile": contactSU,
+                //         "account_type": "customer"
+                //     })
+                // })
+                fetch(serviceURL, details)
+                .then(response => response.json())
+                // .then(function (response) {
+                //     data = response.json();
+                //     console.log(data);
+                //     return data
+                //     // return response.json();
+                // })
+
+                // .then(function (result) {
+                .then(data =>{
+                    if (data.code == 201){
+                        json = JSON.stringify({
+                            "username": data.data.username,
+                            "customer_ID": data.data.customer_ID,
+                            "account_type": "customer"
                         });
-                    console.log(result);
-                    sessionStorage.setItem("account_details", json);
-                    // location.replace("../customer/delivery_order.html");
-                    alert("You have successfully registered, please click 'ok' to register with our bot to receive updates.")
-                    // window.open("http://t.me/Testing_jww_bot", "_blank");
-                    location.replace("../customer/delivery_order.html");
+                        console.log(data);
+                        sessionStorage.setItem("account_details", json);
+                        // location.replace("../customer/delivery_order.html");
+                        alert("You have successfully registered, please click 'ok' to register with our bot to receive updates.")
+                        // window.open("http://t.me/Testing_jww_bot", "_blank");
+                        location.replace("../customer/delivery_order.html");
+                    }
+                    else{
+                        var message = "Verification not completed or verification failed."
+                        console.log(message);
+                        $("#errorSU").html(`<p style = 'margin: 2px; font-size: 10px; color:red;'>
+                                                The username is taken or the account exists
+                                            </p>`);
+                        return message
+                    }
+                })
+                // console.log(result)
+                .catch(function (error) {
+                    console.log("Error:", error);
+                });
+            }
+        });
+
+
+        $("#login-button").click(function() {
+            // var validate = signUpValidate();
+            // if (validate == false):
+            //     return "Login not validated!"
+            var username = document.getElementById("usernameLI").value;
+            var password = document.getElementById("passwordLI").value;
+            var errors = []; 
+
+            if (username === "" || password === ""){
+                errors.push('None of your fields can be empty.');
+
+            };
+            for (error of errors){
+                document.getElementById("errorSU").innerHTML += `<p style = 'margin: 2px; font-size: 10px; color:red; text-align:center;'>${error}</p>`;
+            }
+            // var username = $("#usernameLI").val();
+            // var password = $("#passwordLI").val();
+            var account_type = "customer"
+            // console.log(account_type);
+            serviceURL = "http://localhost:5005/authenticate";
+
+            if(errors.length ==0){
+                const details = {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        "username": username,
+                        "password": password,
+                        "account_type": "customer"
+                    })
+                }
+                fetch(serviceURL, details)
+                .then(response => response.json())
+                .then(data => {
+                    if (result.code == 200){
+                    json = JSON.stringify({
+                    "username": result.data.username,
+                    "customer_ID": result.data.customer_ID,
+                    "account_type": "customer"
+                });
+                console.log(json);
+                sessionStorage.setItem("account_details", json);
+                location.replace("../customer/delivery_order.html");
                 }
                 else{
                     var message = "Verification not completed or verification failed."
                     console.log(message);
-                    $("#errorSU").html(`<p style = 'margin: 2px; font-size: 10px; color:red;'>
-                                            The username is taken or the account exists
-                                        </p>`);
+                    document.getElementById("errorLI").innerHTML = "<p style = 'margin: 2px; font-size: 15px; color:red;text-align:center;'>"+ message + "</p>";
                     return message
                 }
-            })
-            .catch(function (error) {
+                })
+                .catch(function (error) {
                 console.log("Error:", error);
-            });
+                });
             }
+        });
+            //     fetch(serviceURL, {
+            //     method: "POST",
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //     },
+            //     body: JSON.stringify({
+            //         "username": username,
+            //         "password": password,
+            //         "account_type": "customer"
+            //     })
+            // })
+            // .then(function (response) {
+            //     data = response.json();
+            //     console.log(data);
+            //     return data
+            //     // return response.json();
+            // })
+            // .then(function (result) {
+            //     if (result.code == 200){
+            //         json = JSON.stringify({
+            //         "username": result.data.username,
+            //         "customer_ID": result.data.customer_ID,
+            //         "account_type": "customer"
+            //     });
+            //     console.log(json);
+            //     sessionStorage.setItem("account_details", json);
+            //     location.replace("../customer/delivery_order.html");
+            //     }
+            //     else{
+            //         var message = "Verification not completed or verification failed."
+            //         console.log(message);
+            //         document.getElementById("errorLI").innerHTML = "<p style = 'margin: 2px; font-size: 15px; color:red;text-align:center;'>"+ message + "</p>";
+            //         return message
+            //     }
+            // })
+        
             
 
         
-
-    });
-
 </script>
 </body>
 
