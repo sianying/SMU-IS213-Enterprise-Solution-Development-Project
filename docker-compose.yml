@@ -201,8 +201,8 @@ services:
             rabbit_port: 5672
             paymentURL: http://payment:4242/checkout_session
             deliveryURL: http://delivery:5000/delivery
-            driverURL: http://delivery:5001/driver
-            customerURL: http://delivery:5002/customer
+            driverURL: http://driver:5001/driver
+            customerURL: http://customer:5002/customer
             scheduleURL: http://schedule:5004/schedule
             ScheduleDriverURL: http://schedule_driver:5104/schedule_driver
             PYTHONUNBUFFERED: 1

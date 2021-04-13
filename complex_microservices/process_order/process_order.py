@@ -87,7 +87,7 @@ def processOrderCreation(session_id, delivery_data, customer_ID):
     # Invoke the payment microservice
     print('\n-----Invoking payment microservice-----')
     payment_data = invoke_http(payment_URL + "/" + session_id, method='GET')
-    # print('payment_results:', str(payment_data))
+    print('payment_results:', str(payment_data))
 
     code = payment_data['code']
     if code not in range(200, 300):
