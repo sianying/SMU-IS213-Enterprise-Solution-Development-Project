@@ -33,7 +33,6 @@ class Delivery(db.Model):
     payment_amount = db.Column(db.INT(), nullable=False)
     payment_status = db.Column(db.VARCHAR(6), nullable=False, default='Paid')
     receiver_name = db.Column(db.VARCHAR(64), nullable=False)
-    #wa idk how to include for the timestamps and default values help
     delivery_status = db.Column(db.VARCHAR(10), nullable=False, default='New')
     created = db.Column(db.TIMESTAMP, nullable=False, default=db.func.now())
     last_updated = db.Column(db.TIMESTAMP, nullable=False, server_default=db.func.now(), onupdate=db.func.now())
@@ -74,7 +73,6 @@ class Delivery(db.Model):
                 "last_updated": self.last_updated
             }
 
-#dont really have a scenario where we will get all deliveries but i guess its a useful function to have
 # 1. GET ALL DELIVERIES 
 @app.route("/delivery")
 def get_all():
