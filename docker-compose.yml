@@ -286,9 +286,10 @@ services:
         environment:
             hostname: rabbitmq
             rabbit_port: 5672
-            loginURL: http://login:5005
+            loginURL: http://login:5005    #cannot add login at the back
             customerURL: http://customer:5002/customer
             driverURL: http://driver:5001/driver
+            scheduleURL: http://schedule:5004/schedule
         ports:
             - "5105:5105"
     
