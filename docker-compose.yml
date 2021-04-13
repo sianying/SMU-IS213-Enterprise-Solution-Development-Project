@@ -54,7 +54,7 @@ services:
             PYTHONUNBUFFERED: 1
 
 
-    #port 5003        
+    #port 4242        
     payment:
         build:
             context: ./payment
@@ -62,7 +62,7 @@ services:
         image: zonghanlee/payment:1.0
         restart: always
         ports:
-            - "5003:5003"
+            - "4242:4242"
         environment:
             PYTHONUNBUFFERED: 1
 
