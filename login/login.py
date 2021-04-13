@@ -64,7 +64,9 @@ def authenticate_user():
         hashed = user_recorded.password
 
         #encode the plain text password to match the hashed password
-        if username == user_recorded.username and bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8')):
+        encode_password = password.encode('utf-8')
+        encode_hashed = hashed.encode('utf-8')
+        if username == user_recorded.username and bcrypt.checkpw(encode_password, encode_hashed):
         # if username == user_recorded.username and :
 
             print("Authenticated! Welcome User " + username)
@@ -72,7 +74,7 @@ def authenticate_user():
                 return jsonify({
                         "code": 200,
                         "data": {
-                            "username":user_recorded.username,
+                            "username": user_recorded.username,
                             "customer_ID": user_recorded.customer_ID,
                             "account_type": account_type
                         },
@@ -154,16 +156,17 @@ def register_user(username):
     print(data)
     account_type = data['account_type']
     password = data['password']
-    hashed = create_hash_password(password.encode('utf-8'))
+    encoded_password = password.encode('utf-8')
+    hashed = create_hash_password(encoded_password)
     #decode hashed password for db storage
-    hashed_string = hashed.decode('utf-8')
+    decode_hashed = hashed.decode('utf-8')
     #reconstruct the data for the db addition
     if account_type == "customer":
         customer_ID = data['customer_ID']
-        account = Login(username, hashed_string, account_type, customer_ID, None)
+        account = Login(username, decode_hashed, account_type, customer_ID, None)
     else:
         driver_ID = data['driver_ID']
-        account = Login(username, hashed_string, account_type, None, driver_ID)
+        account = Login(username, decode_hashed, account_type, None, driver_ID)
 
     # account = Login(username, hashed_string, **data)
     try:
@@ -215,7 +218,6 @@ def register_user(username):
 
 def create_hash_password(password):
     salt = bcrypt.gensalt()
-    print(salt)
     hashed = bcrypt.hashpw(password, salt)
     return hashed
 

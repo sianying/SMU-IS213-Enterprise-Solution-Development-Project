@@ -178,7 +178,7 @@
                         <div class="form-group ">
                             <label for="time">Schedule</label>
                             <select id="time" class="form-control">
-                                <option selected disabled>Please select a timing</option>
+                                <option selected disabled hidden>Please select a timing</option>
                                 <option selected v-if='!availableSchedules'>No available timings!</option>
                                 <option selected value='8_to_10' v-if='t_8_to_10'>8 am to 10 am</option>
                                 <option value='10_to_12' v-if='t_10_to_12'>10 am to 12pm</option>
@@ -219,7 +219,7 @@
             var time = $('#time').val();
 
             //getting all schedules on selected date
-            var get_Schedule = "http://localhost:5004/schedule/date/" + date;
+            var get_Schedule = "http://127.0.0.1:5004/schedule/date/" + date;
             const response =
                             // fetch(get_all_schedule)
                             fetch(get_Schedule)
@@ -359,7 +359,7 @@
                     sessionStorage.setItem("delivery_data", json);
 
                     //invoking payment microservice
-                    fetch("http://localhost:4242/create-checkout-session", {
+                    fetch("http://127.0.0.1:4242/create-checkout-session", {
                         method: "POST",
                         headers: {
                             'Content-Type': 'application/json',
