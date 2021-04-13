@@ -1,16 +1,16 @@
-# ESD (22 March 2021)
+Please do the following before using our application :D
 
-Have to replace the success html in payment.py to the success.html file which can be found in the payment folder as we are using absolute link as Stripe requires absolute link to be used.
+- import all the required sql files into localhost phpmyadmin
 
-Have to replace the cancel html in payment.py to the delivery_order.html file in the customer folder.
+- In payment.py, there is a variable called success_url which leads to the success.html found under the UI(General)/Payment folder. This will have to be replaced to the absolute link on the grader's computer, because we are using the Stripe API which requires an absolute link to be used. This will depend on where the grader has placed this ESD folder.
 
-To test the telegram notification, sign up as a customer/driver using our bot.
+There is also another variable called cancel_url which needs to be changed for the same reason. It should lead to the delivery_order.html file in the UI(General)/Customer folder.
 
-To ensure payment is successful, use credit card number 4242 4242 4242 4242. 
+- When registering as a new user (both driver & customer), our application will open a new tab to register for Telegram notifications. Please ensure that your browser's pop-up block is disabled. To test this function out, do sign up as a customer/driver using our Telegram bot.
 
-When registering as a new user, our application will open a new tab to register for Telegram notifications. Please ensure that your browser's pop-up block is disabled.
+- When choosing a date for the delivery, please choose the dates from 15th April (submission date) - 30th April only. This is because our service uses the 'schedule' microservice which has its own exclusive 'schedule' database. When the user picks a particular date for a delivery, we also have to have data in the schedule database corresponding to this date. Since we cannot possibly create schedules for every date, schedules are created in the month of April 2021 only.
 
-Multiple complex microservices use the database named 'schedule'. If the user picks a particular date for a delivery, we also have to have data in the schedule database corresponding to this date. Since we cannot possibly create schedules for every date, schedules are created in the month of April 2021 only.
+- When testing out the payment function (which uses Stripe API), use credit card number 4242 4242 4242 4242.
 
 
 Additional Info:
