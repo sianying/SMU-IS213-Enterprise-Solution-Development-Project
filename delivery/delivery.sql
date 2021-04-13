@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `delivery` (
 
 
 INSERT INTO `delivery` (`delivery_ID`, `driver_ID`, `customer_ID`, `delivery_date`, `timeslot`, `pickup_location`, `destination`, `delivery_item`, `description`, `payment_amount`, `payment_status`, `receiver_name`, `delivery_status`,  `created`, `last_updated`) VALUES
-(1, 2, 1001, '2021-04-12', '2_to_4', '930 Yishun Ave 2, Singapore 769098', '9 Bishan Pl, Singapore 579837', 'Billy123', 'a cutie giraffe', '100', 'paid', 'sysy', 'Completed','2021-03-10 02:14:55', '2021-04-12 16:00:00'),
+(1, 2, 1001, '2021-04-12', '2_to_4', '930 Yishun Ave 2, Singapore 769098', '9 Bishan Pl, Singapore 579837', 'Billy123', 'a cutie giraffe', '100', 'paid', 'sysy', 'Completed!','2021-03-10 02:14:55', '2021-04-12 16:00:00'),
 (2, 1, 1002, '2021-04-17', '2_to_4', '4 Tampines Central 5, Singapore 529510', '1 Woodlands Square, Singapore 738099', 'uwubuntu', 'as cute as Billygoh', '100', 'paid', 'jwjw', 'In Progress', '2021-04-10 11:14:55', '2021-04-17 13:14:55'),
 (3, 2, 1003, '2021-04-17', '8_to_10', '2 Handy Road, Singapore 229233', '1 Jurong West Central 2, Singapore 648886', 'pullup bar', 'wanna get ripped', '2500', 'paid', 'jwjw', 'In Progress', '2021-04-10 11:14:55', '2021-04-17 13:14:55'),
 (4, 2, 1004, '2021-04-17', '2_to_4', '2 Jurong East Street 21, Singapore 609601', '50 Jurong Gateway Rd, Singapore 608549', 'pullup bar', 'wanna get ripped', '2500', 'paid', 'jwjw', 'In Progress', '2021-04-10 11:14:55', '2021-04-17 13:14:55'),
