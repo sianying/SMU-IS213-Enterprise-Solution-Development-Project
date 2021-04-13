@@ -105,40 +105,30 @@
     </header>
     
     <div class="container-fluid" id='app'>
-        <!-- <div class="alert alert-success" role="alert">
-            The payment made was successful!
-        </div> -->
-        <div>
-            <div class='container'>
-                <div class='row'>
-                    <!-- <div class='col'></div> -->
-                    <h3 v-if='error' style='color:#CEA68C; font-family: "Patua One", cursive;' class='col d-flex justify-content-center animate__animated animate__backInUp pt-4'>{{error}}</h3>
-                    <!-- <div v-else class='col'><h3 class='pt-3' style='color:#CEA68C; font-family: "Patua One", cursive;'>Thank you for choosing Cheetah Express. Please hold on while we process your order.</h3></div> -->
-                    <!-- <div class='col'></div> -->
-                </div>
+        <div class='container'>
+            <div class='row'>
+                <h3 v-if='error' style='color:#CEA68C; font-family: "Patua One", cursive;' class='col d-flex justify-content-center animate__animated animate__backInUp pt-4'>{{error}}</h3>
+            </div>
 
-                <div v-if='loading' class='row'>
-        
-                    <div id="loader"></div>
-                                        
-                </div>
-                
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class='col mx-auto'></div>
-                        <div class='col d-flex justify-content-center smx-auto loader'></div>
-                        <div class='col mx-auto'></div>
-                    </div>
+            <div v-if='loading' class='row'>
+                <div id="loader"></div>                 
+            </div>
+            
+            <div class="container-fluid">
+                <div class="row">
+                    <div class='col mx-auto'></div>
+                    <div class='col d-flex justify-content-center smx-auto loader'></div>
+                    <div class='col mx-auto'></div>
                 </div>
             </div>
-            <div class="container-fluid" v-if='successfulPayment'>
-                <div class="row">
-                    <!-- <div class='col mx-auto'></div> -->
-                    <h3 style='color:#CEA68C; font-family: "Patua One", cursive;' class='col d-flex justify-content-center animate__animated animate__backInUp pt-4'>Thank you for placing an order! Click on View Deliveries to view your orders.</h3>
-                    <!-- <div class='col mx-auto'></div> -->
-                </div>
-            </div>      
         </div>
+        <div class="container-fluid" v-if='successfulPayment'>
+            <div class="row">
+                <!-- <div class='col mx-auto'></div> -->
+                <h3 style='color:#CEA68C; font-family: "Patua One", cursive;' class='col d-flex justify-content-center animate__animated animate__backInUp pt-4'>Thank you for placing an order! Click on View Deliveries to view your orders.</h3>
+                <!-- <div class='col mx-auto'></div> -->
+            </div>
+        </div>      
     </div>
 
 <script>
@@ -173,11 +163,10 @@
         
         methods:{
             placeOrder: function(){
-
-                // retreives the session ID from the URL
+                // retrieves the session ID from the URL
                 let params = new URLSearchParams(location.search);
                 let session_id = params.get('session_id');
-                console.log(session_id);
+                // console.log(session_id);
 
                 delivery_data = JSON.parse(sessionStorage.getItem("delivery_data"));
                 // retrieve the Customer ID 
@@ -189,9 +178,7 @@
                 else {
                     console.log("Delivery order failed to be created.")
                 }
-
-
-                var serviceURL = "http://localhost:5100/process_order";
+                var serviceURL = "http://localhost:5100/process_order"; //invoking process_order complex microservice to process the order
                 const details = {
                     method: "POST",
                     headers: {
@@ -209,7 +196,7 @@
                     .then(data => {
                         // console.log(response)
                         console.log(data)
-                        if(data.code >= 500){
+                        if(data.code >= 400){
                             this.error = "An error has occurred while processing your order. Please try again.";
                             this.loading = false;
                             
@@ -217,14 +204,12 @@
                             this.successfulPayment = true;
                             this.loading = false;
                         }
-                            // console.log("hello")
                         
                     })
                     .catch(error=>{
-                        console.log("Error:", error);
-                        
+                        console.log("Error:", error);  
                     })
-            }}})
+            }}});
 
 
 

@@ -350,9 +350,10 @@
             var teleSU = document.getElementById('teleSU').value;
             var contactSU = document.getElementById('contactSU').value;
             var confirmpasswordSU = document.getElementById('confirmpasswordSU').value;
-            var account_type = "customer";
+            // var account_type = "customer";
             var errors = [];    
 
+            // form validation
             if (fullnameSU === "" || usernameSU === "" || emailSU === "" || passwordSU === "" || teleSU === '' || contactSU === ''){
                 // event.preventDefault();
                 errors.push('None of your fields can be empty.');
@@ -371,16 +372,12 @@
             for (error of errors){
                 document.getElementById("errorSU").innerHTML += `<p style = 'margin: 2px; font-size: 10px; color:red; text-align:center;'>${error}</p>`;
             }
-            // var username = $("#UsernameSU").val();
-            // var name = $("#fullnameSU").val();
-            // var email = $("#emailSU").val();
-            // var password = $("#passwordSU").val();
-            // var teleID = $("#teleSU").val();
-            // var mobile = $("#contactSU").val();
+
             
-            // console.log(account_type);
             if(errors.length == 0){
-                serviceURL = "http://localhost:5105/register_user/" + usernameSU;
+
+                // after successfully passing form validation, invoke register user complex microservice to register the user
+                var serviceURL = "http://localhost:5105/register_user/" + usernameSU;
                 const details = {
                     "method": "POST",
                     headers: {
@@ -420,20 +417,21 @@
 
                 // .then(function (result) {
                 .then(data =>{
-                    if (data.code == 201){
+                    if (data.code == 201){ //user successfully registered
                         json = JSON.stringify({
                             "username": data.data.username,
                             "customer_ID": data.data.customer_ID,
                             "account_type": "customer"
                         });
                         console.log(data);
-                        sessionStorage.setItem("account_details", json);
-                        // location.replace("../customer/delivery_order.html");
+                        sessionStorage.setItem("account_details", json); 
+                        // alerting user to sign up for our telegram bot
                         alert("You have successfully registered, please click 'ok' to register with our bot to receive updates.")
-                        // window.open("http://t.me/Testing_jww_bot", "_blank");
+                        window.open("http://t.me/Testing_jww_bot", "_blank");
                         location.replace("../customer/delivery_order.html");
                     }
                     else{
+                        // user not successfully registered
                         var message = "Verification not completed or verification failed."
                         console.log(message);
                         $("#errorSU").html(`<p style = 'margin: 2px; font-size: 10px; color:red;'>
@@ -458,20 +456,23 @@
             var password = document.getElementById("passwordLI").value;
             var errors = []; 
 
+            // form validation
             if (username === "" || password === ""){
                 errors.push('None of your fields can be empty.');
 
             };
             for (error of errors){
-                document.getElementById("errorSU").innerHTML += `<p style = 'margin: 2px; font-size: 10px; color:red; text-align:center;'>${error}</p>`;
+                document.getElementById("errorLI").innerHTML += `<p style = 'margin: 2px; font-size: 10px; color:red; text-align:center;'>${error}</p>`;
             }
             // var username = $("#usernameLI").val();
             // var password = $("#passwordLI").val();
             var account_type = "customer"
             // console.log(account_type);
-            serviceURL = "http://localhost:5005/authenticate";
-
+            
+            
             if(errors.length ==0){
+                // after successfully passing form validation, invoke login microservice to check if user has an account and if input details are correct as per the database
+                var serviceURL = "http://localhost:5005/authenticate"; //invoking login microservice
                 const details = {
                     method: "POST",
                     headers: {
@@ -486,17 +487,18 @@
                 fetch(serviceURL, details)
                 .then(response => response.json())
                 .then(data => {
-                    if (result.code == 200){
+                    if (result.code == 200){ //user has successfully logged in
                     json = JSON.stringify({
                     "username": result.data.username,
                     "customer_ID": result.data.customer_ID,
                     "account_type": "customer"
-                });
-                console.log(json);
-                sessionStorage.setItem("account_details", json);
-                location.replace("../customer/delivery_order.html");
+                    });
+                    console.log(json);
+                    sessionStorage.setItem("account_details", json);
+                    location.replace("../customer/delivery_order.html");
                 }
                 else{
+                    // user did not successfully log in
                     var message = "Verification not completed or verification failed."
                     console.log(message);
                     document.getElementById("errorLI").innerHTML = "<p style = 'margin: 2px; font-size: 15px; color:red;text-align:center;'>"+ message + "</p>";
