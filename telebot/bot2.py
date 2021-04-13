@@ -170,7 +170,7 @@ def update_customer_chatID(response_tele_ID):
     result = conn.execute(query)
     row = result.fetchall()
     if len(row) != 0:
-        message = "Congratulations, registration is successfull! Thank you for registering your telegram with Cheetah Express. You can look forward to timely updates of your deliveries through this channel."
+        message = "Congratulations, registration is successful! Thank you for registering your telegram with Cheetah Express. You can look forward to timely updates of your deliveries through this channel."
     else:
         message = "Registration is unsuccessful! Please try again."
     return message
@@ -185,7 +185,7 @@ def update_driver_chatID(response_tele_ID):
     result = conn.execute(query)
     row = result.fetchall()
     if len(row) != 0:
-        message = "Congratulations, registration is successfull! Thank you for registering your telegram with Cheetah Express. You can look forward to timely updates of your deliveries through this channel."
+        message = "Congratulations, registration is successful! Thank you for registering your telegram with Cheetah Express. You can look forward to timely updates of your deliveries through this channel."
     else:
         message = "Registration is unsuccessful! Please try again."
     return message
