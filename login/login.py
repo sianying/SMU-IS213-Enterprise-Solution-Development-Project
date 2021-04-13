@@ -53,7 +53,6 @@ class Login(db.Model):
 @app.route("/authenticate", methods=['POST'])
 def authenticate_user():
     user_data = request.get_json()
-    print(user_data)
     user_recorded = Login.query.filter_by(username=user_data['username']).first()
     # print(user_recorded)
     account_type = user_recorded.account_type

@@ -83,7 +83,7 @@ def customer_view_details(customer_ID):
 
 def retrieve_all_deliveries(customer_ID):
     # 2. Invoke the delivery microservice
-    #print('\n-----Invoking delivery microservice-----')
+    print('\n-----Invoking delivery microservice-----')
     delivery_result = invoke_http(deliveryURL+ "/customer/" + str(customer_ID), method='GET')
     # print('delivery_result:', delivery_result)
 

@@ -259,6 +259,7 @@ services:
         depends_on:
             - delivery
             - driver
+            - customer
             - rabbitmq
             - customer_notification
             - driver_notification
@@ -268,6 +269,7 @@ services:
             rabbit_port: 5672
             deliveryURL: http://delivery:5000/delivery
             driverURL: http://driver:5001/driver
+            customerURL: http://customer:5002/customer
         ports:
             - "5103:5103"
 

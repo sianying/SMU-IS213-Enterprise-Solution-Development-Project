@@ -266,7 +266,7 @@ def send_notification(order):
             "driver_tele_chat_ID": driver_tele_chat_ID
     })
 
-    print('\n\n-----Publishing the (customer) message with routing_key=customer.order-----')
+    print('\n\n-----Publishing the (customer & driver) message with routing_key=customer.DeliveryCreated and routing_key=driver.DeliveryCreated-----')
     amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="customer.DeliveryCreated", body=messages)
     amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="driver.DeliveryCreated", body=messages)
 

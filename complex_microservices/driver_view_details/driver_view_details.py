@@ -57,7 +57,7 @@ def get_existing_info(delivery_ID):
     print('\n-----Invoking delivery microservice-----')
     #delivery_result = invoke_http("http://localhost:5000/delivery/" + str(delivery_ID), method='GET')
     delivery_result = invoke_http(delivery_URL+ '/' + str(delivery_ID), method='GET')
-    print('delivery_result:', delivery_result)
+    # print('delivery_result:', delivery_result)
 
     # 3. Check the delivery result; if a failure, send it to the error microservice.
     code = delivery_result["code"]

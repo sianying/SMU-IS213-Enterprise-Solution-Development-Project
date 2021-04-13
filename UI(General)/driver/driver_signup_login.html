@@ -477,8 +477,8 @@
             .then(data => {
                 if(data.code == 200){ //user has successfully logged in
                     json = JSON.stringify({
-                    "username": result.data.username,
-                    "driver_ID": result.data.driver_ID,
+                    "username": data.data.username,
+                    "driver_ID": data.data.driver_ID,
                     "account_type": "driver"
                     });
                     console.log(json);
