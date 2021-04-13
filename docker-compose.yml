@@ -15,15 +15,14 @@ services:
     #port 5000
     delivery:
       build:
-        context: ./delivery            #idk whether context needs to be ./delivery/ or ./delivery, but ./delivery
-        dockerfile: delivery.Dockerfile   #seems to work
+        context: ./delivery            
+        dockerfile: delivery.Dockerfile   
       image: zonghanlee/delivery:1.0
       restart: always
       ports:
         - "5000:5000"
       environment:
-        #dbURL: mysql+mysqlconnector://admin:Password123@database-1.c8zsr5fmweqm.us-east-1.rds.amazonaws.com/cheetah_db
-        dbURL: mysql+mysqlconnector://admin:Password123@esd-database.cg2v6ek4an29.us-east-1.rds.amazonaws.com/cheetah_db
+        dbURL: mysql+mysqlconnector://admin:Password123@esd-database.cg2v6ek4an29.us-east-1.rds.amazonaws.com/delivery
         PYTHONUNBUFFERED: 1
 
 
@@ -37,8 +36,7 @@ services:
         ports:
             - "5001:5001"
         environment:
-            #dbURL: mysql+mysqlconnector://admin:Password123@database-1.c8zsr5fmweqm.us-east-1.rds.amazonaws.com/cheetah_db
-            dbURL: mysql+mysqlconnector://admin:Password123@esd-database.cg2v6ek4an29.us-east-1.rds.amazonaws.com/cheetah_db
+            dbURL: mysql+mysqlconnector://admin:Password123@esd-database.cg2v6ek4an29.us-east-1.rds.amazonaws.com/driver
             PYTHONUNBUFFERED: 1
 
 
@@ -52,8 +50,7 @@ services:
         ports:
             - "5002:5002"
         environment:
-            #dbURL: mysql+mysqlconnector://admin:Password123@database-1.c8zsr5fmweqm.us-east-1.rds.amazonaws.com/cheetah_db
-            dbURL: mysql+mysqlconnector://admin:Password123@esd-database.cg2v6ek4an29.us-east-1.rds.amazonaws.com/cheetah_db
+            dbURL: mysql+mysqlconnector://admin:Password123@esd-database.cg2v6ek4an29.us-east-1.rds.amazonaws.com/customer
             PYTHONUNBUFFERED: 1
 
 
@@ -80,8 +77,7 @@ services:
         ports:
             - "5004:5004"
         environment:
-            #dbURL: mysql+mysqlconnector://admin:Password123@database-1.c8zsr5fmweqm.us-east-1.rds.amazonaws.com/cheetah_db
-            dbURL: mysql+mysqlconnector://admin:Password123@esd-database.cg2v6ek4an29.us-east-1.rds.amazonaws.com/cheetah_db
+            dbURL: mysql+mysqlconnector://admin:Password123@esd-database.cg2v6ek4an29.us-east-1.rds.amazonaws.com/schedule
             PYTHONUNBUFFERED: 1
             
     
@@ -95,8 +91,7 @@ services:
         ports:
             - "5005:5005"
         environment:
-            #dbURL: mysql+mysqlconnector://admin:Password123@database-1.c8zsr5fmweqm.us-east-1.rds.amazonaws.com/cheetah_db
-            dbURL: mysql+mysqlconnector://admin:Password123@esd-database.cg2v6ek4an29.us-east-1.rds.amazonaws.com/cheetah_db
+            dbURL: mysql+mysqlconnector://admin:Password123@esd-database.cg2v6ek4an29.us-east-1.rds.amazonaws.com/login
             PYTHONUNBUFFERED: 1
 
 
