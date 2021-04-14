@@ -56,18 +56,6 @@ def register_user(username):
             username_data = invoke_http(login_URL + "/" + "check_username_exist" + "/" + username, method='GET')
             # print('payment_results:'+ str(username_data) + "\n")
 
-            code = username_data["code"]
-            if code not in range(200, 300):
-                error_message = {
-                    "code": 501,
-                    "data": {"username_data": username_data},
-                    "message": "Failed to retrieve the user's account using Login Microservice (GET), sent for error handling."
-                    }
-                print('\n\n-----Publishing the (login error) message with routing_key=login.error-----')
-                message=json.dumps(error_message)
-                amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="login.error", 
-                    body=message, properties=pika.BasicProperties(delivery_mode = 2))
-
             #code 200 means username not taken
             #code 400 means bad request username is taken
             code= username_data['code']
@@ -80,21 +68,33 @@ def register_user(username):
             # use the returned customer_ID or driver_ID to create the entry in Login Microservice
             account_type = data['account_type']
             if account_type == "customer":
-                user_ID = registerCustomer(data)
+                customer_data = registerCustomer(data)
+                #error handling
+                code = customer_data['code']
+                if code not in range(200, 300):
+                    return customer_data
+                #if no error, retrieve the user ID
+                else:
+                    user_ID = customer_data['data']['customer_ID']
+
             else:
-                user_ID = registerDriver(data)
+                register_driver_data = registerDriver(data)
+                #error handling
+                code = register_driver_data['code']
+                if code not in range(200, 300):
+                    return register_driver_data
+                #if no error, retrieve the user ID
+                else:
+                    user_ID = register_driver_data['data']['driver_ID']
 
             #3. Register user using Login Microservice (POST request)
             # do the actual work {processRegisterUser}
             password = data['password']
             register_user = registerUserAccount(username, user_ID, password, account_type)
-
-
-            # print(register_user)
+            
+            #if error, it will be reflected in the status code
             return register_user
-            # print('\n------------------------')
-            # print('\nresult: ', result)
-            # return jsonify(result), result["code"]
+
 
         except Exception as e:
             # Unexpected error in code
@@ -145,8 +145,7 @@ def registerCustomer(data):
         return error_message
     
     #return customer_ID
-    customer_ID = customer_data['data']['customer_ID']
-    return customer_ID
+    return customer_data
     
 
 def registerDriver(data):
@@ -180,21 +179,15 @@ def registerDriver(data):
     driver_ID = driver_data['data']['driver_ID']
     # return driver_ID
 
-    #getting the date to create a new empty schedule for the driver
+    #getting today's date to create new empty schedules until end of the month (April)
     today_date = datetime.datetime.today().strftime('%Y-%m-%d')
     schedule_data = {
-        "driver_ID": driver_ID,
-        "delivery_date": today_date,
-        "t_8_to_10": False,
-        "t_10_to_12": False,
-        "t_12_to_2": False,
-        "t_2_to_4": False,
-        "t_4_to_6": False
+        "today_date": today_date
     }
     #Invoke the Schedule Microservice to create a schedule for the driver
     print('\n-----Invoking Schedule microservice-----')
-    driver_schedule = invoke_http(schedule_URL, method='POST', json=schedule_data)
-    print('driver_schedule:' + str(driver_schedule) + "\n")
+    driver_schedule = invoke_http(schedule_URL + "/new_driver/" + str(driver_ID), method='POST', json=schedule_data)
+    # print('driver_schedule:' + str(driver_schedule) + "\n")
 
     #error handling
     code = driver_data["code"]
@@ -210,7 +203,7 @@ def registerDriver(data):
             body=message, properties=pika.BasicProperties(delivery_mode = 2))
         return error_message
 
-    return driver_ID
+    return driver_data
 
 
 def registerUserAccount(username, user_ID, password, account_type):
@@ -234,7 +227,7 @@ def registerUserAccount(username, user_ID, password, account_type):
     # Invoke the Login Microservice (/register_account/<string: username>)
     print('\n-----Invoking Login microservice-----')
     account_registered = invoke_http(login_URL + "/register_account/" + str(username), method='POST', json=account_data)
-    print('account_results:' + str(account_registered) + "\n")
+    # print('account_results:' + str(account_registered) + "\n")
 
     #error handling
     code = account_registered['code']
@@ -262,23 +255,6 @@ def registerUserAccount(username, user_ID, password, account_type):
     #     }
     # }
 
-
-# def send_notification(order_ID):
-#     #invoke the notification AMQP to inform customer of new delivery order
-#     print('\n\n-----Invoking customer_notification microservice-----')
-#     print('\n\n-----Publishing the (successful order creation) message with routing_key=customer.order.created-----')  
-#     message_customer = "Your order has been created. Your order ID is", order_ID, "Thank you for using Cheetah Express! "
-#     amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="customer.order.created", 
-#             body=message_customer)
-
-#     #invoke the notification AMQP to inform driver of new delivery order
-#     print('\n\n-----Invoking driver_notification microservice-----')
-#     print('\n\n-----Publishing the (successful order creation) message with routing_key=driver.order.created-----')  
-#     message_driver = "You have a new delivery order! The order ID is", order_ID
-#     amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="driver.order.created", 
-#             body=message_customer)
-
-# Execute this program if it is run as a main script (not by 'import')
 if __name__ == "__main__":
     print("This is flask " + os.path.basename(__file__) + " for registering a user...")
     print("Running on port: " + str(PORT) + " ...")

@@ -306,20 +306,38 @@ def update_schedule(SID):
     ), 202
 
 
-# 8. create schedules for an entire month, for the driver that was newly added
+# 8. create schedules for the month of April, for the driver that was newly added
 @app.route("/schedule/new_driver/<int:driver_ID>", methods=['POST'])
 def add_schedules_for_month(driver_ID):
+    data = request.get_json()
+    today_date = data['today_date']
+
+    schedule = Schedule.query.filter_by(driver_ID=driver_ID).filter_by(delivery_date=today_date).first()
+    if schedule:
+        return jsonify({
+            "code": 400,
+            'data': schedule.json(),
+            "message": "Driver schedule already exists."
+        })
+
     year_and_month='2021-04-'
     schedule = Schedule.query.order_by(Schedule.SID.desc()).first()
-    SID= schedule.SID + 1
-    data=request.get_json()
+    SID = schedule.SID + 1
+    current_day = int(today_date[-2:])
+    timeslots = {
+        "t_8_to_10": False,
+        "t_10_to_12": False,
+        "t_12_to_2": False,
+        "t_2_to_4": False,
+        "t_4_to_6": False
+    }
 
     schedule_list=[]
 
-    for i in range (17,31):
-        current_date=str(i)    #date of submission: 17 April, can pick until 30 April
+    for i in range (current_day, 31):
+        current_date=str(i)    #date of submission: 15 April, can pick until 30 April
         delivery_date = year_and_month + current_date
-        schedule= Schedule(SID, driver_ID, delivery_date, **data)
+        schedule= Schedule(SID, driver_ID, delivery_date, **timeslots)
 
         try:
             db.session.add(schedule)
