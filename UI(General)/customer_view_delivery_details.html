@@ -162,7 +162,7 @@
             </div>
         </div>
         <script>
-            var session = JSON.parse(sessionStorage.getItem("account_details"));
+            var session = JSON.parse(localStorage.getItem("account_details"));
             var customer_ID = session.customer_ID;
             var get_details_url = "http://127.0.0.1:5102/customer_view_details/" + customer_ID;
             var app = new Vue({
