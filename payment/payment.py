@@ -15,7 +15,7 @@ app = Flask(__name__)
 CORS(app)
 
 #checkout with payment
-@app.route('/create-checkout-session', methods=['POST'])
+@app.route('/create_checkout_session', methods=['POST'])
 def create_checkout_session():
     post_data = json.loads(request.data)
     delivery_item = post_data['deliveryItem']
@@ -48,7 +48,7 @@ def create_checkout_session():
                 # }
         ],
             mode="payment",
-            success_url= "http://127.0.0.1/Github/UI/payment/success.html" + "?session_id={CHECKOUT_SESSION_ID}&delivery_data=" + delivery_data + "&account_details=" + account_details,
+            success_url= "http://127.0.0.1/Github/UI/payment/success.html" + "?session_id={CHECKOUT_SESSION_ID}" + "&delivery_data=" + delivery_data + "&account_details=" + account_details,
             cancel_url = "http://127.0.0.1/Github/UI/customer/delivery_order.html"
         )
         return jsonify({'id': checkout_session.id})

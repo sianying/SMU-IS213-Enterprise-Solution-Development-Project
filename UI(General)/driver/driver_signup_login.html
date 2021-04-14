@@ -391,7 +391,7 @@
         if(errors.length == 0){
 
             // after successfully passing form validation, invoke register user complex microservice to register the user
-            var serviceURL = "http://localhost:5105/register_user/" + usernameSU;
+            var serviceURL = "http://127.0.0.1:8000/api/v1/register_user/" + usernameSU;
             const details = {
                 method: "POST",
                 headers: {
@@ -460,7 +460,7 @@
         if(errors.length == 0){
 
             // after successfully passing form validation, invoke login microservice to check if user has an account and if input details are correct as per the database
-            var serviceURL = "http://localhost:5005/authenticate"; //invoking login microservice
+            var serviceURL = "http://127.0.0.1:8000/api/v1/authenticate"; //invoking login microservice
             const details = {
                 method: "POST",
                 headers: {
@@ -497,102 +497,6 @@
             });
         }
     });
-
-    // fetch(serviceURL, {
-    //     method: "POST",
-    //     headers: {
-    //         'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify({
-    //         "username": username,
-    //         "password": password,
-    //         "account_type": "driver"
-    //     })
-    // })
-    // .then(function (response) {
-    //     data = response.json();
-    //     console.log(data);
-        // account = {
-        //     "account_type": data.account_type,
-        //     "driver_ID": data.driver_ID
-        // }
-        // localStorage.setItem("account", account);
-        // console.log(account);
-        // location.replace("http://localhost/esd/project/delivery_order.html");
-    //     return data
-    //     // return response.json();
-    // })
-    // .then(function (result) {
-    //     json = JSON.stringify({
-    //         "username": result.data.username,
-    //         "driver_ID": result.data.driver_ID,
-    //         "account_type": "driver"
-    //     });
-    //     console.log(json);
-    //     localStorage.setItem("account_details", json);
-    //     location.replace("../driver/driver_home.html");
-        
-    // })
-    // .catch(function (error) {
-    //     console.log("Error:", error);
-    // });
-    // });
-
-    //     fetch(serviceURL, {
-    //         method: "POST",
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //         },
-    //         body: JSON.stringify({
-    //             "password": passwordSU,
-    //             "name": fullnameSU,
-    //             "email": emailSU,
-    //             "teleID": teleID,
-    //             "mobile": contactSU,
-    //             "account_type": "driver",
-    //             "vehicle_no": carplateSU
-    //         })
-    //     })
-    //     .then(function (response) {
-    //         data = response.json();
-    //         console.log(data);
-    //         return data
-    //         // return response.json();
-    //     })
-    //     .then(function (result) {
-    //         if (result.code == 201){
-    //             json = JSON.stringify({
-    //                 "username": result.data.username,
-    //                 "driver_ID": result.data.driver_ID,
-    //                 "account_type": "driver"
-    //                 });
-    //             console.log(json);  
-    //             localStorage.setItem("account_details", json);
-    //             // location.replace("./driver_home.html");
-    //             // alert("You have successfully registered, please click this" + "<a href='t.me/Testing_jww_bot'> link </a> to register as a driver!")
-    //             alert("You have successfully registered, please click 'ok' to register with our bot to receive updates.")
-    //                 // window.open("http://t.me/Testing_jww_bot", "_blank");
-    //             location.replace("../driver/driver_home.html");
-    //         }
-    //         else{
-    //             var message = "Verification not completed or verification failed."
-    //             console.log(message);
-    //             $("#errorSU").html(`<p style = 'margin: 2px; font-size: 10px; color:red;'>
-    //                                     The username is taken or the account exists
-    //                                 </p>`);
-    //             return message
-    //         }
-    //     })
-    //     .catch(function (error) {
-    //         console.log("Error:", error);
-    //     });
-
-    // });
-    
-    
-
-
-   
 
 
 </script>

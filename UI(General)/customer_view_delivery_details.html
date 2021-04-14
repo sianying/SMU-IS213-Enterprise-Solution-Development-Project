@@ -114,7 +114,7 @@
                 </div>
             </div>
 
-            <div class='container' v-if='!hasDeliveries'>
+            <div class='container' v-if='error'>
                 <div class='row'>
                     <!-- <div class='col'></div> -->
                     <div class='col mx-auto'><h1 class='pt-3 text-center' style='color:#CEA68C; font-family: "Patua One", cursive;'>You have no deliveries.</h1></div>
@@ -159,11 +159,11 @@
         <script>
             document.getElementById("log-out").addEventListener("click", function(){
                     localStorage.clear();
-                    location.replace("../landing.html");
+                    location.replace("landing.html");
                 });
             var session = JSON.parse(localStorage.getItem("account_details"));
             var customer_ID = session.customer_ID;
-            var get_details_url = "http://127.0.0.1:5102/customer_view_details/" + customer_ID;
+            var get_details_url = "http://127.0.0.1:8000/api/v1/customer_view_details/" + customer_ID;
             var app = new Vue({
                 el: "#app",
                 data:{
@@ -188,7 +188,7 @@
                                     // no book in db
                                     this.error = data.message;
                                     // this.loading = false
-                                    this.hasDeliveries = false
+                                    // this.hasDeliveries = false
                                 // } else {
                                 //     this.books = data.data.books;
                                 }

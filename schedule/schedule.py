@@ -312,7 +312,7 @@ def add_schedules_for_month(driver_ID):
     data = request.get_json()
     today_date = data['today_date']
 
-    schedule = Schedule.query.filter_by(driver_ID=driver_ID).filter_by(delivery_date=today_date).first()
+    schedule = Schedule.query.filter_by(driver_ID=driver_ID).first()
     if schedule:
         return jsonify({
             "code": 400,
@@ -323,9 +323,9 @@ def add_schedules_for_month(driver_ID):
     year_and_month='2021-04-'
     schedule = Schedule.query.order_by(Schedule.SID.desc()).first()
     if (schedule):
-        SID = 1
-    else:
         SID = schedule.SID + 1
+    else:
+        SID = 1
     current_day = int(today_date[-2:])
     timeslots = {
         "t_8_to_10": False,
