@@ -101,7 +101,7 @@
                 <li><a href="../customer/profile.html">Profile</a></li>
             </ul>
         </nav>
-        <a class="LogOut" href="../landing.html"><button class='btn'>Log Out</button></a>
+        <button id="log-out" class='btn'>Log Out</button>
     </header>
     
     <div class="container-fluid" id='app'>
@@ -149,6 +149,10 @@
     // processOrder as the serviceURL, temporary port: 5100
     
     // console.log(serviceURL);
+    document.getElementById("log-out").addEventListener("click", function(){
+            localStorage.clear();
+            location.replace("../landing.html");
+        });
     var app = new Vue({
         el: '#app',
         data:{
@@ -166,14 +170,21 @@
                 // retrieves the session ID from the URL
                 let params = new URLSearchParams(location.search);
                 let session_id = params.get('session_id');
-                console.log(session_id);
+                let delivery_data = JSON.parse(params.get('delivery_data'));
+                let account_details = params.get('account_details');
 
-                delivery_data = JSON.parse(localStorage.getItem("delivery_data"));
+                localStorage.setItem("account_details", account_details);
+                //parse to JS object to access variables
+                account_details = JSON.parse(account_details);
+
+                // delivery_data = JSON.parse(localStorage.getItem("delivery_data"));
                 // retrieve the Customer ID 
-                account_details = JSON.parse(localStorage.getItem("account_details"));
+                // account_details = JSON.parse(localStorage.getItem("account_details"));
+                // localStorage.removeItem("delivery_data");
                 // console.log(account_details)
                 if (account_details.account_type == "customer"){
                     customer_ID = account_details.customer_ID;
+                    console.log(customer_ID);
                 }
                 else {
                     console.log("Delivery order failed to be created.")

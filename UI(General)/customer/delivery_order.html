@@ -43,7 +43,7 @@
                 <li><a href="../customer/profile.html">Profile</a></li>
             </ul>
         </nav>
-        <a class="LogOut" href="../landing.html"><button class='btn'>Log Out</button></a>
+        <button id="log-out" class='btn'>Log Out</button>
     </header>
     <div id='app' class="container-fluid">
 
@@ -201,6 +201,10 @@
 
 
 <script>
+    document.getElementById("log-out").addEventListener("click", function(){
+            localStorage.clear();
+            location.replace("../landing.html");
+        });
 
     var app = new Vue({
         el: "#app",
@@ -344,7 +348,7 @@
                     // var deliveryItem = $("#deliveryItem").val();
                     // var size = $("#size").val();
                     // var weight = $("#weight").val();
-                    json = JSON.stringify({
+                    delivery_data = {
                         "delivery_item": deliveryItem,
                         "description": description,
                         "pickup": pickup,
@@ -354,10 +358,23 @@
                         "receiver_name": receiver_name,
                         "date": date,
                         "time": time
-                    });
-                    console.log(json);
-                    localStorage.setItem("delivery_data", json);
-                    
+                    };
+                    json = JSON.stringify(delivery_data);
+                    // json = JSON.stringify({
+                    //     "delivery_item": deliveryItem,
+                    //     "description": description,
+                    //     "pickup": pickup,
+                    //     "pickupPostalCode": pickupPostalCode,
+                    //     "destination": destination,
+                    //     "destinationPostalCode": destinationPostalCode,
+                    //     "receiver_name": receiver_name,
+                    //     "date": date,
+                    //     "time": time
+                    // });
+                    // console.log(json);
+                    account_details = JSON.parse(localStorage.getItem("account_details"));
+                    // localStorage.removeItem("delivery_data");
+                    // localStorage.setItem("delivery_data", json);
 
                     //invoking payment microservice
                     fetch("http://127.0.0.1:4242/create-checkout-session", {
@@ -377,7 +394,9 @@
                             "deliveryItem": deliveryItem,
                             "description": description,
                             "size": size,
-                            "weight": weight
+                            "weight": weight,
+                            "delivery_data": delivery_data,
+                            "account_details": account_details
                         }),
                     })
                     .then(function (response) {

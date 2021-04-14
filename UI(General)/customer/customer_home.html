@@ -49,7 +49,7 @@
                 <li><a href="../customer/profile.html">Profile</a></li>
             </ul>
         </nav>
-        <a class="LogOut" href="../landing.html"><button class='btn'>Log Out</button></a>
+        <button id="log-out" class='btn'>Log Out</button>
     </header>
 
 
@@ -89,6 +89,10 @@
             strings: ["faster.", "easier.", 'better.'],
             typeSpeed : 60,
             backSpeed: 40,
+        });
+        document.getElementById("log-out").addEventListener("click", function(){
+            localStorage.clear();
+            location.replace("../landing.html");
         });
     </script>
     <!-- Option 1: Bootstrap Bundle with Popper -->

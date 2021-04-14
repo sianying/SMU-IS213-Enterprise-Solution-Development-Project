@@ -96,7 +96,7 @@
                 <li><a href="driver_profile.html">Profile</a></li>
             </ul>
         </nav>
-        <a class="LogOut" href="../landing.html"><button class='btn'>Log Out</button></a>
+        <button id="log-out" class='btn'>Log Out</button>
     </header>
 
 
@@ -149,10 +149,10 @@
     </div>
     
     <script>
-        // var session = JSON.parse(localStorage.getItem("account_details"));
-        // var customer_ID = session.customer_ID;
-        // retreives the session ID from the URL
-        //var get_details_url = "http://localhost:5101/driver_job_details/1" ;
+        document.getElementById("log-out").addEventListener("click", function(){
+            localStorage.clear();
+            location.replace("../landing.html");
+        });
         var app = new Vue({
             el: "#app",
             data:{
