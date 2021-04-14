@@ -348,7 +348,7 @@
                     // var deliveryItem = $("#deliveryItem").val();
                     // var size = $("#size").val();
                     // var weight = $("#weight").val();
-                    json = JSON.stringify({
+                    delivery_data = {
                         "delivery_item": deliveryItem,
                         "description": description,
                         "pickup": pickup,
@@ -358,10 +358,23 @@
                         "receiver_name": receiver_name,
                         "date": date,
                         "time": time
-                    });
+                    };
+                    json = JSON.stringify(delivery_data);
+                    // json = JSON.stringify({
+                    //     "delivery_item": deliveryItem,
+                    //     "description": description,
+                    //     "pickup": pickup,
+                    //     "pickupPostalCode": pickupPostalCode,
+                    //     "destination": destination,
+                    //     "destinationPostalCode": destinationPostalCode,
+                    //     "receiver_name": receiver_name,
+                    //     "date": date,
+                    //     "time": time
+                    // });
                     // console.log(json);
-                    localStorage.removeItem("delivery_data");
-                    localStorage.setItem("delivery_data", json);
+                    account_details = JSON.parse(localStorage.getItem("account_details"));
+                    // localStorage.removeItem("delivery_data");
+                    // localStorage.setItem("delivery_data", json);
 
                     //invoking payment microservice
                     fetch("http://127.0.0.1:4242/create-checkout-session", {
@@ -381,7 +394,9 @@
                             "deliveryItem": deliveryItem,
                             "description": description,
                             "size": size,
-                            "weight": weight
+                            "weight": weight,
+                            "delivery_data": delivery_data,
+                            "account_details": account_details
                         }),
                     })
                     .then(function (response) {

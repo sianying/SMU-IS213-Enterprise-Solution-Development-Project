@@ -170,15 +170,21 @@
                 // retrieves the session ID from the URL
                 let params = new URLSearchParams(location.search);
                 let session_id = params.get('session_id');
-                // console.log(session_id);
+                let delivery_data = JSON.parse(params.get('delivery_data'));
+                let account_details = params.get('account_details');
 
-                delivery_data = JSON.parse(localStorage.getItem("delivery_data"));
+                localStorage.setItem("account_details", account_details);
+                //parse to JS object to access variables
+                account_details = JSON.parse(account_details);
+
+                // delivery_data = JSON.parse(localStorage.getItem("delivery_data"));
                 // retrieve the Customer ID 
-                account_details = JSON.parse(localStorage.getItem("account_details"));
-                localStorage.removeItem("delivery_data");
+                // account_details = JSON.parse(localStorage.getItem("account_details"));
+                // localStorage.removeItem("delivery_data");
                 // console.log(account_details)
                 if (account_details.account_type == "customer"){
                     customer_ID = account_details.customer_ID;
+                    console.log(customer_ID);
                 }
                 else {
                     console.log("Delivery order failed to be created.")

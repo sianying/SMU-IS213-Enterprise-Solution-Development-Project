@@ -172,9 +172,12 @@ def create_delivery():
 
     #query from the last entry and increment by 1 for delivery_ID
     delivery = Delivery.query.order_by(Delivery.delivery_ID.desc()).first()
-    delivery_ID= delivery.delivery_ID + 1
-    created=datetime.datetime.now()
-    last_updated=created
+    if (delivery):
+        delivery_ID = 1
+    else:
+        delivery_ID = delivery.delivery_ID + 1
+    created = datetime.datetime.now()
+    last_updated = created
 
     delivery = Delivery(delivery_ID=delivery_ID, **data, delivery_status="NEW", created=created, last_updated=last_updated)
     # driver_ID=request.json.get('driver_ID', None)
