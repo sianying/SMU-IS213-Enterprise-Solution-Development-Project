@@ -322,7 +322,10 @@ def add_schedules_for_month(driver_ID):
 
     year_and_month='2021-04-'
     schedule = Schedule.query.order_by(Schedule.SID.desc()).first()
-    SID = schedule.SID + 1
+    if (schedule):
+        SID = 1
+    else:
+        SID = schedule.SID + 1
     current_day = int(today_date[-2:])
     timeslots = {
         "t_8_to_10": False,

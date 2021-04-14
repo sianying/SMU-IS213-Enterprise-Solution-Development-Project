@@ -22,6 +22,9 @@ def create_checkout_session():
     size = post_data['size']
     weight = post_data['weight']
 
+    delivery_data = json.dumps(post_data['delivery_data'])
+    account_details = json.dumps(post_data['account_details'])
+
     #price processing
     pricing = {"Small": 3, "Medium": 6, "Large": 9} 
     for key in pricing:
@@ -45,7 +48,7 @@ def create_checkout_session():
                 # }
         ],
             mode="payment",
-            success_url= "http://127.0.0.1/Github/UI/payment/success.html" + "?session_id={CHECKOUT_SESSION_ID}",
+            success_url= "http://127.0.0.1/Github/UI/payment/success.html" + "?session_id={CHECKOUT_SESSION_ID}&delivery_data=" + delivery_data + "&account_details=" + account_details,
             cancel_url = "http://127.0.0.1/Github/UI/customer/delivery_order.html"
         )
         return jsonify({'id': checkout_session.id})
