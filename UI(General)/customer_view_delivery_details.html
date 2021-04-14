@@ -189,6 +189,9 @@
                                 // } else {
                                 //     this.books = data.data.books;
                                 }
+                                if (data.code == 404){
+                                    this.error = data.message;
+                                }
                                 if (data.code == 202){
                                     this.hasDeliveries = true
                                     this.deliveries = data.data.customer_view_details

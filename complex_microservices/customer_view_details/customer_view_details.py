@@ -31,10 +31,12 @@ driverURL=environ.get('driverURL') or "http://127.0.0.1:5001/driver"
 def customer_view_details(customer_ID):
     try:
         result2= retrieve_all_deliveries(customer_ID)
+        if result2["code"] not in range(200, 300):
+            return result2
         
         # 3. for each job, add the customer name and customer contact. Next, add driver name and contact no.
         # Once everything is ready, return the final_result. 
-        list_of_deliveries=result2['data']['delivery_result']  
+        list_of_deliveries=result2['data']['delivery_result']
 
         # print("List of deliveries:")
         # print(list_of_deliveries)
@@ -103,12 +105,12 @@ def retrieve_all_deliveries(customer_ID):
         # # continue even if this invocation fails
         # print("Delivery status ({:d}) sent to the error microservice:".format(
         #     code), delivery_result)
-
-        return {
-            "code": 502,
-            "data": {"delivery_result": delivery_result},
-            "message": "Failed to retrieve the customer's list of deliveries, sent for error handling."
-        }
+        return delivery_result
+        # return {
+        #     "code": 502,
+        #     "data": {"delivery_result": delivery_result},
+        #     "message": "Failed to retrieve the customer's list of deliveries, sent for error handling."
+        # }
 
     return {
         "code": 201,
