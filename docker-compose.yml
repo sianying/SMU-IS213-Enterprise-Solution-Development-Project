@@ -22,7 +22,8 @@ services:
       ports:
         - "5000:5000"
       environment:
-        dbURL: mysql+mysqlconnector://root@host.docker.internal:3306/delivery
+        dbURL: mysql+mysqlconnector://admin:Password123@esd-database.cjlm2oobbep2.ap-southeast-1.rds.amazonaws.com/delivery
+        #dbURL: mysql+mysqlconnector://root@host.docker.internal:3306/delivery
         #dbURL: mysql+mysqlconnector://admin:Password123@esd-database.cg2v6ek4an29.us-east-1.rds.amazonaws.com/delivery
         PYTHONUNBUFFERED: 1
 
@@ -37,7 +38,8 @@ services:
         ports:
             - "5001:5001"
         environment:
-            dbURL: mysql+mysqlconnector://root@host.docker.internal:3306/driver
+            dbURL: mysql+mysqlconnector://admin:Password123@esd-database.cjlm2oobbep2.ap-southeast-1.rds.amazonaws.com/driver
+            #dbURL: mysql+mysqlconnector://root@host.docker.internal:3306/driver
             #dbURL: mysql+mysqlconnector://admin:Password123@esd-database.cg2v6ek4an29.us-east-1.rds.amazonaws.com/driver
             PYTHONUNBUFFERED: 1
 
@@ -52,7 +54,8 @@ services:
         ports:
             - "5002:5002"
         environment:
-            dbURL: mysql+mysqlconnector://root@host.docker.internal:3306/customer
+            dbURL: mysql+mysqlconnector://admin:Password123@esd-database.cjlm2oobbep2.ap-southeast-1.rds.amazonaws.com/customer
+            #dbURL: mysql+mysqlconnector://root@host.docker.internal:3306/customer
             #dbURL: mysql+mysqlconnector://admin:Password123@esd-database.cg2v6ek4an29.us-east-1.rds.amazonaws.com/customer
             PYTHONUNBUFFERED: 1
 
@@ -80,7 +83,8 @@ services:
         ports:
             - "5004:5004"
         environment:
-            dbURL: mysql+mysqlconnector://root@host.docker.internal:3306/schedule
+            dbURL: mysql+mysqlconnector://admin:Password123@esd-database.cjlm2oobbep2.ap-southeast-1.rds.amazonaws.com/schedule
+            #dbURL: mysql+mysqlconnector://root@host.docker.internal:3306/schedule
             #dbURL: mysql+mysqlconnector://admin:Password123@esd-database.cg2v6ek4an29.us-east-1.rds.amazonaws.com/schedule
             PYTHONUNBUFFERED: 1
             
@@ -95,7 +99,8 @@ services:
         ports:
             - "5005:5005"
         environment:
-            dbURL: mysql+mysqlconnector://root@host.docker.internal:3306/login
+            dbURL: mysql+mysqlconnector://admin:Password123@esd-database.cjlm2oobbep2.ap-southeast-1.rds.amazonaws.com/login
+            #dbURL: mysql+mysqlconnector://root@host.docker.internal:3306/login
             #dbURL: mysql+mysqlconnector://admin:Password123@esd-database.cg2v6ek4an29.us-east-1.rds.amazonaws.com/login
             PYTHONUNBUFFERED: 1
 
