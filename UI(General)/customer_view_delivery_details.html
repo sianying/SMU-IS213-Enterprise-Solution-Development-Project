@@ -183,11 +183,11 @@
                                 console.log(response);
                                 // console.log("hello")
                                 console.log(data);
-                                if (data.code === 404) {
+                                if (data.code === 500) {
                                     // no book in db
                                     this.error = data.message;
-                                } else {
-                                    this.books = data.data.books;
+                                // } else {
+                                //     this.books = data.data.books;
                                 }
                                 if (data.code == 202){
                                     this.hasDeliveries = true
