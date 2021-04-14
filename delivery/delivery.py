@@ -173,9 +173,9 @@ def create_delivery():
     #query from the last entry and increment by 1 for delivery_ID
     delivery = Delivery.query.order_by(Delivery.delivery_ID.desc()).first()
     if (delivery):
-        delivery_ID = 1
-    else:
         delivery_ID = delivery.delivery_ID + 1
+    else:
+        delivery_ID = 1
     created = datetime.datetime.now()
     last_updated = created
 

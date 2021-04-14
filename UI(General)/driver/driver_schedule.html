@@ -169,7 +169,7 @@
     var session = JSON.parse(localStorage.getItem("account_details"));
     var driver_ID = session.driver_ID;
     async function fetchEvents() {
-        const response = await fetch("http://localhost:5000/delivery/driver/" + driver_ID) //fetching the deliveries assigned to the driver
+        const response = await fetch("http://127.0.0.1:8000/api/v1/delivery/driver/" + driver_ID) //fetching the deliveries assigned to the driver
         const data = await response.json()
         .then(data =>{
         //console.log(data)

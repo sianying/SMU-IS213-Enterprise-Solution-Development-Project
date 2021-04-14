@@ -217,13 +217,16 @@
             t_12_to_2: false,
             availableSchedules: false
         },
+        mounted: function(){
+            this.checkSchedule();
+        },
         methods: {
             checkSchedule: function() {
             var date = $("#date").val();
             var time = $('#time').val();
 
             //getting all schedules on selected date
-            var get_Schedule = "http://127.0.0.1:5004/schedule/date/" + date;
+            var get_Schedule = "http://127.0.0.1:8000/api/v1/schedule/date/" + date;
             const response =
                             // fetch(get_all_schedule)
                             fetch(get_Schedule)
@@ -377,7 +380,8 @@
                     // localStorage.setItem("delivery_data", json);
 
                     //invoking payment microservice
-                    fetch("http://127.0.0.1:4242/create-checkout-session", {
+                    
+                    fetch("http://127.0.0.1:8000/api/v1/create_checkout_session", {
                         method: "POST",
                         headers: {
                             'Content-Type': 'application/json',

@@ -377,7 +377,7 @@
             if(errors.length == 0){
                 // console.log("hello")
                 // after successfully passing form validation, invoke register user complex microservice to register the user
-                var serviceURL = "http://localhost:5105/register_user/" + usernameSU;
+                var serviceURL = "http://127.0.0.1:8000/api/v1/register_user/" + usernameSU;
                 const details = {
                     "method": "POST",
                     headers: {
@@ -474,7 +474,7 @@
             
             if(errors.length ==0){
                 // after successfully passing form validation, invoke login microservice to check if user has an account and if input details are correct as per the database
-                var serviceURL = "http://localhost:5005/authenticate"; //invoking login microservice
+                var serviceURL = "http://127.0.0.1:8000/api/v1/authenticate"; //invoking login microservice
                 const details = {
                     method: "POST",
                     headers: {

@@ -1,5 +1,8 @@
 version: "3.8"
 
+#docker id
+docker_id: jingweisim
+
 volumes:
     rabbitmq_data:
     pgdata:
@@ -17,7 +20,7 @@ services:
       build:
         context: ./delivery            
         dockerfile: delivery.Dockerfile   
-      image: jingweisim/delivery:1.0
+      image: {{ docker_id }}/delivery:1.0
       restart: always
       ports:
         - "5000:5000"
@@ -33,7 +36,7 @@ services:
         build:
             context: ./driver
             dockerfile: driver.Dockerfile
-        image: jingweisim/driver:1.0
+        image: {{ docker_id }}/driver:1.0
         restart: always
         ports:
             - "5001:5001"
@@ -49,7 +52,7 @@ services:
         build:
             context: ./customer
             dockerfile: customer.Dockerfile
-        image: jingweisim/customer:1.0
+        image: {{ docker_id }}/customer:1.0
         restart: always
         ports:
             - "5002:5002"
@@ -65,7 +68,7 @@ services:
         build:
             context: ./payment
             dockerfile: payment.Dockerfile
-        image: jingweisim/payment:1.0
+        image: {{ docker_id }}/payment:1.0
         restart: always
         ports:
             - "4242:4242"
@@ -78,7 +81,7 @@ services:
         build:
             context: ./schedule
             dockerfile: schedule.Dockerfile
-        image: jingweisim/schedule:1.0
+        image: {{ docker_id }}/schedule:1.0
         restart: always
         ports:
             - "5004:5004"
@@ -94,7 +97,7 @@ services:
         build:
             context: ./login
             dockerfile: login.Dockerfile
-        image: jingweisim/login:1.0
+        image: {{ docker_id }}/login:1.0
         restart: always
         ports:
             - "5005:5005"
@@ -124,7 +127,7 @@ services:
         build:
             context: ./notification
             dockerfile: customer_noti.Dockerfile
-        image: jingweisim/customer_noti:1.0
+        image: {{ docker_id }}/customer_noti:1.0
         restart: always
         depends_on:
             - rabbitmq
@@ -137,7 +140,7 @@ services:
         build:
             context: ./notification
             dockerfile: driver_noti.Dockerfile
-        image: jingweisim/driver_noti:1.0
+        image: {{ docker_id }}/driver_noti:1.0
         restart: always
         depends_on:
             - rabbitmq
@@ -150,7 +153,7 @@ services:
         build:
             context: ./notification
             dockerfile: error.Dockerfile
-        image: jingweisim/error:1.0
+        image: {{ docker_id }}/error:1.0
         restart: always
         depends_on:
             - rabbitmq
@@ -169,7 +172,7 @@ services:
         build:
             context: ./complex_microservices/schedule_driver
             dockerfile: schedule_driver.Dockerfile
-        image: jingweisim/schedule_driver:1.0
+        image: {{ docker_id }}/schedule_driver:1.0
         restart: always
         depends_on:
             - schedule
@@ -188,7 +191,7 @@ services:
         build:
             context: ./complex_microservices/process_order
             dockerfile: process_order.Dockerfile
-        image: jingweisim/process_order:1.0
+        image: {{ docker_id }}/process_order:1.0
         restart: always
         depends_on:
             - delivery
@@ -220,7 +223,7 @@ services:
         build:
             context: ./complex_microservices/driver_view_details
             dockerfile: driver_view_details.Dockerfile
-        image: jingweisim/driver_view_details:1.0
+        image: {{ docker_id }}/driver_view_details:1.0
         restart: always
         depends_on:
             - delivery
@@ -239,7 +242,7 @@ services:
         build:
             context: ./complex_microservices/customer_view_details
             dockerfile: customer_view_details.Dockerfile
-        image: jingweisim/customer_view_details:1.0
+        image: {{ docker_id }}/customer_view_details:1.0
         restart: always
         depends_on:
             - delivery
@@ -259,7 +262,7 @@ services:
         build:
             context: ./complex_microservices/complete_delivery
             dockerfile: complete_delivery.Dockerfile
-        image: jingweisim/complete_delivery:1.0
+        image: {{ docker_id }}/complete_delivery:1.0
         restart: always
         depends_on:
             - delivery
@@ -283,7 +286,7 @@ services:
         build:
             context: ./complex_microservices/register_user
             dockerfile: register_user.Dockerfile
-        image: jingweisim/register_user:1.0
+        image: {{ docker_id }}/register_user:1.0
         restart: always
         depends_on:
             - login
@@ -307,7 +310,7 @@ services:
         build:
             context: ./complex_microservices/register_tele_notif
             dockerfile: register_tele_notif.Dockerfile
-        image: jingweisim/register_tele_notif:1.0
+        image: {{ docker_id }}/register_tele_notif:1.0
         restart: always
         depends_on:
             - customer
