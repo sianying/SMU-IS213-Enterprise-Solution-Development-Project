@@ -83,7 +83,7 @@ def get_existing_info(delivery_ID):
         return {
             "code": 501,
             "data": {"delivery_result": delivery_result},
-            "message": "Delivery update failure, sent for error handling."
+            "message": "Failed to retrieve delivery data, sent for error handling."
         }
 
     return {
