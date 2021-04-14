@@ -426,7 +426,7 @@
                             "account_type": "customer"
                         });
                         console.log(data);
-                        sessionStorage.setItem("account_details", json); 
+                        localStorage.setItem("account_details", json); 
                         // alerting user to sign up for our telegram bot
                         alert("You have successfully registered, please click 'ok' to register with our bot to receive updates.");
                         window.open("http://t.me/Testing_jww_bot", "_blank");
@@ -496,7 +496,7 @@
                     "account_type": "customer"
                     });
                     console.log(json);
-                    sessionStorage.setItem("account_details", json);
+                    localStorage.setItem("account_details", json);
                     location.replace("../customer/delivery_order.html");
                 }
                 else{

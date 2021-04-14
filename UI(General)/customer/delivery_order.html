@@ -356,7 +356,8 @@
                         "time": time
                     });
                     console.log(json);
-                    sessionStorage.setItem("delivery_data", json);
+                    localStorage.setItem("delivery_data", json);
+                    
 
                     //invoking payment microservice
                     fetch("http://127.0.0.1:4242/create-checkout-session", {

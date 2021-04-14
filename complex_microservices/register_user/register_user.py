@@ -110,9 +110,9 @@ def register_user(username):
 
     # if reached here, not a JSON request.
     return jsonify({
-        "code": 400,
+        "code": 402,
         "message": "Invalid JSON input: " + str(request.get_data())
-    }), 400
+    }), 402
 
 
 def registerCustomer(data):

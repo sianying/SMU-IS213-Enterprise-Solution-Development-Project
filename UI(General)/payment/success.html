@@ -168,9 +168,9 @@
                 let session_id = params.get('session_id');
                 console.log(session_id);
 
-                delivery_data = JSON.parse(sessionStorage.getItem("delivery_data"));
+                delivery_data = JSON.parse(localStorage.getItem("delivery_data"));
                 // retrieve the Customer ID 
-                account_details = JSON.parse(sessionStorage.getItem("account_details"));
+                account_details = JSON.parse(localStorage.getItem("account_details"));
                 // console.log(account_details)
                 if (account_details.account_type == "customer"){
                     customer_ID = account_details.customer_ID;
