@@ -38,6 +38,8 @@
 
 <!-- Axios -->
 <script src="https://unpkg.com/axios/dist/axios.js"></script>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 
 <style>
 
@@ -149,9 +151,10 @@
             <li><a href="../customer/profile.html">Profile</a></li>
         </ul>
     </nav>
-    <a class="LogOut" href="../landing.html"><button class='btn'>Log Out</button></a>
+    <button id="log-out" class='btn'>Log Out</button>
 </header>
 <body>
+    <div id="error"></div>
     <div style = 'display: flex; justify-content: center;'>
         <div id='calendar'  style="width: 50%; height:50%; margin-top: 20px; font-family: roboto; color: #9E8A81"></div>
     </div>
@@ -159,6 +162,10 @@
 </body>
 
 <script>
+    document.getElementById("log-out").addEventListener("click", function(){
+            localStorage.clear();
+            location.replace("../landing.html");
+        });
     var session = JSON.parse(localStorage.getItem("account_details"));
     var driver_ID = session.driver_ID;
     async function fetchEvents() {
@@ -166,9 +173,15 @@
         const data = await response.json()
         .then(data =>{
         //console.log(data)
+            if (data.code == 404){
+                $("#error").show(); 
+                $("#error").text(data.message); 
+            }
             if (data.code === 403) {
+                $("#error").hide();
             }
             else {
+                $("#error").hide();
                 //console.log(data.data.deliveries)
                 events = [];
                 for(deli of data.data.deliveries){

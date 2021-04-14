@@ -101,67 +101,66 @@
                     <li><a href="customer/profile.html">Profile</a></li>
                 </ul>
             </nav>
-            <a class="LogOut" href="landing.html"><button class='btn'>Log Out</button></a>
+            <button id="log-out" class='btn'>Log Out</button>
         </header>
         
 
-        <div id='app' @load='getDeliveries()'>
+        <div id='app'>
             <div class='container'>
                 <div class='row'>
                     <div class='col'></div>
-                    <div class='col'><h1 class='pt-3' style='color:#CEA68C; font-family: "Patua One", cursive;'>My Deliveries</h1></div>
+                    <div class='col'><h1 v-if='hasDeliveries' class='pt-3' style='color:#CEA68C; font-family: "Patua One", cursive;'>My Deliveries</h1></div>
                     <div class='col'></div>
                 </div>
-                <div class='row' v-if='!hasDeliveries'>
-        
-                    <div id="loader"></div>
-                    
-                    
-                </div>
-                
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class='col mx-auto'></div>
-                            <div class='col d-flex justify-content-center smx-auto loader'></div>
-                            <div class='col mx-auto'></div>
-                        </div>
-                    </div>
-                <table v-if='hasDeliveries' class = "table table-striped animate__animated animate__backInUp" style = 'font-family: roboto; color: #808080;'>
-                    <!-- <div class='col-md-8 my-3' style='background-color:#FFFAF0;'>
-                        hello
-                    </div>
-                    <div class='col-md-4 my-3'>
-                        hello
-                    </div> -->
-                    <thead>
-                        <tr>
-                            <th>Delivery ID</th>
-                            <th>Delivery Item</th>
-                            <th>Delivery Description</th>
-                            <th>Delivery Status</th>
-                            <th>Delivery Date</th>
-                            <th>Pickup Location</th>
-                            <th>Destination</th>
-                            <th>Driver Mobile Number</th>
-                            <th>Payment Status</th>
-                        </tr>
-                        <tr v-for="delivery in deliveries">
-                                <td>{{delivery.delivery_ID}}</td>
-                                <td>{{delivery.delivery_item}}</td>
-                                <td>{{delivery.description}}</td>
-                                <td>{{delivery.delivery_status}}</td>
-                                <td>{{delivery.delivery_date.slice(0,-12)}}</td>
-                                <td>{{delivery.pickup_location}}</td>
-                                <td>{{delivery.destination}}</td>
-                                <td>{{delivery.driver_mobile}}</td>
-                                <td>{{delivery.payment_status}}</td>
-
-                        </tr>
-                    </thead>
-                </table>
             </div>
+
+            <div class='container' v-if='!hasDeliveries'>
+                <div class='row'>
+                    <!-- <div class='col'></div> -->
+                    <div class='col mx-auto'><h1 class='pt-3 text-center' style='color:#CEA68C; font-family: "Patua One", cursive;'>You have no deliveries.</h1></div>
+                    <!-- <div class='col'></div> -->
+                </div>
+            </div>
+            
+            <table v-if='hasDeliveries' class = "table table-striped animate__animated animate__backInUp" style = 'font-family: roboto; color: #808080;'>
+                <!-- <div class='col-md-8 my-3' style='background-color:#FFFAF0;'>
+                    hello
+                </div>
+                <div class='col-md-4 my-3'>
+                    hello
+                </div> -->
+                <thead>
+                    <tr>
+                        <th>Delivery ID</th>
+                        <th>Delivery Item</th>
+                        <th>Delivery Description</th>
+                        <th>Delivery Status</th>
+                        <th>Delivery Date</th>
+                        <th>Pickup Location</th>
+                        <th>Destination</th>
+                        <th>Driver Mobile Number</th>
+                        <th>Payment Status</th>
+                    </tr>
+                    <tr v-for="delivery in deliveries">
+                        <td>{{delivery.delivery_ID}}</td>
+                        <td>{{delivery.delivery_item}}</td>
+                        <td>{{delivery.description}}</td>
+                        <td>{{delivery.delivery_status}}</td>
+                        <td>{{delivery.delivery_date.slice(0,-12)}}</td>
+                        <td>{{delivery.pickup_location}}</td>
+                        <td>{{delivery.destination}}</td>
+                        <td>{{delivery.driver_mobile}}</td>
+                        <td>{{delivery.payment_status}}</td>
+                    </tr>
+                </thead>
+            </table>
         </div>
+
         <script>
+            document.getElementById("log-out").addEventListener("click", function(){
+                    localStorage.clear();
+                    location.replace("../landing.html");
+                });
             var session = JSON.parse(localStorage.getItem("account_details"));
             var customer_ID = session.customer_ID;
             var get_details_url = "http://127.0.0.1:5102/customer_view_details/" + customer_ID;
@@ -169,7 +168,9 @@
                 el: "#app",
                 data:{
                     hasDeliveries: false,
-                    deliveries: []
+                    deliveries: [],
+                    error: false,
+                    // loading: true
                 },
                 mounted: function(){
                     this.getDeliveries()
@@ -180,18 +181,20 @@
                         fetch(get_details_url)
                             .then(response => response.json())
                             .then(data => {
-                                console.log(response);
+                                // console.log(response);
                                 // console.log("hello")
                                 console.log(data);
-                                if (data.code === 500) {
+                                if (data.code >= 400) {
                                     // no book in db
                                     this.error = data.message;
+                                    // this.loading = false
+                                    this.hasDeliveries = false
                                 // } else {
                                 //     this.books = data.data.books;
                                 }
-                                if (data.code == 404){
-                                    this.error = data.message;
-                                }
+                                // if (data.code == 404){
+                                //     this.error = data.message;
+                                // }
                                 if (data.code == 202){
                                     this.hasDeliveries = true
                                     this.deliveries = data.data.customer_view_details

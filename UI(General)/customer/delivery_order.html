@@ -43,7 +43,7 @@
                 <li><a href="../customer/profile.html">Profile</a></li>
             </ul>
         </nav>
-        <a class="LogOut" href="../landing.html"><button class='btn'>Log Out</button></a>
+        <button id="log-out" class='btn'>Log Out</button>
     </header>
     <div id='app' class="container-fluid">
 
@@ -201,6 +201,10 @@
 
 
 <script>
+    document.getElementById("log-out").addEventListener("click", function(){
+            localStorage.clear();
+            location.replace("../landing.html");
+        });
 
     var app = new Vue({
         el: "#app",
@@ -355,10 +359,9 @@
                         "date": date,
                         "time": time
                     });
-                    console.log(json);
+                    // console.log(json);
                     localStorage.removeItem("delivery_data");
                     localStorage.setItem("delivery_data", json);
-                    
 
                     //invoking payment microservice
                     fetch("http://127.0.0.1:4242/create-checkout-session", {

@@ -48,7 +48,7 @@
                 <li><a href="driver_profile.html">Profile</a></li>
             </ul>
         </nav>
-        <a class="LogOut" href="../landing.html"><button class='btn'>Log Out</button></a>
+        <button id="log-out" class='btn'>Log Out</button>
     </header>
 
     <div class = 'container-fluid' style="padding-top: 20%; padding-left: 6%;">
@@ -62,6 +62,11 @@
             strings: ["faster.", "easier.", 'better.'],
             typeSpeed : 60,
             backSpeed: 40,
+        });
+
+        document.getElementById("log-out").addEventListener("click", function(){
+            localStorage.clear();
+            location.replace("../landing.html");
         });
     </script>
 

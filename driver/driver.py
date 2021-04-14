@@ -95,10 +95,10 @@ def create_driver():
     #create driver_ID, auto increment
     #if no driver in the database, the incoming driver have an id of 0
     recent_driver = Driver.query.order_by(Driver.driver_ID.desc()).first()
-    if not (recent_driver):
-        driver_ID = 0
-    else:
+    if (recent_driver):
         driver_ID = recent_driver.driver_ID + 1
+    else:
+        driver_ID = 1
 
     data = request.get_json()
     driver = Driver(driver_ID, **data)
