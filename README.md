@@ -1,6 +1,8 @@
 Please do the following before using our application :D
 
-- import all the required sql files into localhost phpmyadmin
+- **********************import all the required sql files into localhost phpmyadmin
+
+- In docker-compose.yml, please replace all 'jingweisim' with your docker ID.
 
 - In payment.py, there is a variable called success_url which leads to the success.html found under the UI(General)/Payment folder. This will have to be replaced to the absolute link on the grader's computer, because we are using the Stripe API which requires an absolute link to be used. This will depend on where the grader has placed this ESD folder.
 
