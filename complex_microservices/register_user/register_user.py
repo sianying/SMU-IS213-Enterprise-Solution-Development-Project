@@ -25,7 +25,7 @@ CORS(app)
 #3. register users using Login Microservice (create new account)
 ##############################################################################################################
 
-login_URL = environ.get('loginURL') or "http://127.0.0.1:5005"
+login_URL = environ.get('loginURL') or "http://127.0.0.1:5005"   #cannot add login at the back
 driver_URL = environ.get('driverURL') or "http://127.0.0.1:5001/driver"
 customer_URL = environ.get('customerURL') or "http://127.0.0.1:5002/customer"
 schedule_URL = environ.get('scheduleURL') or "http://127.0.0.1:5004/schedule"
@@ -110,9 +110,9 @@ def register_user(username):
 
     # if reached here, not a JSON request.
     return jsonify({
-        "code": 400,
+        "code": 402,
         "message": "Invalid JSON input: " + str(request.get_data())
-    }), 400
+    }), 402
 
 
 def registerCustomer(data):

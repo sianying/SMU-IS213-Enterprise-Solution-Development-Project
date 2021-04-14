@@ -375,7 +375,7 @@
 
             
             if(errors.length == 0){
-
+                // console.log("hello")
                 // after successfully passing form validation, invoke register user complex microservice to register the user
                 var serviceURL = "http://localhost:5105/register_user/" + usernameSU;
                 const details = {
@@ -417,16 +417,18 @@
 
                 // .then(function (result) {
                 .then(data =>{
+                    console.log(data)
                     if (data.code == 201){ //user successfully registered
+                        // console.log("hello")
                         json = JSON.stringify({
                             "username": data.data.username,
                             "customer_ID": data.data.customer_ID,
                             "account_type": "customer"
                         });
                         console.log(data);
-                        sessionStorage.setItem("account_details", json); 
+                        localStorage.setItem("account_details", json); 
                         // alerting user to sign up for our telegram bot
-                        alert("You have successfully registered, please click 'ok' to register with our bot to receive updates.")
+                        alert("You have successfully registered, please click 'ok' to register with our bot to receive updates.");
                         window.open("http://t.me/Testing_jww_bot", "_blank");
                         location.replace("../customer/delivery_order.html");
                     }
@@ -487,14 +489,14 @@
                 fetch(serviceURL, details)
                 .then(response => response.json())
                 .then(data => {
-                    if (result.code == 200){ //user has successfully logged in
+                    if (data.code == 200){ //user has successfully logged in
                     json = JSON.stringify({
-                    "username": result.data.username,
-                    "customer_ID": result.data.customer_ID,
+                    "username": data.data.username,
+                    "customer_ID": data.data.customer_ID,
                     "account_type": "customer"
                     });
                     console.log(json);
-                    sessionStorage.setItem("account_details", json);
+                    localStorage.setItem("account_details", json);
                     location.replace("../customer/delivery_order.html");
                 }
                 else{

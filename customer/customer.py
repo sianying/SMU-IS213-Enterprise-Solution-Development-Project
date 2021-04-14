@@ -16,6 +16,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconn
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/customer'
 #there is a need for authentication to the database using root (user) and pass(if there is any)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
 db = SQLAlchemy(app)
 
@@ -109,7 +110,7 @@ def create_customer():
     #if no customer in the database, the incoming customer have an id of 0
     recent_customer = Customer.query.order_by(Customer.customer_ID.desc()).first()
     if not (recent_customer):
-        customer_ID = 1000000
+        customer_ID = 1000
     else:
         customer_ID = recent_customer.customer_ID + 1
 

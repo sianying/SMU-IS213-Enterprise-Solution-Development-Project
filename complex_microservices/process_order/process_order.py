@@ -87,7 +87,7 @@ def processOrderCreation(session_id, delivery_data, customer_ID):
     # Invoke the payment microservice
     print('\n-----Invoking payment microservice-----')
     payment_data = invoke_http(payment_URL + "/" + session_id, method='GET')
-    # print('payment_results:', str(payment_data))
+    print('payment_results:', str(payment_data))
 
     code = payment_data['code']
     if code not in range(200, 300):
@@ -211,7 +211,7 @@ def send_notification(order):
 
     #1. Invoke the Driver Microservice to get the chat ID of the allocated driver
     print('\n-----Invoking Driver Microservice-----')
-    driver_data = invoke_http(driver_URL + "/" + str(driver_ID))
+    driver_data = invoke_http(driver_URL + "/" + str(driver_ID), method='GET')
     # print("Updated Driver's schedule"+ str(driver_data) + "\n")
 
     # #check the driver's data: if failure send to error microservice for logging
@@ -226,10 +226,11 @@ def send_notification(order):
         message=json.dumps(error_message)
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="driver.error", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2))
+        return error_message
     
     #2. Invoke the Customer Microservice to get the chat ID of the customer
     print('\n-----Invoking Customer Microservice-----')
-    customer_data = invoke_http(customer_URL + "/" + str(customer_ID))
+    customer_data = invoke_http(customer_URL + "/" + str(customer_ID), method='GET')
     # print("Customer's information: "+ str(customer_data) + "\n")
 
     # #check the customer's data: if failure send to error microservice for logging
@@ -244,6 +245,7 @@ def send_notification(order):
         message=json.dumps(error_message)
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="customer.error", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2))
+        return error_message
 
     #invoke the notification AMQP to inform customer of new delivery order
     # print('\n\n-----Invoking customer_notification microservice-----')
@@ -264,7 +266,7 @@ def send_notification(order):
             "driver_tele_chat_ID": driver_tele_chat_ID
     })
 
-    print('\n\n-----Publishing the (customer) message with routing_key=customer.order-----')
+    print('\n\n-----Publishing the (customer & driver) message with routing_key=customer.DeliveryCreated and routing_key=driver.DeliveryCreated-----')
     amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="customer.DeliveryCreated", body=messages)
     amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="driver.DeliveryCreated", body=messages)
 

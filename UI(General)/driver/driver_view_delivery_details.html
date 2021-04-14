@@ -246,65 +246,66 @@
                         });
                 },
                 updateSchedule: function(){
-                //updating delivery status in database by invoking delivery microservice when status changes from NEW to In Progress
-                update_status_url = 'http://localhost:5000/delivery' 
-                if(this.delivery_status == 'NEW'){
-                    this.delivery_status = "In Progress"; //new delivery status
-                    this.update_delivery_status = "Update to Completed"; //value for button is now "Update to Completed"
-                    const details = {
-                        method: "PUT",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
-                            "delivery_status": this.delivery_status
-                        })
-                    };
-
-                    fetch(update_status_url + "/" + delivery_id, details) //updating delivery status in database when status changes from NEW to In Progress
-                        .then(response => response.json())
-                        // console.log(response)
-                        .then(data => {
+                    let params = new URLSearchParams(location.search);
+                    let delivery_id = params.get('delivery_ID');
+                    //updating delivery status in database by invoking delivery microservice when status changes from NEW to In Progress
+                    update_status_url = 'http://localhost:5000/delivery' 
+                    if(this.delivery_status == 'NEW'){
+                        this.delivery_status = "In Progress"; //new delivery status
+                        this.update_delivery_status = "Update to Completed"; //value for button is now "Update to Completed"
+                        const details = {
+                            method: "PUT",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({
+                                "delivery_status": this.delivery_status
+                            })
+                        };
+                        fetch(update_status_url + "/" + delivery_id, details) //updating delivery status in database when status changes from NEW to In Progress
+                            .then(response => response.json())
                             // console.log(response)
-                            console.log(data);
-                            // this.successfulPayment = true
-                        })
-                        .catch(error=>{
-                            console.log("Error:", error);
-                    });
-                }   else if(this.delivery_status == 'In Progress'){
-                    //invoking complete delivery complex microservice
-                    this.delivery_status = "Completed!";
-                    this.update_delivery_status = "";
-                    this.statusPresent = false; //removing the button which allows drivers to update delivery status
-                    var notify_complete_url = "http://localhost:5103/complete_delivery/" + delivery_id; 
-                                    const detail = {
-                                        method: "POST",
-                                        headers: {
-                                            "Content-Type": "application/json",
-                                        },
-                                        body: JSON.stringify({
-                                            "delivery_status": this.delivery_status
-                                        })
-                                    };
-                                    
-                                    const response =
-                                        fetch(notify_complete_url, detail)
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            console.log(response);
-                                            console.log(data);
-                                        })
-                                        .catch(error => {
-                                            // Errors when calling the service; such as network error, 
-                                            // service offline, etc
-                                            console.log(this.message + error);
+                            .then(data => {
+                                // console.log(response)
+                                console.log(data);
+                                // this.successfulPayment = true
+                            })
+                            .catch(error=>{
+                                console.log("Error:", error);
+                        });
+                    }   else if(this.delivery_status == 'In Progress'){
+                        //invoking complete delivery complex microservice
+                        this.delivery_status = "Completed!";
+                        this.update_delivery_status = "";
+                        this.statusPresent = false; //removing the button which allows drivers to update delivery status
+                        var notify_complete_url = "http://localhost:5103/complete_delivery/" + delivery_id; 
+                                        const detail = {
+                                            method: "POST",
+                                            headers: {
+                                                "Content-Type": "application/json",
+                                            },
+                                            body: JSON.stringify({
+                                                "delivery_status": this.delivery_status
+                                            })
+                                        };
+                                        
+                                        const response =
+                                            fetch(notify_complete_url, detail)
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                console.log(response);
+                                                console.log(data);
+                                            })
+                                            .catch(error => {
+                                                // Errors when calling the service; such as network error, 
+                                                // service offline, etc
+                                                console.log(this.message + error);
 
-                                        });
-                }   
-                
-            }
-        }});
+                                            });
+                    }   
+                    
+                }
+            }});
     </script>
 </body>
 </html>

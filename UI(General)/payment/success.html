@@ -95,13 +95,13 @@
         <img class="logo" src="../images/logo.jpg" width='80px;' height='40px;' alt="logo">
         <nav>
             <ul class="nav__links">
-                <li><a href="customer/customer_home.html">Home</a></li>
+                <li><a href="../customer/customer_home.html">Home</a></li>
                 <li><a href="../customer_view_delivery_details.html">View Deliveries</a></li>
-                <li><a href="customer/delivery_order.html">Add New Delivery</a></li>
-                <li><a href="customer/profile.html">Profile</a></li>
+                <li><a href="../customer/delivery_order.html">Add New Delivery</a></li>
+                <li><a href="../customer/profile.html">Profile</a></li>
             </ul>
         </nav>
-        <a class="LogOut" href="landing.html"><button class='btn'>Log Out</button></a>
+        <a class="LogOut" href="../landing.html"><button class='btn'>Log Out</button></a>
     </header>
     
     <div class="container-fluid" id='app'>
@@ -166,11 +166,11 @@
                 // retrieves the session ID from the URL
                 let params = new URLSearchParams(location.search);
                 let session_id = params.get('session_id');
-                // console.log(session_id);
+                console.log(session_id);
 
-                delivery_data = JSON.parse(sessionStorage.getItem("delivery_data"));
+                delivery_data = JSON.parse(localStorage.getItem("delivery_data"));
                 // retrieve the Customer ID 
-                account_details = JSON.parse(sessionStorage.getItem("account_details"));
+                account_details = JSON.parse(localStorage.getItem("account_details"));
                 // console.log(account_details)
                 if (account_details.account_type == "customer"){
                     customer_ID = account_details.customer_ID;
@@ -178,7 +178,7 @@
                 else {
                     console.log("Delivery order failed to be created.")
                 }
-                var serviceURL = "http://localhost:5100/process_order"; //invoking process_order complex microservice to process the order
+                var serviceURL = "http://127.0.0.1:5100/process_order"; //invoking process_order complex microservice to process the order
                 const details = {
                     method: "POST",
                     headers: {
