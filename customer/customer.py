@@ -110,7 +110,7 @@ def create_customer():
     #if no customer in the database, the incoming customer have an id of 0
     recent_customer = Customer.query.order_by(Customer.customer_ID.desc()).first()
     if not (recent_customer):
-        customer_ID = 1000
+        customer_ID = 1001
     else:
         customer_ID = recent_customer.customer_ID + 1
 
