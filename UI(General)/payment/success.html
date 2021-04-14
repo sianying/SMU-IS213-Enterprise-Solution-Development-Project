@@ -189,7 +189,7 @@
                 else {
                     console.log("Delivery order failed to be created.")
                 }
-                var serviceURL = "http://127.0.0.1:5100/process_order"; //invoking process_order complex microservice to process the order
+                var serviceURL = "http://127.0.0.1:8000/api/v1/process_order"; //invoking process_order complex microservice to process the order
                 const details = {
                     method: "POST",
                     headers: {

@@ -365,7 +365,7 @@
         var password = $("#passwordLI").val();
         var account_type = "customer"
         // console.log(account_type);
-        serviceURL = "http://localhost:5005/authenticate";
+        serviceURL = "http://127.0.0.1:8000/api/v1/authenticate";
 
         fetch(serviceURL, {
             method: "POST",
@@ -420,7 +420,7 @@
         var account_type = "customer"
 
         // console.log(account_type);
-        serviceURL = "http://localhost:5105/register_user/" + username;
+        serviceURL = "http://127.0.0.1:8000/api/v1/register_user/" + username;
 
         fetch(serviceURL, {
             method: "POST",
