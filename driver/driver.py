@@ -49,7 +49,7 @@ class Driver(db.Model):
             "tele_chat_ID": self.tele_chat_ID
         }
 
-#return all drivers
+# 1. return all drivers
 @app.route("/driver")
 def get_all():
     driver_list = Driver.query.all()
@@ -69,7 +69,7 @@ def get_all():
         }
     ), 400
 
-#return a specific driver
+# 2. return a specific driver
 @app.route("/driver/<int:driver_ID>")
 def find_by_driver_ID(driver_ID):
     driver = Driver.query.filter_by(driver_ID=driver_ID).first()
@@ -87,7 +87,7 @@ def find_by_driver_ID(driver_ID):
         }
     ), 404
 
-#create a new driver
+# 3. create a new driver
 @app.route("/driver", methods=['POST'])
 def create_driver():
     #create driver_ID, auto increment
@@ -123,93 +123,7 @@ def create_driver():
         }
     ), 201
 
-#delete a driver
-@app.route("/driver/<int:driver_ID>", methods=['DELETE'])
-def delete_driver(driver_ID):
-    driver = Driver.query.filter_by(driver_ID=driver_ID).first()
-    if not (driver):
-        return jsonify(
-            {
-                "code": 400,
-                "data": {
-                    "driver_ID": driver_ID
-                },
-                "message": "This driver does not exist."
-            }
-        ), 400
-
-    try:
-        db.session.delete(driver)
-        db.session.commit()
-    except:
-        return jsonify(
-            {
-                "code": 500,
-                "data": {
-                    "driver_ID": driver_ID
-                },
-                "message": "An error occurred creating the driver."
-            }
-        ), 500
-    
-    return jsonify(
-        {
-            "code": 203,
-            'data': driver.json(),
-            "message": "Driver has successfully been deleted."
-        }
-    ), 203
-
-#update a driver 
-@app.route("/driver/<int:driver_ID>", methods=['PUT'])
-def update_driver(driver_ID):
-    old_driver = Driver.query.filter_by(driver_ID=driver_ID).first()
-    if not (old_driver):
-        return jsonify(
-            {
-                "code": 400,
-                "data": {
-                    "driver_ID": driver_ID
-                },
-                "message": "This driver does not exist."
-            }
-        ), 400
-
-    new_driver = request.get_json()
-
-    try:
-
-        old_driver.DName = new_driver['DName']
-        old_driver.DEmail = new_driver['DEmail']
-        old_driver.DMobile = new_driver['DMobile']
-        old_driver.DTeleID = new_driver['DTeleID']
-        old_driver.vehicle_no = new_driver['vehicle_no']
-        db.session.commit()
-
-    except:
-        return jsonify(
-            {
-                "code": 500,
-                "data": {
-                    "driver_ID": driver_ID
-                },
-                "message": "An error occurred updating the driver."
-            }
-        ), 500
-    
-    return jsonify(
-        {
-            "code": 202,
-            'data': old_driver.json(),
-            "message": "Driver has successfully been updated."
-        }
-    ), 202
-
-#update chat_ID using tele_ID
-#input data: driver_tele_ID in URL
-# {
-#     "tele_chat_ID": tele_chat_ID
-# }
+# 4. Update driver (chat_id), teleID is also a unique identifier 
 @app.route("/driver/<string:driver_teleID>", methods=['PUT'])
 def update_driver_chatID(driver_teleID):
     driver = Driver.query.filter_by(driver_teleID=driver_teleID).first()

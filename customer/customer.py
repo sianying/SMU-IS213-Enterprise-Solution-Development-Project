@@ -47,27 +47,7 @@ class Customer(db.Model):
         }
         
 
-#return all customers
-@app.route("/customer")
-def get_all():
-    customer_list = Customer.query.all()
-    if len(customer_list):
-        return jsonify(
-            {
-                "code": 200,
-                "data": {
-                    "customers": [customer.json() for customer in customer_list]
-                }
-            }
-        )
-    return jsonify(
-        {
-            "code": 400,
-            "message": "There are no customers recorded."
-        }
-    ), 400
-
-#return a specific customer
+# 1. return a specific customer
 @app.route("/customer/<int:customer_ID>")
 def find_by_customer_ID(customer_ID):
     customer = Customer.query.filter_by(customer_ID=customer_ID).first()
@@ -85,13 +65,11 @@ def find_by_customer_ID(customer_ID):
         }
     ), 404
 
-#create a new customer, customer_ID will be auto incremented 
-#pass in POST request, except customer_ID 
+# 2. create a new customer, customer_ID will be auto incremented 
+# pass in POST request, except customer_ID 
 @app.route("/customer", methods=['POST'])
 def create_customer():
 
-    #create customer_ID, auto increment
-    #if no customer in the database, the incoming customer have an id of 0
     recent_customer = Customer.query.order_by(Customer.customer_ID.desc()).first()
     if not (recent_customer):
         customer_ID = 1001
@@ -122,93 +100,8 @@ def create_customer():
         }
     ), 201
 
-#delete a customer
-@app.route("/customer/<int:customer_ID>", methods=['DELETE'])
-def delete_customer(customer_ID):
-    customer = Customer.query.filter_by(customer_ID=customer_ID).first()
-    if not (customer):
-        return jsonify(
-            {
-                "code": 400,
-                "data": {
-                    "customer_ID": customer_ID
-                },
-                "message": "This customer does not exist."
-            }
-        ), 400
 
-    try:
-        db.session.delete(customer)
-        db.session.commit()
-    except:
-        return jsonify(
-            {
-                "code": 500,
-                "data": {
-                    "customer_ID": customer_ID
-                },
-                "message": "An error occurred deleting the customer."
-            }
-        ), 500
-    
-    return jsonify(
-        {
-            "code": 203,
-            'data': customer.json(),
-            "message": "Customer has successfully been deleted."
-        }
-    ), 203
-
-#update a customer 
-@app.route("/customer/<int:customer_ID>", methods=['PUT'])
-def update_customer(customer_ID):
-    old_customer = Customer.query.filter_by(customer_ID=customer_ID).first()
-    if not (old_customer):
-        return jsonify(
-            {
-                "code": 400,
-                "data": {
-                    "customer_ID": customer_ID
-                },
-                "message": "Customer does not exist."
-            }
-        ), 400
-
-    data = request.get_json()
-    new_customer = Customer(customer_ID, **data)
-
-    try:
-
-        #cannot amend the chat ID
-        old_customer.customer_name = new_customer.customer_name
-        old_customer.customer_email = new_customer.customer_email
-        old_customer.customer_mobile = new_customer.customer_mobile
-        old_customer.customer_teleID = new_customer.customer_teleID
-        db.session.commit()
-    except:
-        return jsonify(
-            {
-                "code": 500,
-                "data": {
-                    "customer_ID": customer_ID
-                },
-                "message": "An error occurred updating the customer."
-            }
-        ), 500
-    
-    return jsonify(
-        {
-            "code": 202,
-            'data': old_customer.json(),
-            "message": "Customer has successfully been updated."
-        }
-    ), 202
-
-#update chat_ID using tele_ID
-#input data: customer_tele_ID in URL
-# {
-#     "tele_chat_ID": tele_chat_ID
-# }
+# 3. update customer's chat_ID using tele_ID
 @app.route("/customer/<string:customer_teleID>", methods=['PUT'])
 def update_customer_chatID(customer_teleID):
     customer = Customer.query.filter_by(customer_teleID=customer_teleID).first()
@@ -252,6 +145,7 @@ def update_customer_chatID(customer_teleID):
             'data': customer.json(),
             "message": "Customer chat_ID has successfully been updated."
         }), 202
+
 
 if __name__ == '__main__':
     print("This is flask " + os.path.basename(__file__) + " for Customer details...")

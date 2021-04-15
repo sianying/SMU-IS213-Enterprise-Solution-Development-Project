@@ -8,14 +8,13 @@ app = Flask(__name__)
 CORS(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@127.0.0.1:3306/schedule'
-# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
 db = SQLAlchemy(app)
 
 HOST = '0.0.0.0'
-PORT = 5004 # shouldn't clash with other services when running locally
+PORT = 5004 
 
 
 class Schedule(db.Model):
@@ -55,27 +54,7 @@ class Schedule(db.Model):
             "t_4_to_6": self.t_4_to_6,
         }
 
-# 1. Return all schedules
-@app.route("/schedule")
-def get_all():
-    schedule_list = Schedule.query.all()
-    if len(schedule_list) > 0:
-        return jsonify(
-            {
-                "code": 200,
-                "data": {
-                    "schedules": [schedule.json() for schedule in schedule_list]
-                }
-            }
-        )
-    return jsonify(
-        {
-            "code": 400,
-            "message": "There are no schedules recorded."
-        }
-    ), 400
-
-# 2. Get a specific schedule by SID
+# 1. Get a specific schedule by SID
 @app.route("/schedule/<int:SID>")
 def find_by_SID(SID):
     schedule = Schedule.query.filter_by(SID=SID).first()
@@ -93,7 +72,7 @@ def find_by_SID(SID):
         }
     ), 404
 
-# 3. get schedule by driver
+# 2. get schedule by driver
 @app.route("/schedule/driver/<int:driver_ID>")
 def find_by_driver(driver_ID):
     schedule_list = Schedule.query.filter_by(driver_ID=driver_ID).order_by(Schedule.delivery_date).all()
@@ -113,7 +92,7 @@ def find_by_driver(driver_ID):
         }
     ), 404
 
-#4. get schedule by delivery date
+#3. get schedule by delivery date
 @app.route("/schedule/date/<string:delivery_date>")
 def find_by_date(delivery_date):
     schedule_list = Schedule.query.filter_by(delivery_date=delivery_date).all()
@@ -134,7 +113,7 @@ def find_by_date(delivery_date):
         }
     ), 404
 
-#5. get schedule by delivery date + TIMESLOT
+#4. get schedule by delivery date + TIMESLOT
 @app.route('/schedule/date/<string:delivery_date>/<string:timeslot>', methods=['GET'])
 def timeslot_query(delivery_date, timeslot):
     first_filter = Schedule.query.filter_by(delivery_date=delivery_date).all()
@@ -190,75 +169,7 @@ def timeslot_query(delivery_date, timeslot):
             ), 400
 
 
-# 6. Create a new schedule
-@app.route("/schedule", methods=['POST'])
-def create_schedule():  
-
-    schedule = Schedule.query.order_by(Schedule.SID.desc()).first()
-    SID= schedule.SID + 1
-    
-    data = request.get_json()
-    schedule = Schedule(SID, **data)
-
-    try:
-        db.session.add(schedule)
-        db.session.commit()
-    except:
-        return jsonify(
-            {
-                "code": 500,
-                "data": {
-                    "SID": SID
-                },
-                "message": "An error occurred creating the schedule."
-            }
-        ), 500
-    
-    return jsonify(
-        {
-            "code": 201,
-            'data': schedule.json()
-        }
-    ), 201
-
-# 7. Delete a schedule
-@app.route("/schedule/<int:SID>", methods=['DELETE'])
-def delete_schedule(SID):
-    schedule = Schedule.query.filter_by(SID=SID).first()
-    if not schedule:
-        return jsonify(
-            {
-                "code": 400,
-                "data": {
-                    "SID": SID
-                },
-                "message": "This schedule does not exist."
-            }
-        ), 400
-
-    try:
-        db.session.delete(schedule)
-        db.session.commit()
-    except:
-        return jsonify(
-            {
-                "code": 500,
-                "data": {
-                    "SID": SID
-                },
-                "message": "An error occurred deleting the schedule."
-            }
-        ), 500
-    
-    return jsonify(
-        {
-            "code": 203,
-            'data': schedule.json(),
-            "message": "Schedule has successfully been deleted."
-        }
-    ), 203
-
-# 8. Update a schedule
+# 5. Update a schedule
 @app.route("/schedule/<int:SID>", methods=['PUT'])
 def update_schedule(SID):
     old_schedule = Schedule.query.filter_by(SID=SID).first()
@@ -306,7 +217,7 @@ def update_schedule(SID):
     ), 202
 
 
-# 8. create schedules for the month of April, for the driver that was newly added
+# 6. create schedules for the rest of the month (April), for the driver that was newly added
 @app.route("/schedule/new_driver/<int:driver_ID>", methods=['POST'])
 def add_schedules_for_month(driver_ID):
     data = request.get_json()
@@ -327,6 +238,7 @@ def add_schedules_for_month(driver_ID):
     else:
         SID = 1
     current_day = int(today_date[-2:])
+    
     timeslots = {
         "t_8_to_10": False,
         "t_10_to_12": False,
