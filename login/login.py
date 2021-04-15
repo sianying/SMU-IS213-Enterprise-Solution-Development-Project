@@ -62,7 +62,6 @@ def authenticate_user():
         encode_password = password.encode('utf-8')
         encode_hashed = hashed.encode('utf-8')
         if username == user_recorded.username and bcrypt.checkpw(encode_password, encode_hashed):
-            print("Authenticated! Welcome User " + username)
             if account_type == "customer":
                 return jsonify({
                         "code": 200,
@@ -83,10 +82,9 @@ def authenticate_user():
                         },
                         "message": "Login is successful"
                     })
-    print("Unable to login, please sign up with Cheetah Express ;)")
     return jsonify({
             "code": 404,
-            "message": "User not found. Please sign up for an account with Cheetah Go ;)."
+            "message": "User not found. Please sign up for an account with Cheetah Express."
         }), 404
     
 #check if username is taken 
@@ -112,7 +110,6 @@ def check_username_exist(username):
 def register_user(username):
 
     data = request.get_json()
-    print(data)
     account_type = data['account_type']
     password = data['password']
     encoded_password = password.encode('utf-8')
@@ -129,11 +126,8 @@ def register_user(username):
 
     try:
         db.session.add(account)
-        print("after db add")
         db.session.commit()
-        print("after db commit")
     except ValueError as e:
-        print(str(e))
         if account_type == "customer":
             return jsonify({
                     "code": 500,
