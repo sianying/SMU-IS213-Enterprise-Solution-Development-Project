@@ -26,6 +26,6 @@ Our simple microservices are tied to their respective databases on an external A
 
 The SQL files that we have provided in the subfolder for each simple microservice provide a brief overview as to what it actually looks like within our RDS database. However, simply importing them will result in empty databases because we did not add any insertion statements. This is because our login microservice hashes passwords before storing it in the database for enhanced security, and we cannot predict the value of the hashed password. As such, we added all the data through our UI instead.
 
-To see the actual data, you could enter RDS through Ubuntu or Terminal. Here is the command: 
+To see the actual data, you could enter RDS through Ubuntu instead. Here is the command: 
 mysql -h esd-database.cjlm2oobbep2.ap-southeast-1.rds.amazonaws.com -P 3306 -u admin -p
 Password: Password123
