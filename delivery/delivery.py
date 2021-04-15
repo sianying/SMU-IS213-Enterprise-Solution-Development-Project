@@ -12,8 +12,6 @@ HOST = '0.0.0.0'
 PORT = 5000
 
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@127.0.0.1:3306/delivery'
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/delivery'
-#'mysql+mysqlconnector://root@localhost:3306/book'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
  
@@ -37,7 +35,6 @@ class Delivery(db.Model):
     delivery_status = db.Column(db.VARCHAR(10), nullable=False, default='New')
     created = db.Column(db.TIMESTAMP, nullable=False, default=db.func.now())
     last_updated = db.Column(db.TIMESTAMP, nullable=False, server_default=db.func.now(), onupdate=db.func.now())
-    #default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow
     
     def __init__(self, delivery_ID, driver_ID, customer_ID, delivery_date, timeslot, pickup_location, destination, delivery_item, description, payment_amount, payment_status, receiver_name, delivery_status, created, last_updated):
         self.delivery_ID = delivery_ID
@@ -74,28 +71,8 @@ class Delivery(db.Model):
                 "last_updated": self.last_updated
             }
 
-# 1. GET ALL DELIVERIES 
-@app.route("/delivery")
-def get_all():
-    deliverylist = Delivery.query.all()
-    if len(deliverylist):
-        return jsonify(
-            {
-                "code": 200,
-                "data": {
-                    "deliveries": [delivery.json() for delivery in deliverylist]
-                }
-            }
-        )
-    return jsonify(
-        {
-            "code": 404,
-            "message": "There are no deliveries."
-        }
-    ), 404
 
-#to query a specific delivery
-#2. GET DELIVERY BY DELIVERY_ID (SPECIFIC)
+#1. GET DELIVERY BY DELIVERY_ID (SPECIFIC)
 @app.route("/delivery/<int:delivery_ID>")
 def find_by_delivery_ID(delivery_ID):
     delivery = Delivery.query.filter_by(delivery_ID=delivery_ID).first()
@@ -103,7 +80,6 @@ def find_by_delivery_ID(delivery_ID):
         return jsonify(
             {
                 "code": 200,
-                #filter columns accord to what driver shud see
                 "data": delivery.json()
             }
         )
@@ -114,8 +90,8 @@ def find_by_delivery_ID(delivery_ID):
         }
     ), 404
 
-#for drivers to see their deliveries 
-#3. GET DELIVERY BY DRIVER_ID (DRIVER)
+
+#2. GET DELIVERY BY DRIVER_ID (DRIVER)
 @app.route("/delivery/driver/<int:driver_ID>")
 def find_by_driver_ID(driver_ID):
     deliverylist = Delivery.query.filter_by(driver_ID=driver_ID).all()
@@ -138,8 +114,7 @@ def find_by_driver_ID(driver_ID):
 
     
 
-#for customers to see their deliveries
-#4. GET DELIVERY BY CUSTOMER_ID (CUSTOMER)
+#3. GET DELIVERY BY CUSTOMER_ID (CUSTOMER)
 @app.route("/delivery/customer/<int:customer_ID>")
 def find_by_customer_ID(customer_ID):
     deliverylist = Delivery.query.filter_by(customer_ID=customer_ID).all()
@@ -162,13 +137,17 @@ def find_by_customer_ID(customer_ID):
     ), 404
 
 
-# 5. CREATE NEW DELIVERY  
+# 4. CREATE NEW DELIVERY  
 @app.route("/delivery", methods=['POST'])
 def create_delivery():
-    #diagram might need to change, necessary to find an available driver first and add it into the request
 
-    # if request.is_json():
-    data = request.get_json()
+    if request.is_json():
+        data = request.get_json()
+    else:
+        return jsonify({
+            'code': 501,
+            'message': "Request not in json format."
+        })
 
     #query from the last entry and increment by 1 for delivery_ID
     delivery = Delivery.query.order_by(Delivery.delivery_ID.desc()).first()
@@ -180,18 +159,11 @@ def create_delivery():
     last_updated = created
 
     delivery = Delivery(delivery_ID=delivery_ID, **data, delivery_status="NEW", created=created, last_updated=last_updated)
-    # driver_ID=request.json.get('driver_ID', None)
-    # customer_ID = request.json.get('customer_ID', None)
-    # delivery_date = request.json.get('delivery_date', None)
-    # timeslot = request.json.get('timeslot', None)
-    # pickup_location = request.json.get('pickup_location', None)
-    # destination = request.json.get('destination', None)
-
-# delivery=Delivery(delivery_ID=delivery_ID, driver_ID= driver_ID, customer_ID=customer_ID, delivery_date=delivery_date, timeslot=timeslot, pickup_location=pickup_location, destination=destination, status='NEW', created=created, last_updated=last_updated) 
 
     try:
         db.session.add(delivery)
         db.session.commit()
+
     except Exception as e:
         return jsonify(
             {
@@ -207,15 +179,12 @@ def create_delivery():
         }
     ), 201
 
-# 6. UPDATE DELIVERY BY DELIVERY_ID (DRIVER), status can be completion or smth else
+# 5. UPDATE DELIVERY BY DELIVERY_ID
 @app.route("/delivery/<int:delivery_ID>", methods=['PUT'])
 def update_delivery(delivery_ID):
     try:
-        # print("Testtest")
-        #based on given delivery ID, gets the first delivery that appears
         delivery = Delivery.query.filter_by(delivery_ID=delivery_ID).first()
 
-        #return msg if delivery not found 
         if not delivery:
             return jsonify(
                 {
@@ -227,7 +196,6 @@ def update_delivery(delivery_ID):
                 }
             ), 404
 
-        # Updates delivery_status and Timestamp (based on line of code above)
         data = request.get_json()
         if data['delivery_status']:
             delivery.delivery_status = data['delivery_status']
@@ -250,42 +218,6 @@ def update_delivery(delivery_ID):
             }
         ), 500
 
-#7. Delete deliveries (IN CASE OF CANCELLED DELIVERIES)
-@app.route("/delivery/<int:delivery_ID>", methods=['DELETE'])
-def delete_delivery(delivery_ID):
-    delivery = Delivery.query.filter_by(delivery_ID=delivery_ID).first()
-    if not (delivery):
-        return jsonify(
-            {
-                "code": 400,
-                "data": {
-                    "delivery_ID": delivery_ID
-                },
-                "message": "This delivery does not exist."
-            }
-        ), 400
-
-    try:
-        db.session.delete(delivery)
-        db.session.commit()
-    except:
-        return jsonify(
-            {
-                "code": 500,
-                "data": {
-                    "delivery_ID": delivery_ID
-                },
-                "message": "An error occurred deleting the delivery."
-            }
-        ), 500
-    
-    return jsonify(
-        {
-            "code": 203,
-            'data': delivery.json(),
-            "message": "Delivery has successfully been deleted."
-        }
-    ), 203
 
 if __name__ == '__main__':
     app.run(host=HOST, port=PORT, debug=True)
