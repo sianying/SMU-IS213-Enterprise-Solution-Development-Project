@@ -24,7 +24,6 @@ HOST = '0.0.0.0'
 PORT = 5104
 
 schedule_URL= environ.get('scheduleURL') or "http://127.0.0.1:5004/schedule"
-#schedule_URL = "http://localhost:5004/schedule/"
 
 @app.route("/schedule_driver/<string:delivery_date>/<string:timeslot>", methods=['GET'])
 def schedule_driver(delivery_date, timeslot):
@@ -53,11 +52,8 @@ def schedule_driver(delivery_date, timeslot):
     if query_result['code'] not in range (200,300):
         return query_result
 
-    #print("next")
-    #print(query_result)
     selected_driver= choose_best(query_result)
 
-    #print(selected_driver)
     return {
         "code": 200,
         "data": selected_driver        
@@ -71,13 +67,10 @@ def get_available_drivers(delivery_date, timeslot):
     print('\n-----Invoking schedule microservice-----')
  
     schedule_result = invoke_http(schedule_URL + '/date/' + delivery_date + '/' + timeslot, method='GET')
-    # print('schedule result: ' + str(schedule_result))
 
     # 3. Check the delivery result; if a failure, send it to the error microservice.
     code = schedule_result["code"]
     if code not in range(200, 300):
-        # print('\n\n-----Invoking error microservice as delivery fails-----')
-        # invoke_http("http://localhost:5007/error", method="POST", json=schedule_result)
 
         print('\n\n-----Publishing the (schedule error) message with routing_key=scheduler.schedule.error-----')
         message=json.dumps(schedule_result)
@@ -104,13 +97,10 @@ def get_available_drivers(delivery_date, timeslot):
 
 def choose_best(query_result):
     list_of_schedules= query_result['data']['schedule_result']['data']['schedules']
-    #print("reached!")
-    #print(list_of_schedules)
 
     mydict={}
     for i in range(len(list_of_schedules)):
         current_schedule=list_of_schedules[i]
-        #print(current_schedule)
 
         counter=0
         timeslots_to_check=['t_8_to_10', 't_10_to_12', 't_12_to_2', 't_2_to_4', 't_4_to_6']
@@ -119,8 +109,6 @@ def choose_best(query_result):
                 counter+=1
         
         mydict[i]=counter
-    
-    #print(mydict)
 
     max_value=max(mydict.values())
 
