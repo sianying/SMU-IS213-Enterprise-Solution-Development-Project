@@ -172,7 +172,6 @@
         const response = await fetch("http://127.0.0.1:8000/api/v1/delivery/driver/" + driver_ID) //fetching the deliveries assigned to the driver
         const data = await response.json()
         .then(data =>{
-        //console.log(data)
             if (data.code == 404){
                 $("#error").show(); 
                 $("#error").text(data.message); 
@@ -182,13 +181,11 @@
             }
             else {
                 $("#error").hide();
-                //console.log(data.data.deliveries)
                 events = [];
                 for(deli of data.data.deliveries){
                     title = deli.destination;
                     //populating description for each entry in the calendar
                     description = 'To: ' + deli.pickup_location + ' From: ' + deli.destination; 
-                    // console.log(description)
                     url = '../driver/driver_view_delivery_details.html?delivery_ID=' + String(deli.delivery_ID); //clicking an entry in the calendar will lead to the driver_view_delivery_details.html page
                     timing = deli.timeslot.split("_");
                     for (timeslots in timing){
@@ -214,15 +211,8 @@
                         }
                     }
 
-                    //console.log(timing)
                     start = Date.parse(deli.delivery_date.slice(0,-12) + start_time);
-                    //start = '2021-04-04T09:00'
-                    //console.log(start)
-                    // console.log(start)
                     end = Date.parse(deli.delivery_date.slice(0,-12) + end_time);
-                    // + 'T' + timing[2] + ':00:00';
-                    //end = '2021-04-06T09:00'
-                    //console.log(end)
                     details = {
                         "title": title,
                         "description": description,
@@ -231,9 +221,7 @@
                         "url": url
                     }
                     events.push(details)
-                    // events = events[0];
                 }
-                // console.log('events', events)
                 var calendarEl = document.getElementById('calendar');
 
                 // populating the calendar to display events
@@ -261,26 +249,18 @@
                     },
                         
                 });
-                //calendar.addEventSource(Promise.resolve(fetchEvents()));
                 calendar.render(); 
             }
         });
-        return events //-> when called outside, it would render a promise obj 
-        //console.log(events) 
-
-        //at this position, events is still an object 
+        return events 
     }
     
-    //console.log(fetchEvents());
-    //fetchEvents().then(function(result) {
     // you can access the result from the promise here
     async function renderCalendar() {
 
     }
 
     document.addEventListener('DOMContentLoaded', async function() {
-    // var events = await fetchEvents();
-    // console.log(events);
     fetchEvents()
     
     });

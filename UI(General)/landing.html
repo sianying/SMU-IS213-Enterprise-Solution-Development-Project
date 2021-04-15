@@ -55,107 +55,10 @@
     <div class = 'container-fluid' style="padding-top: 10%;">
         <div class="jumbotron  col-sm-4 text-nowrap">
         <h1 style="font-size:45px; font-family: 'Patua One', cursive; margin-bottom: 0; color: black;">Always on the move.</h1>
-        <!-- <form action="#searchbar-results" method="POST">
-            <div class="input-group search" style="margin: 0; padding: 0; margin-top: 5px; font-family: 'Rubik', sans-serif;">
-            <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="Enter your delivery ID" name ='searchterm' style='
-            border:1px solid white;
-            border-right: none;
-            padding-left: 20px;
-            height: 40px;
-            border-radius: 20px 0px 0px 20px;
-            outline: none;
-            background-color: #1C00ff00;
-            color:white'
-            >
-                <div class="input-group-prepend">
-                <button class="btn" type="submit" value="Submit" style="width: 100px;
-                height: 40px;
-                border: 1px solid white;
-                background: #F7F0E6;
-                text-align: center;
-                color: gray;
-                border-radius: 0 20px 20px 0;
-                cursor: pointer;
-                font-size: 20px;" id ='searchButton'><a href="customer/customer_signup_login.php"  style="color: inherit; text-decoration: none;">Search</a></button>
-                </div>
-            </div>
-        </form> -->
         </div>
         
     </div>
 
-<!-- JAVASCRIPT PART
-    <script>
-        $("#login-driver").click(function() {
-            // var username = $("#username").val();
-            // var password = $("#password").val();
-            // var role = $("#role").val();
-            console.log("hello")
-            serviceURL = "http://localhost:5105/authenticate"
-    
-            fetch(serviceURL, {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    "username": username,
-                    "password": password,
-                    "role": role
-                })
-            })
-            .then(function (response) {
-                data = response.json();
-                localStorage.setItem("login", data);
-                location.replace("http://localhost/esd/project/delivery_order.html");
-                return data
-                // return response.json();
-            })
-            .then(function (result) {
-              // If redirectToCheckout fails due to a browser or network
-              // error, you should display the localized error message to your
-              // customer using error.message.
-                if (result.error) {
-                    alert(result.error.message);
-                }
-            })
-            .catch(function (error) {
-                console.error("Error:", error);
-            });
-    
-            // $(async() => {
-            //     try {
-            //         const response = await fetch (serviceURL, {
-            //             method: 'POST',
-            //             headers: {
-            //                 'Content-Type': 'application/json'
-            //             },
-            //             body: JSON.stringify({
-            //                 "username": username,
-            //                 "password": password,
-            //                 "role": role
-            //             })
-            //         });
-            //         const data = await response.json();
-            //         if (response.ok){
-            //             console.log(data);
-            //         }
-            //         else {
-            //         console.log("There is an error in logging in: Error " + response.status);
-            //         }
-            //     }
-            //     catch(error){
-            //         console.log(error);
-            //     }
-            // });
-    
-        });
-    
-    </script> -->
-    
-    
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>

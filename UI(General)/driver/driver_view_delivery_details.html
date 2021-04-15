@@ -60,25 +60,6 @@
         100% { transform: rotate(360deg); }
     }
     
-    /* Add animation to "page content" */
-    /* .animate-bottom {
-        position: relative;
-        -webkit-animation-name: animatebottom;
-        -webkit-animation-duration: 1s;
-        animation-name: animatebottom;
-        animation-duration: 5s
-    } */
-    
-    /* @-webkit-keyframes animatebottom {
-        from { bottom:-100px; opacity:0 } 
-        to { bottom:0px; opacity:1 }
-    }
-    
-    @keyframes animatebottom { 
-        from{ bottom:-100px; opacity:0 } 
-        to{ bottom:0; opacity:1 }
-    } */ 
-    
     #myDiv {
         display: none;
         text-align: center;
@@ -99,8 +80,6 @@
         <button id="log-out" class='btn'>Log Out</button>
     </header>
 
-
-    <!-- <div id='app' @load='getSchedule()'> -->
     <div id='app'>
         <div class='container'>
             <div class='row'>
@@ -178,7 +157,6 @@
                 getSchedule: function(){
                     let params = new URLSearchParams(location.search);
                     let delivery_id = params.get('delivery_ID'); //retrieving delivery_ID from URL 
-                    // console.log(delivery_id);
                     var get_details_url = "http://127.0.0.1:8000/api/v1/driver_view_details/" + String(delivery_id);
                     const response =
                     fetch(get_details_url)
@@ -186,17 +164,9 @@
                         .then(data => {
                             console.log(response);
                             console.log(data);
-                            // if (data.code === 404) {
-                            //     // no book in db
-                            //     this.message = data.message;
-                            // } else {
-                            //     this.books = data.data.books;
-                            // }
                             if (data.code === 201){
-                                // console.log("hello")
                                 var result = data.data.api_call_result.data.delivery_result.data; //retrieving delivery details and assigning it to result variable
                                 var timeslot = result.timeslot;
-                                // console.log(timeslot)
                                 this.hasDeliveries = true;
                                 this.delivery_ID = result.delivery_ID;
                                 this.delivery_item = result.delivery_item;
@@ -264,11 +234,8 @@
                         };
                         fetch(update_status_url + "/" + delivery_id, details) //updating delivery status in database when status changes from NEW to In Progress
                             .then(response => response.json())
-                            // console.log(response)
                             .then(data => {
-                                // console.log(response)
                                 console.log(data);
-                                // this.successfulPayment = true
                             })
                             .catch(error=>{
                                 console.log("Error:", error);

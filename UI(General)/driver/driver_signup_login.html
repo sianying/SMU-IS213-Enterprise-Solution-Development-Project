@@ -97,7 +97,6 @@
         
         .background .right button {
             left: 550px;
-            /* margin-top:  */
         }
         
         .form-container {
@@ -239,7 +238,6 @@
                     </div>
                     <div class="form-container">
                         <div class="sign-up">
-                            <!-- <form method="post" action="#put into some registering processing page" > -->
                             <form method="post">
                                 <h2 class="form-header">Sign Up</h2>
                                 <input type="text" name="fullname" id = 'fullnameSU' placeholder="Full Name"><i class="fa fa-user"></i></input>
@@ -256,7 +254,6 @@
                         </div>
                         <div class="my-5">
                             <div class="login hide ">
-                                <!-- <form method="post"  action="../Main/process_login.php" > -->
                                 <form method="get">
                                 <h2 class="form-header">Log In</h2>  
                                 <input type="text" name="username" id = 'usernameLI' placeholder="Username"><i class="fa fa-envelope-o"></i></input>
@@ -277,48 +274,6 @@
     </div>
 
 <script>
-    // function signUpValidate(){
-    //     document.getElementById("errorSU").innerHTML = '';
-    //     var fullnameSU = document.getElementById("fullnameSU").value;
-    //     var usernameSU = document.getElementById("UsernameSU").value;
-    //     var emailSU = document.getElementById("emailSU").value;
-    //     var passwordSU = document.getElementById("passwordSU").value;
-    //     var teleSU = document.getElementById('teleSU').value;
-    //     var carplateSU = document.getElementById('carplateSU').value;
-    //     var contactSU = document.getElementById('contactSU').value;
-    //     var confirmpasswordSU = document.getElementById('confirmpasswordSU').value;
-    //     var errors = [];
-
-    //         if (fullnameSU === "" || usernameSU === "" || emailSU === "" || passwordSU === "" || teleSU === '' || contactSU === '' || carplateSU === ''){
-    //             event.preventDefault();
-    //             errors.push('None of your fields can be empty');
-    //         };
-
-    //         if (!emailSU.includes('@') || !emailSU.includes('.com')){
-    //             event.preventDefault();
-    //             errors.push('Please enter a valid email');
-    //         };
-
-    //         if (passwordSU !== confirmpasswordSU){
-    //             event.preventDefault();
-    //             errors.push('Password and confirm password does not match.');
-    //         };
-
-    //         for (error of errors){
-    //             document.getElementById("errorSU").innerHTML += `<p style = 'margin: 2px; font-size: 10px; color:red;text-align:center;'>${error}</p>`;
-    //         }
-    //     };
-
-    // function logInValidate(){
-    //     var username = document.getElementById("usernameLI").value;
-    //     var passwordLI = document.getElementById("passwordLI").value;
-
-    //     if (username === "" || passwordLI === ""){
-    //         document.getElementById("errorLI").innerHTML = `<p style = 'margin: 2px; font-size: 10px; color:red;text-align:center;'>None of your fields can be empty</p>`;
-
-    //     };
-    // };
-
 
     $(document).ready(function() {
         var signUp = $('.signup-but');
@@ -344,17 +299,6 @@
         });
     });
     $("#signup-button").click(function() {
-        // var validate = signUpValidate();
-        // if (validate == false):
-        //     return "Login not validated!"
-        // var username = $("#UsernameSU").val();
-        // var name = $("#fullnameSU").val();
-        // var email = $("#emailSU").val();
-        // var password = $("#passwordSU").val();
-        // var teleID = $("#teleSU").val();
-        // var mobile = $("#contactSU").val();
-        // var vehicle_no = $("#carplateSU").val();
-        // var account_type = "driver";
     
         document.getElementById("errorSU").innerHTML = '';
         var fullnameSU = document.getElementById("fullnameSU").value;
@@ -369,17 +313,14 @@
         var errors = [];
 
         if (fullnameSU === "" || usernameSU === "" || emailSU === "" || passwordSU === "" || teleSU === '' || contactSU === '' || carplateSU === ''){
-            // event.preventDefault();
             errors.push('None of your fields can be empty');
         };
 
         if (!emailSU.includes('@')){
-            // event.preventDefault();
             errors.push('Please enter a valid email');
         };
 
         if (passwordSU !== confirmpasswordSU){
-            // event.preventDefault();
             errors.push('Password and confirm password does not match.');
         };
 
@@ -387,7 +328,6 @@
             document.getElementById("errorSU").innerHTML += `<p style = 'margin: 2px; font-size: 10px; color:red;text-align:center;'>${error}</p>`;
         }
 
-        // console.log(account_type);
         if(errors.length == 0){
 
             // after successfully passing form validation, invoke register user complex microservice to register the user
@@ -416,11 +356,7 @@
                         "driver_ID": data.data.driver_ID,
                         "account_type": "driver"
                         });
-                    // console.log(json);  
                     localStorage.setItem("account_details", json);
-                    // location.replace("./driver_home.html");
-                    // alert("You have successfully registered, please click this" + "<a href='t.me/Testing_jww_bot'> link </a> to register as a driver!")
-                    // alerting user to sign up for our telegram bot
                     alert("You have successfully registered, please click 'ok' to register with our bot to receive updates.")
                     window.open("http://t.me/Testing_jww_bot", "_blank");
                     location.replace("../driver/driver_home.html");
@@ -455,8 +391,6 @@
         for (error of errors){
             document.getElementById("errorLI").innerHTML += `<p style = 'margin: 2px; font-size: 10px; color:red; text-align:center;'>${error}</p>`;
         }
-        // console.log(account_type);
-
         if(errors.length == 0){
 
             // after successfully passing form validation, invoke login microservice to check if user has an account and if input details are correct as per the database

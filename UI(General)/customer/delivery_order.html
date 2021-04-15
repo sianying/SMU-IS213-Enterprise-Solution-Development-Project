@@ -108,9 +108,6 @@
                         <div class="form-group">
                             <label for="pickup">Pickup Address</label>
                             <div class="input-group mb-3">
-                                <!-- <div class="input-group-prepend">
-                                    <span class="input-group-text" id="pickup">Address Line</span>
-                                </div> -->
                                 <input type="text" class="form-control" id="pickup" placeholder="" value="">
                             </div>
                         </div> 
@@ -133,9 +130,6 @@
                         <div class="form-group">
                             <label for="destination">Destination Address</label>
                             <div class="input-group mb-3">
-                                <!-- <div class="input-group-prepend">
-                                    <span class="input-group-text" id="destination">Address Line</span>
-                                </div> -->
                                 <input type="text" class="form-control" id="destination" placeholder="" value="">
                             </div>
                         </div> 
@@ -167,9 +161,6 @@
                         <div class="form-group">
                             <label for="date">Delivery Date</label>
                             <div class="input-group mb-3">
-                                <!-- <div class="input-group-prepend">
-                                    <span class="input-group-text" id="destination">Address Line</span>
-                                </div> -->
                                 <input type="date" class="form-control" @change = "checkSchedule" id="date" min='2021-04-15' value='2021-04-15' max='2021-04-30' placeholder="" value="">
                             </div>
                         </div> 
@@ -228,7 +219,6 @@
             //getting all schedules on selected date
             var get_Schedule = "http://127.0.0.1:8000/api/v1/schedule/date/" + date;
             const response =
-                            // fetch(get_all_schedule)
                             fetch(get_Schedule)
                                 .then(response => response.json())
                                 .then(data => {
@@ -347,10 +337,7 @@
                 var stripe = Stripe('pk_test_51IX1pfEh2v7rRS8AqOB3PG6BLj1qQh8g4V0oI5GLProGPMmJRG60qzCXGH0297oQKyRIblMPKhFPlQEshp993pBN00CvpCrI7z');
 
                 if(this.error.length === 0){
-                    // console.log(this.error)
-                    // var deliveryItem = $("#deliveryItem").val();
-                    // var size = $("#size").val();
-                    // var weight = $("#weight").val();
+
                     delivery_data = {
                         "delivery_item": deliveryItem,
                         "description": description,
@@ -363,21 +350,7 @@
                         "time": time
                     };
                     json = JSON.stringify(delivery_data);
-                    // json = JSON.stringify({
-                    //     "delivery_item": deliveryItem,
-                    //     "description": description,
-                    //     "pickup": pickup,
-                    //     "pickupPostalCode": pickupPostalCode,
-                    //     "destination": destination,
-                    //     "destinationPostalCode": destinationPostalCode,
-                    //     "receiver_name": receiver_name,
-                    //     "date": date,
-                    //     "time": time
-                    // });
-                    // console.log(json);
                     account_details = JSON.parse(localStorage.getItem("account_details"));
-                    // localStorage.removeItem("delivery_data");
-                    // localStorage.setItem("delivery_data", json);
 
                     //invoking payment microservice
                     
@@ -387,14 +360,6 @@
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                            // "price_data": {"currency": "sgd", "product_data": {"name": deliveryItem}, "unit_amount": 100},
-                            // "quantity": 1,
-                            // "metadata": {
-                            //     "description": description,
-                            //     "size": size,
-                            //     "weight": weight
-                            // },
-                
                             "deliveryItem": deliveryItem,
                             "description": description,
                             "size": size,
@@ -410,9 +375,7 @@
                         return stripe.redirectToCheckout({ sessionId: session.id });
                     })
                     .then(function (result) {
-                    // If redirectToCheckout fails due to a browser or network
-                    // error, you should display the localized error message to your
-                    // customer using error.message.
+                    // If redirectToCheckout fails due to a browser or network error, you should display the localized error message to your customer using error.message.
                         if (result.error) {
                             alert(result.error.message);
                         }
@@ -427,8 +390,6 @@
 
 </script>
     
-<!-- Optional JavaScript -->
-<!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>

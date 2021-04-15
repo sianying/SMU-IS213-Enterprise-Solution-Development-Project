@@ -242,7 +242,6 @@
                     </div>
                     <div class="form-container">
                         <div class="sign-up">
-                            <!-- <form method="post" action="#put into some registering processing page" > -->
                             <form method="post">
                                 <h2 class="form-header">Sign Up</h2>
                                 <input type="text" name="fullname" id = 'fullnameSU' placeholder="Full Name"><i class="fa fa-user"></i></input>
@@ -258,7 +257,6 @@
                         </div>
                         <div class="my-5">
                             <div class="login hide ">
-                                <!-- <form method="post"  action="../Main/process_login.php" > -->
                                 <form method="get">
                                 <h2 class="form-header">Log In</h2>  
                                 <input type="text" name="username" id = 'usernameLI' placeholder="Username"><i class="fa fa-envelope-o"></i></input>
@@ -275,16 +273,6 @@
                     </div>
                 </div>
                 </div>
-                <!-- <div class='col-sm-4' style='left: 60%; font-family: Patua One;font-style: normal; font-weight: normal; font-size: 60px; line-height: 73px; text-align: center; color:#CEA68C;'>
-                    "Greatness meets Speed"
-                </div> -->
-                <!-- <div class="col-sm-4" style='position: absolute; top: 25%; left:60%; width: 200px;  font-family: Patua One;font-style: normal; font-weight: normal; font-size: 60px; line-height: 73px; text-align: center; color:#CEA68C;'>
-                <div>"Greatness meets Speed"</div>
-                </div>
-                <div class='col-sm-2'>
-                    <img src="images/lines.jpg" style=' position:absolute; width: 177px; height: 300px; left: 83%; top: 39.5%; z-index:-1;'>
-                </div>
-            </div> -->
         </div>
     </div>
     <script>
@@ -382,7 +370,6 @@
             data = response.json();
             console.log(data);
             return data
-            // return response.json();
         })
         .then(function (result) {
             if (result.code == 200){
@@ -408,9 +395,6 @@
 
 
     $("#signup-button").click(function() {
-    // var validate = signUpValidate();
-    // if (validate == false):
-    //     return "Login not validated!"
         var username = $("#UsernameSU").val();
         var name = $("#fullnameSU").val();
         var email = $("#emailSU").val();
@@ -418,8 +402,6 @@
         var teleID = $("#teleSU").val();
         var mobile = $("#contactSU").val();
         var account_type = "customer"
-
-        // console.log(account_type);
         serviceURL = "http://127.0.0.1:8000/api/v1/register_user/" + username;
 
         fetch(serviceURL, {

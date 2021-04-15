@@ -39,7 +39,7 @@
     <title>Thanks for your order!</title>
 
     <style>
-    /* Center the loader */
+
     #loader {
         position: absolute;
         left: 50%;
@@ -64,26 +64,7 @@
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
     }
-    
-    /* Add animation to "page content" */
-    /* .animate-bottom {
-        position: relative;
-        -webkit-animation-name: animatebottom;
-        -webkit-animation-duration: 1s;
-        animation-name: animatebottom;
-        animation-duration: 5s
-    } */
-    
-    /* @-webkit-keyframes animatebottom {
-        from { bottom:-100px; opacity:0 } 
-        to { bottom:0px; opacity:1 }
-    }
-    
-    @keyframes animatebottom { 
-        from{ bottom:-100px; opacity:0 } 
-        to{ bottom:0; opacity:1 }
-    } */ 
-    
+
     #myDiv {
         display: none;
         text-align: center;
@@ -124,31 +105,13 @@
         </div>
         <div class="container-fluid" v-if='successfulPayment'>
             <div class="row">
-                <!-- <div class='col mx-auto'></div> -->
                 <h3 style='color:#CEA68C; font-family: "Patua One", cursive;' class='col d-flex justify-content-center animate__animated animate__backInUp pt-4'>Thank you for placing an order! Click on View Deliveries to view your orders.</h3>
-                <!-- <div class='col mx-auto'></div> -->
             </div>
         </div>      
     </div>
 
 <script>
-    // access localStorage to get the delivery data
-    // delivery_data = JSON.parse(localStorage.getItem("delivery_data"));
-    // // retrieve the Customer ID 
-    // account_details = JSON.parse(localStorage.getItem("account_details"));
-    // if (account_details.account_type == "customer"){
-    //     customer_ID = account_details.customer_ID;
-    // }
-    // else {
-    //     console.log("Delivery order failed to be created.")
-    // }
 
-
-    // var serviceURL = "http://localhost:4242/checkout_session/" + session_id;
-    
-    // processOrder as the serviceURL, temporary port: 5100
-    
-    // console.log(serviceURL);
     document.getElementById("log-out").addEventListener("click", function(){
             localStorage.clear();
             location.replace("../landing.html");
@@ -177,11 +140,6 @@
                 //parse to JS object to access variables
                 account_details = JSON.parse(account_details);
 
-                // delivery_data = JSON.parse(localStorage.getItem("delivery_data"));
-                // retrieve the Customer ID 
-                // account_details = JSON.parse(localStorage.getItem("account_details"));
-                // localStorage.removeItem("delivery_data");
-                // console.log(account_details)
                 if (account_details.account_type == "customer"){
                     customer_ID = account_details.customer_ID;
                     console.log(customer_ID);
@@ -203,9 +161,7 @@
 
                 fetch(serviceURL + "/" + String(customer_ID), details)
                     .then(response => response.json())
-                    // console.log(response)
                     .then(data => {
-                        // console.log(response)
                         console.log(data)
                         if(data.code >= 400){
                             this.error = "An error has occurred while processing your order. Please try again.";
@@ -222,108 +178,8 @@
                     })
             }}});
 
-
-
-
-
-
-
-//                 $(async () => {
-//         try {
-//             const response = await fetch (serviceURL + "/" + String(customer_ID), { 
-//                     method: 'POST',
-//                     headers: {
-//                         'Content-Type': 'application/json',
-//                     },
-//                     body: JSON.stringify({
-//                         "session_id": session_id,
-//                         "delivery_data": delivery_data
-//                     })
-                
-//                 });
-//             const data = await response.json();
-//             if (response.ok){
-//                 processOrderData = data;
-//                 console.log(processOrderData);
-//                 alert("Your order has been successfully created! :D")
-//             }
-//             else {
-//                 console.log("There is an error in retrieving the payment data: Error " + response.status);
-//             }
-//         } 
-//         catch(error) {
-//             console.log("Error: ", error);
-//         }
-//     });
-// }}})
-    
-
-    // invoke ProcessOrder (with payment session id & delivery_data)
-    // $(async () => {
-    //     try {
-    //         const response = await fetch (serviceURL + "/" + String(customer_ID), { 
-    //                 method: 'POST',
-    //                 headers: {
-    //                     'Content-Type': 'application/json',
-    //                 },
-    //                 body: JSON.stringify({
-    //                     "session_id": session_id,
-    //                     "delivery_data": delivery_data
-    //                 })
-                
-    //             });
-    //         const data = await response.json();
-    //         if (response.ok){
-    //             processOrderData = data;
-    //             console.log(processOrderData);
-    //             alert("Your order has been successfully created! :D")
-    //         }
-    //         else {
-    //             console.log("There is an error in retrieving the payment data: Error " + response.status);
-    //         }
-    //     } 
-    //     catch(error) {
-    //         console.log("Error: ", error);
-    //     }
-    // });
-
-
-    // $(async () => {
-    //     try {
-    //         const response = await fetch (
-    //             serviceURL, { method: 'GET' }
-    //         );
-    //         const data = await response.json();
-    //         if (response.ok){
-    //             payment_data = data;
-    //             console.log(payment_data);
-    //         }
-    //         else {
-    //             console.log("There is an error in retrieving the payment data: Error " + response.status);
-    //         }
-    //     } 
-    //     catch(error) {
-    //         console.log("Error: ", error);
-    //     }
-    // });
-
-
-    // fetch(url, {
-    //     method: "GET"
-    // })
-    // .then(function(response){
-    //     data = response.json();
-    //     console.log(data);
-    //     return data;
-    // })
-    // .catch(function(error){
-    //     console.log("Error:", error);
-    // })
-
 </script>
 
-<!-- Optional JavaScript -->
-<!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>

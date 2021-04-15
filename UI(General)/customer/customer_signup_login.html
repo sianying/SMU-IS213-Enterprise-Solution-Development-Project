@@ -97,7 +97,6 @@
         
         .background .right button {
             left: 550px;
-            /* margin-top: */
         }
         
         .form-container {
@@ -242,7 +241,6 @@
                     </div>
                     <div class="form-container">
                         <div class="sign-up">
-                            <!-- <form method="post" action="#put into some registering processing page" > -->
                             <form method="post">
                                 <h2 class="form-header">Sign Up</h2>
                                 <input type="text" name="fullname" id = 'fullnameSU' placeholder="Full Name"><i class="fa fa-user"></i></input>
@@ -258,7 +256,6 @@
                         </div>
                         <div class="my-5">
                             <div class="login hide ">
-                                <!-- <form method="post"  action="../Main/process_login.php" > -->
                                 <form method="get">
                                     <h2 class="form-header">Log In</h2>  
                                     <input type="text" name="username" id = 'usernameLI' placeholder="Username"><i class="fa fa-envelope-o"></i></input>
@@ -280,40 +277,6 @@
     
     <script>
 
-    // function signUpValidate(){
-        // document.getElementById("errorSU").innerHTML = '';
-        // var fullnameSU = document.getElementById("fullnameSU").value;
-        // var usernameSU = document.getElementById("UsernameSU").value;
-        // var emailSU = document.getElementById("emailSU").value;
-        // var passwordSU = document.getElementById("passwordSU").value;
-        // var teleSU = document.getElementById('teleSU').value;
-        // var contactSU = document.getElementById('contactSU').value;
-        // var confirmpasswordSU = document.getElementById('confirmpasswordSU').value;
-        // var errors = [];
-
-        //     if (fullnameSU === "" || usernameSU === "" || emailSU === "" || passwordSU === "" || teleSU === '' || contactSU === ''){
-        //         event.preventDefault();
-        //         errors.push('None of your fields can be empty.');
-        //     };
-
-        //     if (!emailSU.includes('@') || !emailSU.includes('.com')){
-        //         event.preventDefault();
-        //         errors.push('Please enter a valid email.');
-        //     };
-
-        //     if (passwordSU !== confirmpasswordSU){
-        //         event.preventDefault();
-        //         errors.push('Password and confirm password does not match.');
-        //     };
-
-        //     for (error of errors){
-        //         document.getElementById("errorSU").innerHTML += `<p style = 'margin: 2px; font-size: 10px; color:red; text-align:center;'>${error}</p>`;
-        //     }
-        // };
-
-    // function logInValidate(){
-        
-    // };
         $(document).ready(function() {
             var signUp = $('.signup-but');
             var logIn = $('.login-but');
@@ -339,9 +302,6 @@
         });
 
         $("#signup-button").click(function() {
-        // var validate = signUpValidate();
-        // if (validate == false):
-        //     return "Login not validated!"
             document.getElementById("errorSU").innerHTML = '';
             var fullnameSU = document.getElementById("fullnameSU").value;
             var usernameSU = document.getElementById("UsernameSU").value;
@@ -355,17 +315,14 @@
 
             // form validation
             if (fullnameSU === "" || usernameSU === "" || emailSU === "" || passwordSU === "" || teleSU === '' || contactSU === ''){
-                // event.preventDefault();
                 errors.push('None of your fields can be empty.');
             };
 
             if (!emailSU.includes('@')){
-                // event.preventDefault();
                 errors.push('Please enter a valid email.');
             };
 
             if (passwordSU !== confirmpasswordSU){
-                // event.preventDefault();
                 errors.push('Password and confirm password does not match.');
             };
 
@@ -375,7 +332,6 @@
 
             
             if(errors.length == 0){
-                // console.log("hello")
                 // after successfully passing form validation, invoke register user complex microservice to register the user
                 var serviceURL = "http://127.0.0.1:8000/api/v1/register_user/" + usernameSU;
                 const details = {
@@ -392,30 +348,9 @@
                         "account_type": "customer"
                     })
                 }
-                // fetch(serviceURL, {
-                //     method: "POST",
-                //     headers: {
-                //         'Content-Type': 'application/json',
-                //     },
-                //     body: JSON.stringify({
-                //         "password": passwordSU,
-                //         "name": fullnameSU,
-                //         "email": emailSU,
-                //         "teleID": teleSU,
-                //         "mobile": contactSU,
-                //         "account_type": "customer"
-                //     })
-                // })
+
                 fetch(serviceURL, details)
                 .then(response => response.json())
-                // .then(function (response) {
-                //     data = response.json();
-                //     console.log(data);
-                //     return data
-                //     // return response.json();
-                // })
-
-                // .then(function (result) {
                 .then(data =>{
                     console.log(data)
                     if (data.code == 201){ //user successfully registered
@@ -442,7 +377,6 @@
                         return message
                     }
                 })
-                // console.log(result)
                 .catch(function (error) {
                     console.log("Error:", error);
                 });
@@ -451,9 +385,6 @@
 
 
         $("#login-button").click(function() {
-            // var validate = signUpValidate();
-            // if (validate == false):
-            //     return "Login not validated!"
             var username = document.getElementById("usernameLI").value;
             var password = document.getElementById("passwordLI").value;
             var errors = []; 
@@ -466,10 +397,7 @@
             for (error of errors){
                 document.getElementById("errorLI").innerHTML += `<p style = 'margin: 2px; font-size: 10px; color:red; text-align:center;'>${error}</p>`;
             }
-            // var username = $("#usernameLI").val();
-            // var password = $("#passwordLI").val();
             var account_type = "customer"
-            // console.log(account_type);
             
             
             if(errors.length ==0){
@@ -512,41 +440,6 @@
                 });
             }
         });
-            //     fetch(serviceURL, {
-            //     method: "POST",
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //     },
-            //     body: JSON.stringify({
-            //         "username": username,
-            //         "password": password,
-            //         "account_type": "customer"
-            //     })
-            // })
-            // .then(function (response) {
-            //     data = response.json();
-            //     console.log(data);
-            //     return data
-            //     // return response.json();
-            // })
-            // .then(function (result) {
-            //     if (result.code == 200){
-            //         json = JSON.stringify({
-            //         "username": result.data.username,
-            //         "customer_ID": result.data.customer_ID,
-            //         "account_type": "customer"
-            //     });
-            //     console.log(json);
-            //     sessionStorage.setItem("account_details", json);
-            //     location.replace("../customer/delivery_order.html");
-            //     }
-            //     else{
-            //         var message = "Verification not completed or verification failed."
-            //         console.log(message);
-            //         document.getElementById("errorLI").innerHTML = "<p style = 'margin: 2px; font-size: 15px; color:red;text-align:center;'>"+ message + "</p>";
-            //         return message
-            //     }
-            // })
         
             
 

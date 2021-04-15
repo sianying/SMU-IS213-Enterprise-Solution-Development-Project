@@ -63,25 +63,6 @@
         100% { transform: rotate(360deg); }
     }
     
-    /* Add animation to "page content" */
-    /* .animate-bottom {
-        position: relative;
-        -webkit-animation-name: animatebottom;
-        -webkit-animation-duration: 1s;
-        animation-name: animatebottom;
-        animation-duration: 5s
-    } */
-    
-    /* @-webkit-keyframes animatebottom {
-        from { bottom:-100px; opacity:0 } 
-        to { bottom:0px; opacity:1 }
-    }
-    
-    @keyframes animatebottom { 
-        from{ bottom:-100px; opacity:0 } 
-        to{ bottom:0; opacity:1 }
-    } */ 
-    
     #myDiv {
         display: none;
         text-align: center;
@@ -116,19 +97,11 @@
 
             <div class='container' v-if='error'>
                 <div class='row'>
-                    <!-- <div class='col'></div> -->
                     <div class='col mx-auto'><h1 class='pt-3 text-center' style='color:#CEA68C; font-family: "Patua One", cursive;'>You have no deliveries.</h1></div>
-                    <!-- <div class='col'></div> -->
                 </div>
             </div>
             
             <table v-if='hasDeliveries' class = "table table-striped animate__animated animate__backInUp" style = 'font-family: roboto; color: #808080;'>
-                <!-- <div class='col-md-8 my-3' style='background-color:#FFFAF0;'>
-                    hello
-                </div>
-                <div class='col-md-4 my-3'>
-                    hello
-                </div> -->
                 <thead>
                     <tr>
                         <th>Delivery ID</th>
@@ -181,28 +154,17 @@
                         fetch(get_details_url)
                             .then(response => response.json())
                             .then(data => {
-                                // console.log(response);
-                                // console.log("hello")
                                 console.log(data);
                                 if (data.code >= 400) {
                                     // no book in db
                                     this.error = data.message;
-                                    // this.loading = false
-                                    // this.hasDeliveries = false
-                                // } else {
-                                //     this.books = data.data.books;
-                                }
-                                // if (data.code == 404){
-                                //     this.error = data.message;
-                                // }
                                 if (data.code == 202){
                                     this.hasDeliveries = true
                                     this.deliveries = data.data.customer_view_details
                                 }
                             })
                             .catch(error => {
-                                // Errors when calling the service; such as network error, 
-                                // service offline, etc
+                                // Errors when calling the service; such as network error, service offline, etc
                                 console.log(this.message + error);
 
                             });
