@@ -26,10 +26,8 @@ CREATE TABLE IF NOT EXISTS `customer` (
 
 
 -- INSERT INTO `customer` (`customer_ID`, `customer_name`, `customer_email`, `customer_mobile`, `customer_teleID`, `tele_chat_ID`) VALUES
--- (1001, 'Jing Wei ', 'jingwei@hotmail.com', '91231234', NULL, NULL),
--- (1002, 'Sian Ying', 'sygoh@hotmail.com', '81234567', 'sysy', '123456789012345'),
--- (1003, 'Li Yin', 'lly@hotmail.com', '91234567', 'lly', '100000000000001'),
--- (1004, 'Zong Han', 'zonghan@hotmail.com', '96410732', 'zong', '111110000055555');
+-- (1001, 'Jing Wei ', 'jw@hotmail.com', 98723645, 'Jingweisim', '246939574'),
+-- (1002, 'bernice', 'ber@gmail.com', 90387648, 'Namisus', '828731935');
 
 
 -- COMMIT;
