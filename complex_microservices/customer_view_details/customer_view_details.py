@@ -49,6 +49,9 @@ def customer_view_details(customer_ID):
 
         list_of_drivers=driver_result['data']['drivers']
 
+        #we retrieved all drivers instead of making multiple HTTP invocations to retrieve specific drivers
+        #shorten time taken to generate output
+
         for delivery in list_of_deliveries:
             driver_id=delivery['driver_ID']
             for driver in list_of_drivers:
