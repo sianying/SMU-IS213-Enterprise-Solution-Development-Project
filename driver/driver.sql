@@ -27,10 +27,9 @@ CREATE TABLE IF NOT EXISTS `driver` (
 
 
 -- INSERT INTO `driver` (`driver_ID`, `driver_name`, `driver_email`, `driver_mobile`, `driver_teleID`, `tele_chat_ID`, `vehicle_no`) VALUES
--- (1, 'SSL Monster', 'sslmonster@hotmail.com', 12345678, 'SSLM', '987654321098765', 'SJW1234F'),
--- (2, 'Tom Smith ', 'tomsmith@hotmail.com', 98765432, 'TS', '123451234512345', 'SJD1234A'),
--- (3, 'Hong Seng', 'hs@hotmail.com', 10293847, 'nobluetooth', '300000000000000', 'SBS1234A'),
--- (4, 'Yew Teng', 'yt@hotmail.com', 10000000, 'bestman', '400000000000000', 'SBS5678A');
+-- (1, 'Zong Han', 'zh@gmail.com', 90458475, 'zongee', '735505752', 'SGD1233Z'),
+-- (2, 'sian ying ', 'sy@gmail.com', 90123243, 'SianYing', '230470702', 'SJD1234A'),
+-- (3, 'Li Yin', 'liyin@gmail.com', 98712372, 'liyin00', '519142989', 'SBS1234A');
 
 
 -- COMMIT;
