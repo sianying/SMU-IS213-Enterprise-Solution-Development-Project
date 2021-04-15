@@ -32,7 +32,6 @@ def callback(channel, method, properties, body): # required signature for the ca
 
 
 def send_telemessage(message):
-    print("sending telegram message")
     driver_message = message['driver_message']
     driver_tele_chat_ID = message['driver_tele_chat_ID']
     invoke_http('https://api.telegram.org/bot1672787508:AAF_XDgmu6-xl0YWsrFzTL4i6Jw5fBNymqo/sendMessage?chat_id=' + driver_tele_chat_ID + '&text=' + driver_message, method='GET')

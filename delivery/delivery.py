@@ -118,7 +118,6 @@ def find_by_driver_ID(driver_ID):
 @app.route("/delivery/customer/<int:customer_ID>")
 def find_by_customer_ID(customer_ID):
     deliverylist = Delivery.query.filter_by(customer_ID=customer_ID).all()
-    print(deliverylist)
     if len(deliverylist):
         return jsonify(
             {
