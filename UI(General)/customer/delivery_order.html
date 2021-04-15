@@ -222,8 +222,6 @@
                             fetch(get_Schedule)
                                 .then(response => response.json())
                                 .then(data => {
-                                    console.log(response);
-                                    console.log(data);
                                     if (data.code === 404) {
                                         // no available time slot for the day
                                         this.availableSchedules = false;

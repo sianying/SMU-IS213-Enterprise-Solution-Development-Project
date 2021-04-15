@@ -38,7 +38,14 @@ def customer_view_details(customer_ID):
         # Once everything is ready, return the final_result. 
         list_of_deliveries=result2['data']['delivery_result']
 
+        print('\n-----Invoking driver microservice-----')
         driver_result = invoke_http(driverURL, method='GET')
+        if driver_result['code'] not in range(200, 300):
+            print('\n\n-----Publishing the (driver error) message with routing_key=CustomerViewDetails.driver.error-----')
+            message=json.dumps(driver_result)
+            amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="CustomerViewDetails.driver.error", 
+                body=message, properties=pika.BasicProperties(delivery_mode = 2))
+            return driver_result
 
         list_of_drivers=driver_result['data']['drivers']
 
@@ -95,7 +102,7 @@ def retrieve_all_deliveries(customer_ID):
 # Execute this program if it is run as a main script (not by 'import')
 if __name__ == "__main__":
     print("This is flask " + os.path.basename(__file__) +
-          " for customer viewing delivery details...")
+            " for customer viewing delivery details...")
     app.run(host="0.0.0.0", port=5102, debug=True)
     # Notes for the parameters:
     # - debug=True will reload the program automatically if a change is detected;
