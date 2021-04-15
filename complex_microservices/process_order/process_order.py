@@ -61,7 +61,6 @@ def process_order(customer_ID):
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             ex_str = str(e) + " at " + str(exc_type) + ": " + fname + ": line " + str(exc_tb.tb_lineno)
-            print(ex_str)
 
             return jsonify({
                 "code": 500,
@@ -112,7 +111,7 @@ def processOrderCreation(session_id, delivery_data, customer_ID):
 
     print('\n-----Invoking schedule_driver microservice-----')
     selected_driver = invoke_http(schedule_driver_URL + "/" + str(date) + "/" + str(time), method='GET')
-    print('Selected_driver: ' + str(selected_driver) + "\n")
+    # print('Selected_driver: ' + str(selected_driver) + "\n")
 
     # check the schedule_driver results: if failure send to error microservice for logging
     code = selected_driver['code']

@@ -81,7 +81,6 @@ def update_driver_chatID(response_tele_ID):
     #driver_data is a Python dict
     driver_data = invoke_http(driver_URL + '/' + str(response_tele_ID), method='PUT', json=driver_json)
     #verify db response
-    print(driver_data)
     code = driver_data['code']
     if code == 202:
         message = True

@@ -112,6 +112,5 @@ if __name__ == "__main__":
     #   -- i.e., it gives permissions to hosts with any IP to access the flask program,
     #   -- as long as the hosts can already reach the machine running the flask program along the network;
     #   -- it doesn't mean to use http://0.0.0.0 to access the flask program.
-        # print(list_of_deliveries)
 
       

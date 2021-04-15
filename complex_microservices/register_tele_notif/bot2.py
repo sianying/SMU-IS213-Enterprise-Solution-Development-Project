@@ -43,60 +43,11 @@ driver = Table(
 c_metadata.create_all(c_engine)
 d_metadata.create_all(d_engine)
 
-# chat_ID = 246939574
-
-# query = customer.select().where(customer.c.tele_chat_ID == "Jingweisim")
-# conn = c_engine.connect()
-# result = conn.execute(query)
-
-# update = customer.update().where(customer.c.customer_teleID == "james").values(tele_chat_ID = "Jingweisim")
-# conn = c_engine.connect()
-# result = conn.execute(update)
-
-# print(result)
-
-# if result is None:
-#     print("True")
-
-# row = result.fetchall()
-
-# if len(row) == 0:
-#     print("True")
-
-# print(type(result))
-# for row in result:
-#     print(row)
-
-# for row in result:
-#     print(type(row))
-
-# c = customer.select().where(customer.c.tele_chat_ID == 'hello')
-# conn = c_engine.connect()
-# result = conn.execute(c)
-
-# print(result)
-# for row in result:
-#     print(row)
-
-# d = driver.select().where(driver.c.driver_name == "Don")
-# conn = d_engine.connect()
-# result = conn.execute(d)
-
-# for row in result:
-#     print(row)
-
-
-# update = customer.update().where(customer.c.customer_name == "james").values(tele_chat_ID = "Jingweisim")
-# conn = c_engine.connect()
-# result = conn.execute(update)
-
-
 global chat_ID
 global account_type
 
 def start(update, context):
     message = "Hello there! Reply 'Register as Customer' or 'Register as Driver' for timely Cheetah Express delivery notifications through this channel!! :)" 
-    # message = "Congratulations! Thank you for registering your telegram with Cheetah Express. You can look forward to timely updates of your deliveries through this channel."
     update.message.reply_text(message)
 
 

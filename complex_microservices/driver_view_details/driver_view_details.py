@@ -34,9 +34,6 @@ def driver_job_details(delivery_ID):
         # do the actual work
         # 1. get info already stored in database
         intermediate_result = get_existing_info(delivery_ID)
-
-        print(intermediate_result)
-
         # 2. get additional info by calling the google distance api
         final_result=get_more_info(intermediate_result)
 
@@ -94,9 +91,7 @@ def get_more_info(delivery):
 
     response = requests.get(url + "origins=" + origins + "&destinations=" + destination + "&key=" + api_key)
     response_json=response.json()
-
-    print(response_json)
-
+    
     if response_json['status']!='OK':
         print('\n\n-----Publishing the (API call error) message with routing_key=DriverViewDetails.API.error-----')
         message=json.dumps(response_json)
