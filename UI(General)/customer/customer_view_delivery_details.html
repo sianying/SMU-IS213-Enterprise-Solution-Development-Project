@@ -133,7 +133,7 @@
         <script>
             document.getElementById("log-out").addEventListener("click", function(){
                     localStorage.clear();
-                    location.replace("landing.html");
+                    location.replace("../landing.html");
                 });
             var session = JSON.parse(localStorage.getItem("account_details"));
             var customer_ID = session.customer_ID;
