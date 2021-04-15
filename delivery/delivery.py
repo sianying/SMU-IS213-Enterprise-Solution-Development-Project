@@ -140,13 +140,7 @@ def find_by_customer_ID(customer_ID):
 @app.route("/delivery", methods=['POST'])
 def create_delivery():
 
-    if request.is_json():
-        data = request.get_json()
-    else:
-        return jsonify({
-            'code': 501,
-            'message': "Request not in json format."
-        })
+    data = request.get_json()
 
     #query from the last entry and increment by 1 for delivery_ID
     delivery = Delivery.query.order_by(Delivery.delivery_ID.desc()).first()
