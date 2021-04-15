@@ -102,6 +102,7 @@
             </div>
             
             <table v-if='hasDeliveries' class = "table table-striped animate__animated animate__backInUp" style = 'font-family: roboto; color: #808080;'>
+
                 <thead>
                     <tr>
                         <th>Delivery ID</th>
@@ -156,15 +157,14 @@
                             .then(data => {
                                 console.log(data);
                                 if (data.code >= 400) {
-                                    // no book in db
                                     this.error = data.message;
+                                }
                                 if (data.code == 202){
                                     this.hasDeliveries = true
                                     this.deliveries = data.data.customer_view_details
                                 }
                             })
                             .catch(error => {
-                                // Errors when calling the service; such as network error, service offline, etc
                                 console.log(this.message + error);
 
                             });
