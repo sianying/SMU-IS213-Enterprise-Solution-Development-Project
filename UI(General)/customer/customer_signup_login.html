@@ -352,20 +352,18 @@
                 fetch(serviceURL, details)
                 .then(response => response.json())
                 .then(data =>{
-                    console.log(data)
+                    // console.log(data)
                     if (data.code == 201){ //user successfully registered
-                        // console.log("hello")
                         json = JSON.stringify({
                             "username": data.data.username,
                             "customer_ID": data.data.customer_ID,
                             "account_type": "customer"
                         });
-                        console.log(data);
                         localStorage.setItem("account_details", json); 
                         // alerting user to sign up for our telegram bot
                         alert("You have successfully registered, please click 'ok' to register with our bot to receive updates.");
                         window.open("http://t.me/Testing_jww_bot", "_blank");
-                        location.replace("../customer/delivery_order.html");
+                        location.replace("../customer/customer_home.html");
                     }
                     else{
                         // user not successfully registered
@@ -425,7 +423,7 @@
                     });
                     console.log(json);
                     localStorage.setItem("account_details", json);
-                    location.replace("../customer/delivery_order.html");
+                    location.replace("../customer/customer_home.html");
                 }
                 else{
                     // user did not successfully log in

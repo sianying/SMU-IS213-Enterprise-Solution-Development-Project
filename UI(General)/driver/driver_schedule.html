@@ -174,10 +174,7 @@
         .then(data =>{
             if (data.code == 404){
                 $("#error").show(); 
-                $("#error").text(data.message); 
-            }
-            if (data.code === 403) {
-                $("#error").hide();
+                $("#error").html(`<h1 style = "font-size: 35px; font-family: Patua One, cursive; color: #c19c84; text-align:center">${data.message}<h1>`);
             }
             else {
                 $("#error").hide();
