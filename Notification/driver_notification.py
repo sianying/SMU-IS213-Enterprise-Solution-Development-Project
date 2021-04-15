@@ -2,12 +2,10 @@
 # The above shebang (#!) operator tells Unix-like environments
 # to run this file as a python3 script
 
-#from flask import request
 import json
 import os
 
 import amqp_setup
-# import telegram_send
 from invokes import invoke_http
 
 monitorBindingKey='driver.#'
@@ -30,7 +28,6 @@ def callback(channel, method, properties, body): # required signature for the ca
     send_telemessage(message)
 
 def processOrderLog(order):
-    # print("Recording an order log:")
     print(order)
 
 def send_telemessage(message):
