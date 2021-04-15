@@ -45,23 +45,16 @@ def process_order(customer_ID):
     # Simple check of input format and data of the request are JSON
     if request.is_json:
         try:
-            #session id + delivery data
             data = request.get_json()
-            # print("\nReceived an data in JSON:", data)
+
             session_id, delivery_data = data['session_id'], data['delivery_data']
 
             # do the actual work
             # 1. Send order info {delivery order}
             order = processOrderCreation(session_id, delivery_data, customer_ID)
             if order:
-                # order_ID = order['delivery_ID']
                 send_notification(order)
-
-                # print(data)
                 return data
-            # print('\n------------------------')
-            # print('\nresult: ', result)
-            # return jsonify(result), result["code"]
 
         except Exception as e:
             # Unexpected error in code
@@ -112,10 +105,7 @@ def processOrderCreation(session_id, delivery_data, customer_ID):
         }), 400
     
     #5. Invoke schedule_driver to allocate the driver for the delivery
-    #have not implement calendar + selection of delivery date
-    #hardcode date and time first: "2020-06-1", "8_to_10"
-    # date = "2020-06-01"
-    # time = "8_to_10"
+
     date = delivery_data['date']
     time = delivery_data['time']
     url = schedule_driver_URL + "/" + date + "/" + time
@@ -140,7 +130,7 @@ def processOrderCreation(session_id, delivery_data, customer_ID):
     #Initialise the driver ID and data for updating of their schedule
     selected_schedule_ID = selected_driver['data']['SID']
     updated_schedule = selected_driver['data']
-    # print(updated_schedule)
+
     # remove SID from POST body data
     updated_schedule.pop('SID')
     updated_schedule['delivery_date'] = date
@@ -150,7 +140,6 @@ def processOrderCreation(session_id, delivery_data, customer_ID):
     #6. Invoke schedule to update allocated driver's schedule
     print('\n-----Invoking Schedule Microservice-----')
     driver_schedule_updated = invoke_http(schedule_URL + "/" + str(selected_schedule_ID), method='PUT', json=updated_schedule)
-    # print("Updated Driver's schedule: " + str(driver_schedule_updated) + "\n")
 
     #check the driver updated results: if failure send to error microservice for logging
     code = driver_schedule_updated['code']
@@ -166,7 +155,6 @@ def processOrderCreation(session_id, delivery_data, customer_ID):
             body=message, properties=pika.BasicProperties(delivery_mode = 2))
 
     #9. Invoke Delivery Microservice to create new Delivery order using POST
-    #create the POST data
 
     delivery_entry = {
         "driver_ID": selected_driver['data']['driver_ID'],
@@ -183,9 +171,7 @@ def processOrderCreation(session_id, delivery_data, customer_ID):
     }
 
     print('\n-----Invoking Delivery Microservice-----')
-    # print(delivery_URL )
     delivery_created = invoke_http(delivery_URL, method='POST', json=delivery_entry)
-    # print("New Delivery created: " + str(delivery_created) + "\n")
 
     #check the newly created delivery order: if failure send to error microservice for logging
     code = delivery_created['code']
@@ -212,7 +198,6 @@ def send_notification(order):
     #1. Invoke the Driver Microservice to get the chat ID of the allocated driver
     print('\n-----Invoking Driver Microservice-----')
     driver_data = invoke_http(driver_URL + "/" + str(driver_ID), method='GET')
-    # print("Updated Driver's schedule"+ str(driver_data) + "\n")
 
     # #check the driver's data: if failure send to error microservice for logging
     code = driver_data['code']
@@ -231,7 +216,6 @@ def send_notification(order):
     #2. Invoke the Customer Microservice to get the chat ID of the customer
     print('\n-----Invoking Customer Microservice-----')
     customer_data = invoke_http(customer_URL + "/" + str(customer_ID), method='GET')
-    # print("Customer's information: "+ str(customer_data) + "\n")
 
     # #check the customer's data: if failure send to error microservice for logging
     code = customer_data['code']
@@ -248,7 +232,6 @@ def send_notification(order):
         return error_message
 
     #invoke the notification AMQP to inform customer of new delivery order
-    # print('\n\n-----Invoking customer_notification microservice-----')
 
     driver_tele_chat_ID = driver_data['data']['tele_chat_ID']
     customer_tele_chat_ID = customer_data['data']['tele_chat_ID']
