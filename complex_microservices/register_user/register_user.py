@@ -30,17 +30,6 @@ driver_URL = environ.get('driverURL') or "http://127.0.0.1:5001/driver"
 customer_URL = environ.get('customerURL') or "http://127.0.0.1:5002/customer"
 schedule_URL = environ.get('scheduleURL') or "http://127.0.0.1:5004/schedule"
 
-# POST request format in the URL: "username": username,
-# {
-#     "password": password,
-#     "name": name,
-#     "email": email,
-#     "teleID": teleID,
-#     "mobile": mobile
-#     "vehicle_no": vehicle_no     #this only applies to driver#
-#     "account_type": account_type
-
-# }
 
 @app.route("/register_user/<string:username>", methods=['POST'])
 def register_user(username):
@@ -54,7 +43,6 @@ def register_user(username):
             # Invoke the Login Microservice (/check_username_exist)
             print('\n-----Invoking Login microservice-----')
             username_data = invoke_http(login_URL + "/" + "check_username_exist" + "/" + username, method='GET')
-            # print('payment_results:'+ str(username_data) + "\n")
 
             #code 200 means username not taken
             #code 400 means bad request username is taken
@@ -124,12 +112,10 @@ def registerCustomer(data):
         "customer_teleID": data['teleID'],
         "tele_chat_ID": "NULL"
     }
-    # print(customer_data)
-    # print(type(customer_data))
+
     # Invoke the Customer Microservice (/customer)
     print('\n-----Invoking Customer microservice-----')
     customer_data = invoke_http(customer_URL, method='POST', json=customer_data)
-    # print('customer_results:' + str(customer_data) + "\n")
 
     code = customer_data["code"]
     if code not in range(200, 300):
@@ -144,7 +130,6 @@ def registerCustomer(data):
             body=message, properties=pika.BasicProperties(delivery_mode = 2))
         return error_message
     
-    #return customer_ID
     return customer_data
     
 
@@ -161,7 +146,6 @@ def registerDriver(data):
     # Invoke the driver Microservice (/driver)
     print('\n-----Invoking Driver microservice-----')
     driver_data = invoke_http(driver_URL, method='POST', json=driver_data)
-    # print('driver_results:' + str(driver_data) + "\n")
 
     code = driver_data["code"]
     if code not in range(200, 300):
@@ -177,7 +161,6 @@ def registerDriver(data):
         return error_message
         
     driver_ID = driver_data['data']['driver_ID']
-    # return driver_ID
 
     #getting today's date to create new empty schedules until end of the month (April)
     today_date = datetime.datetime.today().strftime('%Y-%m-%d')
@@ -187,7 +170,6 @@ def registerDriver(data):
     #Invoke the Schedule Microservice to create a schedule for the driver
     print('\n-----Invoking Schedule microservice-----')
     driver_schedule = invoke_http(schedule_URL + "/new_driver/" + str(driver_ID), method='POST', json=schedule_data)
-    # print('driver_schedule:' + str(driver_schedule) + "\n")
 
     #error handling
     code = driver_data["code"]
@@ -227,7 +209,6 @@ def registerUserAccount(username, user_ID, password, account_type):
     # Invoke the Login Microservice (/register_account/<string: username>)
     print('\n-----Invoking Login microservice-----')
     account_registered = invoke_http(login_URL + "/register_account/" + str(username), method='POST', json=account_data)
-    # print('account_results:' + str(account_registered) + "\n")
 
     #error handling
     code = account_registered['code']
