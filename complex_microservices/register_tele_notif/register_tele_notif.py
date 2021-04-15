@@ -17,7 +17,6 @@ global account_type
 
 def start(update, context):
     message = "Hello there! Reply 'Register as Customer' or 'Register as Driver' for timely Cheetah Express delivery notifications through this channel!! :)" 
-    # message = "Congratulations! Thank you for registering your telegram with Cheetah Express. You can look forward to timely updates of your deliveries through this channel."
     update.message.reply_text(message)
 
 
@@ -63,7 +62,6 @@ def update_customer_chatID(response_tele_ID):
     #customer_data is a Python dict
     customer_data = invoke_http(customer_URL + '/' + str(response_tele_ID), method='PUT', json=customer_json)
     #verify db response
-    # print(customer_data)
     code = customer_data['code']
     if code == 202:
         message = True

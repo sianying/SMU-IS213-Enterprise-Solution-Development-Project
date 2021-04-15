@@ -12,8 +12,6 @@ HOST = "0.0.0.0"
 PORT = 5001
 
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@127.0.0.1:3306/driver'
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/driver'
-#there is a need for authentication to the database using root (user)x and pass(if there is any)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
@@ -107,23 +105,6 @@ def create_driver():
         db.session.add(driver)
         db.session.commit()
 
-    # if (Driver.query.filter_by(driver_ID=driver_ID).first()):
-    #     return jsonify(
-    #         {
-    #             "code": 400,
-    #             "data": {
-    #                 "driver_ID": driver_ID
-    #             },
-    #             "message": "Driver already exists."
-    #         }
-    #     ), 400
-    
-    # data = request.get_json()
-    # driver = Driver(driver_ID, **data)
-
-    # try:
-    #     db.session.add(driver)
-    #     db.session.commit()
     except:
         return jsonify(
             {
@@ -194,24 +175,15 @@ def update_driver(driver_ID):
             }
         ), 400
 
-    # data = request.get_json()
-    # new_driver = Driver(driver_ID, **data)
     new_driver = request.get_json()
 
     try:
-        # old_driver.DName = new_driver.DName
-        # old_driver.DEmail = new_driver.DEmail
-        # old_driver.DMobile = new_driver.DMobile
-        # old_driver.DTeleID = new_driver.DTeleID
-        # old_driver.vehicle_no = new_driver.vehicle_no
 
-        #cannot amend the chat ID
         old_driver.DName = new_driver['DName']
         old_driver.DEmail = new_driver['DEmail']
         old_driver.DMobile = new_driver['DMobile']
         old_driver.DTeleID = new_driver['DTeleID']
         old_driver.vehicle_no = new_driver['vehicle_no']
-        # old_driver.tele_chat_ID = new_driver['tele_chat_ID']
         db.session.commit()
 
     except:

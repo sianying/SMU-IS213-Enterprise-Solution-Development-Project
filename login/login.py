@@ -13,9 +13,7 @@ CORS(app)
 HOST="0.0.0.0"
 PORT = 5005
 
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/login'
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@127.0.0.1:3306/login'
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:password@localhost:3306/driver'
 #there is a need for authentication to the database using root (user) and pass(if there is any)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
@@ -30,8 +28,6 @@ class Login(db.Model):
     account_type = db.Column(db.String(8), nullable=False)
     customer_ID = db.Column(db.Integer, nullable=True, default=None) 
     driver_ID = db.Column(db.Integer, nullable=True, default=None) 
-    # customer_ID = db.Column(db.Integer, nullable=True)
-    # driver_ID = db.Column(db.Integer, nullable=True)
 
     def __init__(self, username, password, account_type, customer_ID, driver_ID):
         self.username = username
@@ -54,7 +50,6 @@ class Login(db.Model):
 def authenticate_user():
     user_data = request.get_json()
     user_recorded = Login.query.filter_by(username=user_data['username']).first()
-    # print(user_recorded)
     account_type = user_recorded.account_type
 
     if user_recorded is not None:
@@ -67,8 +62,6 @@ def authenticate_user():
         encode_password = password.encode('utf-8')
         encode_hashed = hashed.encode('utf-8')
         if username == user_recorded.username and bcrypt.checkpw(encode_password, encode_hashed):
-        # if username == user_recorded.username and :
-
             print("Authenticated! Welcome User " + username)
             if account_type == "customer":
                 return jsonify({
@@ -96,7 +89,6 @@ def authenticate_user():
             "message": "User not found. Please sign up for an account with Cheetah Go ;)."
         }), 404
     
-
 #check if username is taken 
 @app.route("/check_username_exist/<string:username>", methods=['GET'])
 def check_username_exist(username):
@@ -118,39 +110,6 @@ def check_username_exist(username):
 #creates user
 @app.route("/register_account/<string:username>", methods=['POST'])
 def register_user(username):
-    #POST request data
-    # {
-    #     "password": password,
-    #     "account_type": account_type,
-    #     "customer_ID": customer_ID or "driver_ID": driver_ID
-    # }
-
-    #verifies if the user exists, but this is covered in covered in the other function
-    # user_recorded = Login.query.filter_by(username=username).first()
-    # print(user_recorded.username)
-    # print(user_recorded.password)
-    # if user_recorded:
-    #     account_type = user_recorded.account_type
-    #     if account_type == "customer":
-    #         return jsonify({
-    #             "code": 400,
-    #             "data": {
-    #                 "username": user_recorded.username,
-    #                 "account_type": user_recorded.account_type,
-    #                 "customer_ID": user_recorded.customer_ID
-    #             },
-    #             "message": "User already exists. Please choose another username."
-    #         }), 400
-    #     else:
-    #         return jsonify({
-    #             "code": 400,
-    #             "data": {
-    #                 "username": user_recorded.username,
-    #                 "account_type": user_recorded.account_type,
-    #                 "driver_ID": user_recorded.driver_ID
-    #             },
-    #             "message": "User already exists. Please choose another username."
-    #             }), 400
 
     data = request.get_json()
     print(data)
@@ -168,7 +127,6 @@ def register_user(username):
         driver_ID = data['driver_ID']
         account = Login(username, decode_hashed, account_type, None, driver_ID)
 
-    # account = Login(username, hashed_string, **data)
     try:
         db.session.add(account)
         print("after db add")

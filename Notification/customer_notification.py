@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 # The above shebang (#!) operator tells Unix-like environments
 # to run this file as a python3 script
-#from flask import request
+
 import json
 import os
 
 import amqp_setup
-# import telegram_send
 from invokes import invoke_http
 
 monitorBindingKey='customer.#'
@@ -29,14 +28,12 @@ def callback(channel, method, properties, body): # required signature for the ca
     send_telemessage(message)
 
 def processOrderLog(order):
-    # print("Recording an order log:")
     print(order)
 
 def send_telemessage(message):
     print("sending telegram message")
     customer_message = message['customer_message']
     customer_tele_chat_ID = message['customer_tele_chat_ID']
-    # print(customer_message)
     invoke_http('https://api.telegram.org/bot1672787508:AAF_XDgmu6-xl0YWsrFzTL4i6Jw5fBNymqo/sendMessage?chat_id=' + customer_tele_chat_ID + '&text=' + customer_message, method='GET')
 
 

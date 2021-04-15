@@ -13,8 +13,6 @@ PORT = 5002
 
 
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@127.0.0.1:3306/customer'
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/customer'
-#there is a need for authentication to the database using root (user) and pass(if there is any)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
@@ -92,20 +90,6 @@ def find_by_customer_ID(customer_ID):
 @app.route("/customer", methods=['POST'])
 def create_customer():
 
-    #shift the checking of existing customer to the registration microservice
-    #this is because of the auto increment of the customer_ID
-    #customer creation will only be invoked from the Registration CMS
-    # if (Customer.query.filter_by(customer_ID=data['customer_ID']).first()):
-    #     return jsonify(
-    #         {
-    #             "code": 400,
-    #             "data": {
-    #                 "customer_ID": customer_ID,
-    #             },
-    #             "message": "Customer already exists."
-    #         }
-    #     ), 400
-
     #create customer_ID, auto increment
     #if no customer in the database, the incoming customer have an id of 0
     recent_customer = Customer.query.order_by(Customer.customer_ID.desc()).first()
@@ -116,7 +100,6 @@ def create_customer():
 
     data = request.get_json()
     customer = Customer(customer_ID, **data)
-    # print(str(customer_ID))
 
     try:
         db.session.add(customer)
@@ -195,16 +178,12 @@ def update_customer(customer_ID):
     new_customer = Customer(customer_ID, **data)
 
     try:
-        # key_list = [attr for attr in dir(old_customer) if "C" in attr and "customer_ID" not in attr]
-        # for key in key_list:
-        #     old_customer[key] = new_customer[key]
 
         #cannot amend the chat ID
         old_customer.customer_name = new_customer.customer_name
         old_customer.customer_email = new_customer.customer_email
         old_customer.customer_mobile = new_customer.customer_mobile
         old_customer.customer_teleID = new_customer.customer_teleID
-        # old_customer.tele_chat_ID = new_customer.tele_chat_ID
         db.session.commit()
     except:
         return jsonify(
