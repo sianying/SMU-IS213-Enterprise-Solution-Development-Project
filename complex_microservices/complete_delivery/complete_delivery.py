@@ -27,9 +27,6 @@ deliveryURL=environ.get('deliveryURL') or 'http://127.0.0.1:5000/delivery'
 driverURL= environ.get('driverURL') or 'http://127.0.0.1:5001/driver'
 customerURL= environ.get('customerURL') or 'http://127.0.0.1:5002/customer'
 
-# deliveryURL=environ.get('deliveryURL')
-# driverURL= environ.get('driverURL')
-
 # Main function that calls other functions
 @app.route("/complete_delivery/<int:delivery_ID>", methods=['POST'])
 def complete_delivery(delivery_ID):
@@ -40,9 +37,6 @@ def complete_delivery(delivery_ID):
             delivery = request.get_json()
             print("\n Delivery to be completed:", delivery)
 
-            #invokes update_delivery_status function
-            #delivery = {'status': 'completed!'}
-            #delivery_ID = 1
             result = update_delivery_status(delivery, delivery_ID)
             return jsonify(result), 200
 
@@ -64,9 +58,7 @@ def update_delivery_status(delivery, delivery_ID):
 
     # 2. Invoke the delivery microservice
     print('\n-----Invoking delivery microservice-----')
-    #delivery_result = invoke_http("http://localhost:5000/delivery/" + str(delivery_ID), method='PUT', json=delivery)
     delivery_result = invoke_http(deliveryURL + '/' + str(delivery_ID), method='PUT', json=delivery)
-    # print("delivery_result: ", delivery_result)
     
     # 3. Check the delivery result; if a failure, send it to the error microservice.
     code = delivery_result['code']
@@ -84,9 +76,7 @@ def update_delivery_status(delivery, delivery_ID):
         print("\nDelivery MS call status ({:d}) published to the RabbitMQ Exchange:".format(code), delivery_result)
         return error_message
 
-
     # 5. invoke the driver microservice
-    #driver_result = invoke_http("http://localhost:5001/driver" + '/' + str(delivery_result['data']['driver_ID']), method='GET')
     driver_ID = delivery_result['data']['driver_ID']
     print('\n-----Invoking driver microservice-----')
     driver_result = invoke_http(driverURL + '/' + str(driver_ID), method='GET')
@@ -141,10 +131,6 @@ def update_delivery_status(delivery, delivery_ID):
             "driver_tele_chat_ID": driver_tele_chat_ID 
         })
 
-    # print('\n\n-----Publishing the (customer) message with routing_key=customer.order-----')
-    # amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="customer.CompleteDelivery", body=messages)
-    # amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="driver.CompleteDelivery", body=messages)
-
     print('\n\n-----Publishing the (customer & driver) message with routing_key=customer.CompleteDelivery and routing_key=driver.CompleteDelivery-----')
     amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="customer.CompleteDelivery", body=messages)
     amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="driver.CompleteDelivery", body=messages)
@@ -154,7 +140,6 @@ def update_delivery_status(delivery, delivery_ID):
         "code": 201,
         "data": {
             "order_result": delivery_result
-            # "notification_result": notification_result
         }
     }
 
@@ -173,31 +158,3 @@ if __name__ == "__main__":
     #   -- it doesn't mean to use http://0.0.0.0 to access the flask program.
 
 
-
-#old notification microservice
-    # 6. Invoke Notification microservice (TBC)
-    # print('\n\n-----Invoking notification microservice-----')
-    # notification_result = invoke_http(
-    #     "http://localhost:5008/notification", method="POST", json=delivery_result['data'])
-    # print("notification_result:", notification_result, '\n')
-
-    # Check the notification result;
-    # if a failure, send it to the error microservice.
-    # code = notification_result["code"]
-    # if code not in range(200, 300):
-
-    # Inform the error microservice
-        # print('\n\n-----Invoking error microservice as notification fails-----')
-        # invoke_http("http:localhost:5007/error", method="POST", json=notification_result)
-        # print("Notification status ({:d}) sent to the error microservice:".format(
-        #     code), notification_result)
-
-    # 7. Return error
-        # return {
-        #     "code": 400,
-        #     "data": {
-        #         "delivery_result": delivery_result,
-        #         "Notification_result": notification_result
-        #     },
-        #     "message": "Error when sending notification to driver/customer."
-        # }

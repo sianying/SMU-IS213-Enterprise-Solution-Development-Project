@@ -55,9 +55,7 @@ def driver_job_details(delivery_ID):
 def get_existing_info(delivery_ID):
     # 2. Invoke the delivery microservice
     print('\n-----Invoking delivery microservice-----')
-    #delivery_result = invoke_http("http://localhost:5000/delivery/" + str(delivery_ID), method='GET')
     delivery_result = invoke_http(delivery_URL+ '/' + str(delivery_ID), method='GET')
-    # print('delivery_result:', delivery_result)
 
     # 3. Check the delivery result; if a failure, send it to the error microservice.
     code = delivery_result["code"]
@@ -69,16 +67,6 @@ def get_existing_info(delivery_ID):
         # - reply from the invocation is not used; 
         # continue even if this invocation fails
         print("Delivery MS Call status ({:d}) published to the RabbitMQ Exchange:".format(code), delivery_result)
-
-
-
-
-        # print('\n\n-----Invoking error microservice as delivery fails-----')
-        # invoke_http("http://localhost:5007/error", method="POST", json=delivery_result)
-        # # - reply from the invocation is not used; 
-        # # continue even if this invocation fails
-        # print("Delivery status ({:d}) sent to the error microservice:".format(
-        #     code), delivery_result)
 
         return {
             "code": 501,
@@ -102,14 +90,10 @@ def get_more_info(delivery):
 
     #get from json returned in the 1st function
     origins=delivery['data']['delivery_result']['data']['pickup_location']
-    #print(origins)
     destination=delivery['data']['delivery_result']['data']['destination']
-    #print(destination)
 
     response = requests.get(url + "origins=" + origins + "&destinations=" + destination + "&key=" + api_key)
     response_json=response.json()
-
-    #print("until here ok!")
 
     print(response_json)
 
@@ -121,12 +105,6 @@ def get_more_info(delivery):
 
         print("\nAPI Call status ({:d}) published to the RabbitMQ Exchange:".format(
             response_json['status']), response_json)
-
-        # print('\n\n-----Invoking error microservice as api call fails-----')
-        # invoke_http("http://localhost:5007/error", method="POST", json=response)
-        # # - reply from the invocation is not used; 
-        # # continue even if this invocation fails
-        # print("Details of API Call ({:d}) sent to the error microservice:".format(response_json['status']), response_json)
 
         return {
             "code": 400,
@@ -146,9 +124,6 @@ def get_more_info(delivery):
             "api_call_result": delivery,
         }
     }
-
-# SAMPLE JSON CODE
-#{'destination_addresses': ['21 Lower Kent Ridge Rd, University Hall, Singapore 119077'], 'origin_addresses': ['81 Victoria St, Singapore 188065'], 'rows': [{'elements': [{'distance': {'text': '6.3 mi', 'value': 10187}, 'duration': {'text': '15 mins', 'value': 913}, 'status': 'OK'}]}], 'status': 'OK'}
 
 
 # Execute this program if it is run as a main script (not by 'import')
