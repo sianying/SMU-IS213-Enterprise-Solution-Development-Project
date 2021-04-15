@@ -113,6 +113,13 @@
             localStorage.clear();
             location.replace("../landing.html");
         });
+        
+    window.onload = function () {  
+            document.onkeydown = function (e) {  
+            return (e.which || e.keyCode) != 116;  
+        }
+    };
+
     var app = new Vue({
         el: '#app',
         data:{
