@@ -162,8 +162,8 @@
                     fetch(get_details_url)
                         .then(response => response.json())
                         .then(data => {
-                            console.log(response);
-                            console.log(data);
+                            // console.log(response);
+                            // console.log(data);
                             if (data.code === 201){
                                 var result = data.data.api_call_result.data.delivery_result.data; //retrieving delivery details and assigning it to result variable
                                 var timeslot = result.timeslot;
@@ -235,7 +235,7 @@
                         fetch(update_status_url + "/" + delivery_id, details) //updating delivery status in database when status changes from NEW to In Progress
                             .then(response => response.json())
                             .then(data => {
-                                console.log(data);
+                                // console.log(data);
                             })
                             .catch(error=>{
                                 console.log("Error:", error);
@@ -260,8 +260,8 @@
                                             fetch(notify_complete_url, detail)
                                             .then(response => response.json())
                                             .then(data => {
-                                                console.log(response);
-                                                console.log(data);
+                                                // console.log(response);
+                                                // console.log(data);
                                             })
                                             .catch(error => {
                                                 // Errors when calling the service; such as network error, 
