@@ -35,8 +35,6 @@ def complete_delivery(delivery_ID):
     if request.is_json:
         try:
             delivery = request.get_json()
-            print("\n Delivery to be completed:", delivery)
-
             result = update_delivery_status(delivery, delivery_ID)
             return jsonify(result), 200
 
@@ -123,7 +121,6 @@ def update_delivery_status(delivery, delivery_ID):
 
     #6. Invoke Customer Notification AMQP
     message = "Delivery Completed! \n\n" + "Delivery Order ID: " + str(delivery_result['data']['delivery_ID']) + " was delivered by " + str(delivery_driver) + " to " + str(delivery_result['data']['receiver_name']) + " on " + str(delivery_result['data']['last_updated'])
-    print(message)
     messages = json.dumps({
             "customer_message": message,
             "customer_tele_chat_ID": customer_tele_chat_ID,

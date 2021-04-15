@@ -39,7 +39,6 @@ queue_name = 'Error'
 channel.queue_declare(queue=queue_name, durable=True)
 
 channel.queue_bind(exchange=exchangename, queue=queue_name, routing_key='#.error') 
-#change to #
 
 
 """
