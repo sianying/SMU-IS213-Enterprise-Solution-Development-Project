@@ -1,8 +1,12 @@
 Please do the following before using our application :D
 
+- Please turn on WAMP.
+
 - For docker compose to run, please open the .env file and change the value of docker_id accordingly. Once the Kong GUI is running, please use the esd-kong-postgres.json file placed in this same directory to import the services followed by the routes. This will allow our API Gateway to function.
 
--We have implemented an API gateway which might lead to some cold-start problems. Please be patient and refrain from double-clicking. It might take a while to load at first, but will become a lot faster later. We have also implemented an external RDS database that is based in Singapore to allow for quick retrieval of data. More info is given below.
+- Once our app is running, you can navigate the UI starting from UI(General)/landing.html.
+
+-We have implemented an API gateway which might lead to some cold-start problems, but it will become a lot faster for subsequent reloads. Please be patient and refrain from double-clicking. We have also implemented an external RDS database that is based in Singapore to allow for quick retrieval of data. More info is given at the bottom of this .txt file.
 
 - Currently, we have 2 customer and 3 driver accounts. 
     customer 1 username, password= jingwei, password
