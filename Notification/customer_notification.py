@@ -10,6 +10,8 @@ from invokes import invoke_http
 
 monitorBindingKey='customer.#'
 
+global null_list
+null_list = ["NULL", None, 0, "0"]
 
 def orderCreationSuccess():
     amqp_setup.check_setup()
@@ -24,11 +26,9 @@ def orderCreationSuccess():
 def callback(channel, method, properties, body): # required signature for the callback; no return
     print("\nReceived an order log by " + __file__)
     message = json.loads(body)
-    processOrderLog(json.loads(body))
-    send_telemessage(message)
+    if message['customer_tele_chat_ID'] not in null_list: #global variable
+        send_telemessage(message)
 
-def processOrderLog(order):
-    print(order)
 
 def send_telemessage(message):
     print("sending telegram message")
