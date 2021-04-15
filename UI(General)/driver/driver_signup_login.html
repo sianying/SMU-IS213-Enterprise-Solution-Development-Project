@@ -309,7 +309,6 @@
         var carplateSU = document.getElementById('carplateSU').value;
         var contactSU = document.getElementById('contactSU').value;
         var confirmpasswordSU = document.getElementById('confirmpasswordSU').value;
-        // var account_type = "driver";
         var errors = [];
 
         if (fullnameSU === "" || usernameSU === "" || emailSU === "" || passwordSU === "" || teleSU === '' || contactSU === '' || carplateSU === ''){
@@ -364,7 +363,6 @@
                 else{
                     // user not successfully registered
                     var message = "Verification not completed or verification failed."
-                    console.log(message);
                     $("#errorSU").html(`<p style = 'margin: 2px; font-size: 10px; color:red;'>
                                             The username is taken or the account exists
                                         </p>`);
@@ -415,13 +413,11 @@
                     "driver_ID": data.data.driver_ID,
                     "account_type": "driver"
                     });
-                    console.log(json);
                     localStorage.setItem("account_details", json);
                     location.replace("../driver/driver_home.html");
                 } else{
                     // user did not successfully log in
                     var message = "Verification not completed or verification failed."
-                    console.log(message);
                     document.getElementById("errorLI").innerHTML = "<p style = 'margin: 2px; font-size: 15px; color:red;text-align:center;'>"+ message + "</p>";
                     return message
                 }
