@@ -22,7 +22,7 @@ def receiveOrderLog():
 
 
 def callback(channel, method, properties, body): # required signature for the callback; no return
-    print("\nReceived an order log by " + __file__)
+    print("\nReceived an error by " + __file__)
     message = json.loads(body)
 
 

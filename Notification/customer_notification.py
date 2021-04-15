@@ -24,7 +24,7 @@ def orderCreationSuccess():
     #it doesn't exit by default. Use Ctrl+C in the command window to terminate it.
 
 def callback(channel, method, properties, body): # required signature for the callback; no return
-    print("\nReceived an order log by " + __file__)
+    print("\nReceived a message from " + __file__)
     message = json.loads(body)
     if message['customer_tele_chat_ID'] not in null_list: #global variable
         send_telemessage(message)
