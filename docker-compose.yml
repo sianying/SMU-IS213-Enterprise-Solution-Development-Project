@@ -1,7 +1,5 @@
 version: "3.8"
 
-#docker id
-docker_id: jingweisim
 
 volumes:
     rabbitmq_data:
@@ -20,12 +18,12 @@ services:
       build:
         context: ./delivery            
         dockerfile: delivery.Dockerfile   
-      image: {{ docker_id }}/delivery:1.0
+      image: ${docker_id}/delivery:1.0
       restart: always
       ports:
         - "5000:5000"
       environment:
-        dbURL: mysql+mysqlconnector://admin:Password123@esd-database.cjlm2oobbep2.ap-southeast-1.rds.amazonaws.com/delivery
+        dbURL: ${DBURL}/delivery
         #dbURL: mysql+mysqlconnector://root@host.docker.internal:3306/delivery
         #dbURL: mysql+mysqlconnector://admin:Password123@esd-database.cg2v6ek4an29.us-east-1.rds.amazonaws.com/delivery
         PYTHONUNBUFFERED: 1
@@ -36,12 +34,12 @@ services:
         build:
             context: ./driver
             dockerfile: driver.Dockerfile
-        image: {{ docker_id }}/driver:1.0
+        image: ${docker_id}/driver:1.0
         restart: always
         ports:
             - "5001:5001"
         environment:
-            dbURL: mysql+mysqlconnector://admin:Password123@esd-database.cjlm2oobbep2.ap-southeast-1.rds.amazonaws.com/driver
+            dbURL: ${DBURL}/driver
             #dbURL: mysql+mysqlconnector://root@host.docker.internal:3306/driver
             #dbURL: mysql+mysqlconnector://admin:Password123@esd-database.cg2v6ek4an29.us-east-1.rds.amazonaws.com/driver
             PYTHONUNBUFFERED: 1
@@ -52,12 +50,12 @@ services:
         build:
             context: ./customer
             dockerfile: customer.Dockerfile
-        image: {{ docker_id }}/customer:1.0
+        image: ${docker_id}/customer:1.0
         restart: always
         ports:
             - "5002:5002"
         environment:
-            dbURL: mysql+mysqlconnector://admin:Password123@esd-database.cjlm2oobbep2.ap-southeast-1.rds.amazonaws.com/customer
+            dbURL: ${DBURL}/customer
             #dbURL: mysql+mysqlconnector://root@host.docker.internal:3306/customer
             #dbURL: mysql+mysqlconnector://admin:Password123@esd-database.cg2v6ek4an29.us-east-1.rds.amazonaws.com/customer
             PYTHONUNBUFFERED: 1
@@ -68,7 +66,7 @@ services:
         build:
             context: ./payment
             dockerfile: payment.Dockerfile
-        image: {{ docker_id }}/payment:1.0
+        image: ${docker_id}/payment:1.0
         restart: always
         ports:
             - "4242:4242"
@@ -81,12 +79,12 @@ services:
         build:
             context: ./schedule
             dockerfile: schedule.Dockerfile
-        image: {{ docker_id }}/schedule:1.0
+        image: ${docker_id}/schedule:1.0
         restart: always
         ports:
             - "5004:5004"
         environment:
-            dbURL: mysql+mysqlconnector://admin:Password123@esd-database.cjlm2oobbep2.ap-southeast-1.rds.amazonaws.com/schedule
+            dbURL: ${DBURL}/schedule
             #dbURL: mysql+mysqlconnector://root@host.docker.internal:3306/schedule
             #dbURL: mysql+mysqlconnector://admin:Password123@esd-database.cg2v6ek4an29.us-east-1.rds.amazonaws.com/schedule
             PYTHONUNBUFFERED: 1
@@ -97,12 +95,12 @@ services:
         build:
             context: ./login
             dockerfile: login.Dockerfile
-        image: {{ docker_id }}/login:1.0
+        image: ${docker_id}/login:1.0
         restart: always
         ports:
             - "5005:5005"
         environment:
-            dbURL: mysql+mysqlconnector://admin:Password123@esd-database.cjlm2oobbep2.ap-southeast-1.rds.amazonaws.com/login
+            dbURL: ${DBURL}/login
             #dbURL: mysql+mysqlconnector://root@host.docker.internal:3306/login
             #dbURL: mysql+mysqlconnector://admin:Password123@esd-database.cg2v6ek4an29.us-east-1.rds.amazonaws.com/login
             PYTHONUNBUFFERED: 1
@@ -127,7 +125,7 @@ services:
         build:
             context: ./notification
             dockerfile: customer_noti.Dockerfile
-        image: {{ docker_id }}/customer_noti:1.0
+        image: ${docker_id}/customer_noti:1.0
         restart: always
         depends_on:
             - rabbitmq
@@ -140,7 +138,7 @@ services:
         build:
             context: ./notification
             dockerfile: driver_noti.Dockerfile
-        image: {{ docker_id }}/driver_noti:1.0
+        image: ${docker_id}/driver_noti:1.0
         restart: always
         depends_on:
             - rabbitmq
@@ -153,7 +151,7 @@ services:
         build:
             context: ./notification
             dockerfile: error.Dockerfile
-        image: {{ docker_id }}/error:1.0
+        image: ${docker_id}/error:1.0
         restart: always
         depends_on:
             - rabbitmq
@@ -172,7 +170,7 @@ services:
         build:
             context: ./complex_microservices/schedule_driver
             dockerfile: schedule_driver.Dockerfile
-        image: {{ docker_id }}/schedule_driver:1.0
+        image: ${docker_id}/schedule_driver:1.0
         restart: always
         depends_on:
             - schedule
@@ -191,7 +189,7 @@ services:
         build:
             context: ./complex_microservices/process_order
             dockerfile: process_order.Dockerfile
-        image: {{ docker_id }}/process_order:1.0
+        image: ${docker_id}/process_order:1.0
         restart: always
         depends_on:
             - delivery
@@ -223,7 +221,7 @@ services:
         build:
             context: ./complex_microservices/driver_view_details
             dockerfile: driver_view_details.Dockerfile
-        image: {{ docker_id }}/driver_view_details:1.0
+        image: ${docker_id}/driver_view_details:1.0
         restart: always
         depends_on:
             - delivery
@@ -242,7 +240,7 @@ services:
         build:
             context: ./complex_microservices/customer_view_details
             dockerfile: customer_view_details.Dockerfile
-        image: {{ docker_id }}/customer_view_details:1.0
+        image: ${docker_id}/customer_view_details:1.0
         restart: always
         depends_on:
             - delivery
@@ -262,7 +260,7 @@ services:
         build:
             context: ./complex_microservices/complete_delivery
             dockerfile: complete_delivery.Dockerfile
-        image: {{ docker_id }}/complete_delivery:1.0
+        image: ${docker_id}/complete_delivery:1.0
         restart: always
         depends_on:
             - delivery
@@ -286,7 +284,7 @@ services:
         build:
             context: ./complex_microservices/register_user
             dockerfile: register_user.Dockerfile
-        image: {{ docker_id }}/register_user:1.0
+        image: ${docker_id}/register_user:1.0
         restart: always
         depends_on:
             - login
@@ -310,7 +308,7 @@ services:
         build:
             context: ./complex_microservices/register_tele_notif
             dockerfile: register_tele_notif.Dockerfile
-        image: {{ docker_id }}/register_tele_notif:1.0
+        image: ${docker_id}/register_tele_notif:1.0
         restart: always
         depends_on:
             - customer
